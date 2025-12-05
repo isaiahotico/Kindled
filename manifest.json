@@ -1,0 +1,64 @@
+{
+  "name": "ColorMatch6",
+  "short_name": "ColorMatch6",
+  "description": "A 6-color matching Telegram Mini App with Monetag ads, GCash withdrawal, and rewards per ad click.",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "telegram": {
+    "mini_app": true
+  },
+  "permissions": {
+    "vibration": true,
+    "fullscreen": true
+  },
+  "reward_system": {
+    "reward_per_click_php": 0.012,
+    "withdraw_method": "gcash",
+    "withdraw_api_link": "https://your-domain.com/api/withdraw?number={gcash_number}&amount={total_withdraw}"
+  },
+  "ads": {
+    "monetag_zone": "10276123",
+    "rewarded_tag": "show_10276123()",
+    "inapp_interstitial": {
+      "frequency": 2,
+      "capping_hours": 0.1,
+      "interval_seconds": 30,
+      "timeout_seconds": 5
+    },
+    "interval_minutes": 6
+  },
+  "ui": {
+    "buttons": [
+      {
+        "id": "clickAdButton1",
+        "text": "Click Ads",
+        "style": "blue"
+      },
+      {
+        "id": "clickAdButton2",
+        "text": "Click Ads",
+        "style": "blue"
+      }
+    ],
+    "effects": {
+      "background_class": "rainbowShine",
+      "fast_ui": true
+    }
+  }
+}
