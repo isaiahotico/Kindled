@@ -1,10 +1,22 @@
 {
-  "name": "6 Color Match Game",
-  "short_name": "Match6",
-  "start_url": "./index.html",
+  "name": "Color Match Mini App",
+  "short_name": "ColorMatch",
+  "start_url": "index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#111",
-  "theme_color": "#111",
-  "description": "A Telegram Mini App 6-color matching game with Monetag ads",
-  "icons": []
+  "background_color": "#ffffff",
+  "theme_color": "#4a90e2",
+  "description": "6-color matching mini game with rewards, ads, and Supabase balance system",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

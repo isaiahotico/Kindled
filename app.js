@@ -1,65 +1,125 @@
-// Telegram Mini App API
-if (window.Telegram && Telegram.WebApp) {
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
+import { supabase } from "./supabase.js";
+
+const tg = window.Telegram.WebApp;
+tg.expand();
+
+const userId = tg.initDataUnsafe?.user?.id?.toString();
+
+let userBalance = 0;
+
+async function loadUser() {
+    const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+    if (!data) {
+        await supabase.from("users").insert([{ id: userId, balance: 0 }]);
+        userBalance = 0;
+    } else {
+        userBalance = data.balance;
+    }
+
+    document.getElementById("balance").innerText = userBalance.toFixed(3);
 }
 
-// === GAME SYSTEM ===
-const gameBoard = document.getElementById("game-board");
-const coinsEl = document.getElementById("coins");
+loadUser();
+startGame();
 
-let coins = localStorage.getItem("coins") ? Number(localStorage.getItem("coins")) : 0;
-coinsEl.textContent = coins;
+// ---------------- GAME ------------------
 
-// 6 colors
-const colors = ["red", "blue", "green", "yellow", "purple", "orange"];
+let values = [1,1,2,2,3,3];
+values = values.sort(() => Math.random() - 0.5);
 
-// Build game grid
-function createBoard() {
-    gameBoard.innerHTML = "";
-    for (let i = 0; i < 36; i++) {
-        let tile = document.createElement("div");
-        tile.className = "tile";
-        tile.style.background = colors[Math.floor(Math.random() * colors.length)];
-        tile.onclick = () => handleTile(tile);
-        gameBoard.appendChild(tile);
+const gameArea = document.getElementById("game");
+let revealed = [];
+
+function startGame() {
+    gameArea.innerHTML = "";
+    revealed = [];
+
+    values.forEach((v, i) => {
+        let btn = document.createElement("button");
+        btn.className = "tile";
+        btn.dataset.value = v;
+        btn.innerText = "?";
+
+        btn.onclick = () => reveal(i, btn);
+        gameArea.appendChild(btn);
+    });
+}
+
+async function reveal(i, btn) {
+    btn.innerText = values[i];
+    revealed.push(values[i]);
+
+    if (revealed.length === 6) {
+        await rewardGame();
+        setTimeout(startGame, 5000); // 5 seconds reset
     }
 }
 
-function handleTile(tile) {
-    let earned = 1;
-    coins += earned;
-    coinsEl.textContent = coins;
-    localStorage.setItem("coins", coins);
+async function rewardGame() {
+    userBalance += 0.026;
 
-    tile.style.opacity = "0.5"; 
+    document.getElementById("balance").innerText = userBalance.toFixed(3);
+
+    await supabase.from("users")
+        .update({ balance: userBalance })
+        .eq("id", userId);
+
+    await supabase.from("rewards_log").insert([
+        { user_id: userId, type: "game", amount: 0.026 }
+    ]);
 }
 
-// Initial board
-createBoard();
+// --------------- ADS --------------------
 
-// === Monetag Ads ===
+document.getElementById("watchAdBtn").onclick = () => {
+    show_10276123().then(async () => {
+        userBalance += 0.026;
 
-// Watch Ad Button
-document.getElementById("watch-ad").addEventListener("click", () => {
-    show_10276123().then(() => {
-        // Reward
-        coins += 3;
-        coinsEl.textContent = coins;
-        localStorage.setItem("coins", coins);
+        await supabase.from("users")
+            .update({ balance: userBalance })
+            .eq("id", userId);
 
-        alert("You earned +0.03 Pesos!");
+        await supabase.from("rewards_log").insert([
+            { user_id: userId, type: "ads", amount: 0.026 }
+        ]);
+
+        document.getElementById("balance").innerText = userBalance.toFixed(3);
     });
-});
+};
 
-// Auto interstitial every 6 minutes
+// Auto in-app interstitial ads
 show_10276123({
     type: "inApp",
     inAppSettings: {
         frequency: 2,
-        capping: 0.1,      // 6 minutes
+        capping: 0.1,
         interval: 30,
         timeout: 5,
         everyPage: false
     }
 });
+
+// --------------- WITHDRAW -----------------
+
+document.getElementById("withdrawBtn").onclick = () => {
+    let gcash = prompt("Enter GCash number:");
+    let amount = userBalance;
+
+    if (!gcash) return;
+
+    supabase.from("withdrawals").insert([
+        { user_id: userId, amount, gcash, status: "pending" }
+    ]);
+
+    supabase.from("users")
+        .update({ balance: 0 })
+        .eq("id", userId);
+
+    alert("Withdrawal sent!");
+    document.getElementById("balance").innerText = "0.00";
+};
