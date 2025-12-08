@@ -1,0 +1,9 @@
+{
+  "name": "RPG World Mini App",
+  "short_name": "RPGWorld",
+  "start_url": "index.html",
+  "display": "standalone",
+  "theme_color": "#001f3f",
+  "background_color": "#0a0f24",
+  "icons": []
+}

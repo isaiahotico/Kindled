@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPG Mini App</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="app">
+
+    <header class="topbar">
+        <h1>⚔️ RPG WORLD</h1>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <button onclick="UI.show('profile')">Profile</button>
+        <button onclick="UI.show('map')">Map</button>
+        <button onclick="UI.show('fight')">Fight</button>
+        <button onclick="UI.show('bag')">Bag</button>
+        <button onclick="UI.show('store')">Store</button>
+        <button onclick="UI.show('boss')">Boss</button>
+        <button onclick="UI.show('guild')">Guild</button>
+        <button onclick="UI.show('season')">Season</button>
+        <button onclick="UI.show('eyes')">Eyes</button>
+        <button onclick="UI.show('raids')">Raids</button>
+        <button onclick="UI.show('login')">Login</button>
+    </nav>
+
+    <!-- Panels -->
+
+    <section id="login" class="panel">
+        <h2>Login</h2>
+        <input id="usernameInput" placeholder="Enter your username">
+        <button onclick="Game.login()">Start</button>
+    </section>
+
+    <section id="profile" class="panel">
+        <h2>👤 Profile</h2>
+        <div id="profileData"></div>
+        <button onclick="UI.show('statsUp')">Increase Stats</button>
+    </section>
+
+    <section id="statsUp" class="panel">
+        <h2>📈 Stat Points</h2>
+        <p id="statPoints"></p>
+        <button onclick="Game.addStat('hp')">+ HP</button>
+        <button onclick="Game.addStat('str')">+ STR</button>
+        <button onclick="Game.addStat('int')">+ INT</button>
+        <button onclick="Game.addStat('spd')">+ SPEED</button>
+        <button onclick="UI.show('profile')">Back</button>
+    </section>
+
+    <section id="map" class="panel">
+        <h2>🗺️ World Map</h2>
+        <div id="mapList"></div>
+    </section>
+
+    <section id="fight" class="panel">
+        <h2>⚔️ Battle</h2>
+        <div id="currentMonster"></div>
+        <button onclick="Game.fightMonster()">Attack</button>
+        <pre id="battleLog"></pre>
+    </section>
+
+    <section id="bag" class="panel">
+        <h2>🎒 Inventory</h2>
+        <div id="bagItems"></div>
+    </section>
+
+    <section id="store" class="panel">
+        <h2>🏪 Store</h2>
+        <h3>Coin Store</h3>
+        <div id="coinStore"></div>
+        <h3>💎 Legendary Store (FaucetPay)</h3>
+        <div id="premiumStore"></div>
+    </section>
+
+    <section id="boss" class="panel">
+        <h2>🔥 DAILY BOSS</h2>
+        <div id="bossInfo"></div>
+        <button onclick="Game.attackBoss()">Fight Boss</button>
+        <pre id="bossLog"></pre>
+    </section>
+
+    <section id="guild" class="panel">
+        <h2>🏰 Guild System</h2>
+        <div id="guildPanel"></div>
+    </section>
+
+    <section id="season" class="panel">
+        <h2>🏆 PvP Season</h2>
+        <div id="seasonInfo"></div>
+    </section>
+
+    <section id="eyes" class="panel">
+        <h2>👁️ Eye Summoning</h2>
+        <div id="eyePanel"></div>
+        <button onclick="Game.summonEye()">Summon Eye</button>
+    </section>
+
+    <section id="raids" class="panel">
+        <h2>🛡️ Raid Parties</h2>
+        <div id="raidPanel"></div>
+    </section>
+
+</div>
+
+<script src="App.js"></script>
+</body>
+</html>
