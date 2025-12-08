@@ -1,0 +1,97 @@
+/* Blue glowing background */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at top, #84c8ff, #003b72 70%);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-container {
+    text-align: center;
+    color: white;
+}
+
+.title {
+    font-size: 26px;
+    margin-bottom: 25px;
+    text-shadow: 0 0 12px #7ecbff;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 260px;
+    margin: auto;
+}
+
+/* Normal button */
+.ad-btn {
+    padding: 16px;
+    font-size: 18px;
+    background: #5fc8ff;
+    border: none;
+    border-radius: 12px;
+    color: #003b72;
+    font-weight: bold;
+    transition: 0.25s;
+    box-shadow: 0 0 10px #88d4ff;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Clicked: Pink/Red */
+.ad-btn:active {
+    background: linear-gradient(45deg, #ff5c79, #ff99ae);
+    color: white;
+    box-shadow: 0 0 14px #ff668c;
+    transform: scale(0.95);
+}
+
+/* Fire glow when ready */
+.ready-glow {
+    animation: fireGlow 1.5s infinite alternate;
+}
+
+@keyframes fireGlow {
+    0% { box-shadow: 0 0 10px #ff6600; }
+    100% { box-shadow: 0 0 25px #ff2200; }
+}
+
+/* Cooldown gray style */
+.cooldown {
+    background: #555 !important;
+    color: #ccc !important;
+}
+
+/* Shake animation */
+.shake {
+    animation: shakeAnim 0.4s infinite;
+}
+
+@keyframes shakeAnim {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-3px); }
+    100% { transform: translateX(0); }
+}
+
+/* Circular progress ring */
+.progress-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.35);
+    border-top-color: #ff2255;
+    animation: spin linear 1s infinite;
+    display: none;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
