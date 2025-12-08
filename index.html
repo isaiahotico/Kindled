@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title>Telegram Mini App - Game & Ads</title>
+
+<!-- Telegram SDK -->
+<script src='https://telegram.org/js/telegram-web-app.js?56'></script>
+
+<!-- Adexium SDK -->
+<script src='https://cdn.tgads.space/assets/js/adexium-widget.min.js'></script>
+
+<!-- Monetag SDK -->
+<script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123'></script>
+
+<!-- GigaPub SDK -->
+<script src='https://ad.gigapub.tech/script?id=4751'></script>
+
+<link rel='stylesheet' href='style.css'>
+</head>
+<body>
+<h1 class='title'>Color Match & Rewards</h1>
+<div class='game-box'>
+<button class='game-btn' id='colorBtn1'>1</button>
+<button class='game-btn' id='colorBtn2'>2</button>
+<button class='game-btn' id='colorBtn3'>3</button>
+</div>
+<div class='ads-section'>
+<button id='watchAdBtn' class='ad-btn'>Watch Reward Ad</button>
+<button id='adixiumBtn' class='adixium-btn'>Adexium Bonus Ad (3m)</button>
+<p id='adixiumTimer' class='timer-text'></p>
+<button id='monetagBtn' class='monetag-btn'>Monetag Reward Ad</button>
+<p id='monetagTimer' class='timer-text'></p>
+<button id='gigaBtn' class='giga-btn'>Giga Hub Smartlink</button>
+</div>
+<script src='app.js'></script>
+</body>
+</html>

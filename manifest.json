@@ -1,0 +1,11 @@
+{
+  "name": "Telegram Color Match Game",
+  "version": "1.0.0",
+  "description": "Telegram mini app clicker game with multiple ad integrations (Adexium, Monetag, Giga Hub).",
+  "author": "Isaiah Otico",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s . -l 3000"
+  },
+  "dependencies": {}
+}
