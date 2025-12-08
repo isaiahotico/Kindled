@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0d1b40, #1e3a8a);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 30px;
+  color: #a3d2ff;
+  text-shadow: 0 0 10px #a3d2ff;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.ad-btn {
+  padding: 15px 30px;
+  font-size: 18px;
+  border: none;
+  border-radius: 50px;
+  background-color: #5ac8fa;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px #5ac8fa;
+}
+
+.ad-btn:active {
+  background: linear-gradient(45deg, #ff3c78, #ff85a2);
+  box-shadow: 0 0 20px #ff3c78;
+  transform: scale(0.95);
+}
