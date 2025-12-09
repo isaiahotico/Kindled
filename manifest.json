@@ -1,0 +1,14 @@
+{
+  "id": "com.kindled.miniapp",
+  "version": "1.1.0",
+  "name": "Kindled Ads Mini App",
+  "description": "Watch ads, earn points, and enjoy interactive content inside Telegram Mini App.",
+  "icon_url": "https://yourdomain.com/icon.png",
+  "start_url": "https://yourdomain.com/index.html",
+  "author": "Isaiah Ross Otico",
+  "platforms": ["telegram"],
+  "permissions": ["web_app"],
+  "orientation": "portrait",
+  "theme_color": "#90e0ef",
+  "background_color": "#a0c4ff"
+}
