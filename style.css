@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #0a1f4f, #001028);
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  text-align: center;
+  padding: 20px;
+}
+
+.title {
+  color: #9cd8ff;
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 0 20px #4ac0ff;
+  animation: titlePulse 2s infinite ease-in-out;
+}
+
+@keyframes titlePulse {
+  0%,100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+/* Glass Neon Buttons */
+.glass-btn {
+  width: 220px;
+  padding: 15px;
+  margin: 16px auto;
+  font-size: 20px;
+  border-radius: 18px;
+  color: #d7eeff;
+  border: 2px solid rgba(120,180,255,0.4);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 12px rgba(50, 150, 255, 0.6);
+}
+
+.glass-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 20px rgba(100,200,255,0.8);
+}
+
+.glass-btn:active {
+  transform: scale(0.97);
+  background: rgba(255,150,190,0.25);
+  border-color: #ff6ec7;
+  color: #ffffff;
+  box-shadow: 0 0 20px #ff4f93;
+}
+
+.gold {
+  animation: pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 10px #5dbfff; }
+  50% { box-shadow: 0 0 18px #8dd6ff; }
+}
+
+.install {
+  border-color: #f8e16a;
+  box-shadow: 0 0 15px #ffe066;
+  background: rgba(255,230,120,0.1);
+}
+
+.install:active {
+  background: rgba(255,180,60,0.25);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
