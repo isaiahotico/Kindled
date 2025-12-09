@@ -1,0 +1,12 @@
+{
+  "id": "monetag_immersive_ads",
+  "version": "1.0.0",
+  "name": "Monetag Immersive Ads",
+  "description": "Telegram Mini App with automated Monetag ads, full-screen fade, countdown, sound, and daily ad counter.",
+  "icon": "icon.png",
+  "start_url": "index.html",
+  "type": "mini_app",
+  "permissions": ["storage"],
+  "background_color": "#87cefa",
+  "theme_color": "#00bfff"
+}
