@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Click Gold Auto Ads</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+
+<!-- Monetag SDK -->
+<script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123' defer></script>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+<div class="wrap">
+  <header class="topbar">
+    <h1 class="title">CLICK GOLD</h1>
+    <button id="installBtn" class="glass-btn install">📥 Install</button>
+  </header>
+
+  <main class="card">
+    <div id="counterDisplay" class="counter">Ads shown today: <span id="counterValue">0</span></div>
+
+    <div class="btn-grid">
+      <button class="glass-btn gold btn-ad" id="btn1" data-index="0"><span class="btn-label">Click Gold 1</span></button>
+      <button class="glass-btn gold btn-ad" id="btn2" data-index="1"><span class="btn-label">Click Gold 2</span></button>
+      <button class="glass-btn gold btn-ad" id="btn3" data-index="2"><span class="btn-label">Click Gold 3</span></button>
+      <button class="glass-btn gold btn-ad" id="btn4" data-index="3"><span class="btn-label">Click Gold 4</span></button>
+    </div>
+
+    <p class="hint">Auto-play ads, auto-close after 10s — install PWA for best experience.</p>
+  </main>
+
+  <footer class="footer">
+    <small>Fast UI • Smooth animations • Rainbow particles</small>
+  </footer>
+</div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
