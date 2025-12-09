@@ -1,0 +1,70 @@
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #0a1f4f, #001028);
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  text-align: center;
+  padding: 20px;
+}
+
+.title {
+  color: #9cd8ff;
+  font-size: 44px;
+  font-weight: 700;
+  text-shadow: 0 0 20px #4ac0ff;
+  animation: titlePulse 2s infinite ease-in-out;
+}
+
+@keyframes titlePulse {
+  0%,100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+.glass-btn {
+  width: 220px;
+  padding: 15px;
+  margin: 16px auto;
+  font-size: 20px;
+  border-radius: 18px;
+  color: #d7eeff;
+  border: 2px solid rgba(120,180,255,0.4);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 0 12px rgba(50, 150, 255, 0.6);
+}
+
+.glass-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px rgba(100,200,255,0.9);
+}
+
+.glass-btn:active {
+  transform: scale(0.95);
+  background: rgba(255,150,190,0.3);
+  border-color: #ff6ec7;
+}
+
+.gold {
+  animation: pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 10px #5dbfff; }
+  50% { box-shadow: 0 0 20px #8dd6ff; }
+}
+
+#counterDisplay {
+  margin-top: 20px;
+  font-size: 19px;
+  color: #ffe066;
+  text-shadow: 0 0 10px #ffea99;
+}
