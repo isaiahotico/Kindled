@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Text Game</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+
+<body>
+
+    <div id="top-bar">
+        <h2>⚔️ Text RPG Online</h2>
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </div>
+
+    <div id="main-menu">
+        <button onclick="UI.openPanel('profile')">👤 Profile</button>
+        <button onclick="UI.openPanel('inventory')">🎒 Inventory</button>
+        <button onclick="UI.openPanel('map')">🗺️ Explore Maps</button>
+        <button onclick="UI.openPanel('shop')">🛒 Shop</button>
+        <button onclick="UI.openPanel('boss')">💀 Boss Event</button>
+        <button onclick="UI.openPanel('guild')">🏰 Guilds</button>
+        <button onclick="UI.openPanel('season')">🏆 PvP Seasons</button>
+        <button onclick="UI.openPanel('raid')">🔥 Raids</button>
+        <button onclick="UI.openPanel('eyes')">👁️ Summon Eyes</button>
+    </div>
+
+    <!-- PANELS -->
+
+    <div id="panel-profile" class="panel">
+        <h2>👤 Your Stats</h2>
+        <pre id="profile-data"></pre>
+        <button onclick="Player.allocatePoints()">➕ Allocate Power Points</button>
+    </div>
+
+    <div id="panel-inventory" class="panel">
+        <h2>🎒 Inventory</h2>
+        <div id="inventory-list"></div>
+    </div>
+
+    <div id="panel-map" class="panel">
+        <h2>🗺️ World Maps</h2>
+        <div id="map-list"></div>
+    </div>
+
+    <div id="panel-shop" class="panel">
+        <h2>🛒 Shop (Refreshes Hourly)</h2>
+        <div id="shop-list"></div>
+    </div>
+
+    <div id="panel-boss" class="panel">
+        <h2>💀 Daily Boss Event</h2>
+        <div id="boss-info"></div>
+        <button onclick="Combat.fightBoss()">⚔️ Fight Boss</button>
+    </div>
+
+    <div id="panel-guild" class="panel">
+        <h2>🏰 Guild System</h2>
+        <div id="guild-info"></div>
+        <button onclick="Guild.create()">➕ Create Guild</button>
+    </div>
+
+    <div id="panel-season" class="panel">
+        <h2>🏆 PvP Season</h2>
+        <div id="season-info"></div>
+        <button onclick="PVP.queue()">⚔️ Join PvP Queue</button>
+    </div>
+
+    <div id="panel-raid" class="panel">
+        <h2>🔥 Raid Parties</h2>
+        <div id="raid-info"></div>
+        <button onclick="Raid.join()">Join Raid Party</button>
+    </div>
+
+    <div id="panel-eyes" class="panel">
+        <h2>👁️ Eye Summoning</h2>
+        <div id="eye-list"></div>
+        <button onclick="Eyes.summon()">Summon New Eye</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

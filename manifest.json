@@ -1,0 +1,10 @@
+{
+    "name": "Text RPG Online",
+    "short_name": "RPG",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#0d0d16",
+    "theme_color": "#5500ff",
+    "description": "Advanced text-based RPG for Telegram Mini Apps.",
+    "icons": []
+}
