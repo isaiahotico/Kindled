@@ -1,9 +1,0 @@
-{
-  "name": "Reward Clicker",
-  "short_name": "RewardApp",
-  "start_url": "index.html",
-  "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#00ffe1",
-  "icons": []
-}
