@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdrawals</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="charcoal-bg">
+
+<h2 class="rainbow-text">Withdraw Your Rubies</h2>
+
+<div class="withdraw-form">
+  <label for="crypto">Choose Crypto:</label>
+  <select id="crypto">
+    <option value="USDT">USDT</option>
+    <option value="TRX">TRX</option>
+    <option value="LTC">LTC</option>
+  </select>
+
+  <label for="amount">Amount of Rubies:</label>
+  <input type="number" id="amount" placeholder="Min 500, Max 10000">
+
+  <label for="account">FaucetPay Account:</label>
+  <input type="text" id="account" placeholder="Enter your FaucetPay account">
+
+  <div id="yt-code-section">
+    <p>Watch this YouTube video first:</p>
+    <iframe id="yt-video" width="320" height="180" src="" frameborder="0" allowfullscreen></iframe>
+    <input type="text" id="yt-code" placeholder="Enter code from video">
+  </div>
+
+  <button onclick="processWithdrawal()">Withdraw</button>
+</div>
+
+<div id="withdraw-msg"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
