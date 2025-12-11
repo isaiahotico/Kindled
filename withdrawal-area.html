@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdrawal Area - Admin</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+
+<h1 class="rainbow-text">Admin: Withdrawal Approvals</h1>
+<div id="withdrawalTable"></div>
+<button onclick="location.href='index.html'">Return Home</button>
+
+<script>
+const withdrawals=[];
+for(let i=1;i<=250;i++){
+    withdrawals.push({
+        user:'User'+i,
+        coins:Math.floor(Math.random()*9500)+500,
+        method:i%2===0?'GCash':'FaucetPay',
+        status:'Processing',
+        time:new Date().toLocaleString()
+    });
+}
+
+let currentPage=1;
+const itemsPerPage=10;
+
+function renderTable(page){
+    const start=(page-1)*itemsPerPage;
+    const end=start+itemsPerPage;
+    let html='<table border="1" style="width:100%;text-align:center;"><tr><th>User</th><th>Coins</th><th>Method</th><th>Status</th><th>Time</th><th>Action</th></tr>';
+    withdrawals.slice(start,end).forEach((w,i)=>{
+        html+=`<tr>
+        <td>${w.user}</td>
+        <td>${w.coins}</td>
+        <td>${w.method}</td>
+        <td id="status${start+i}">${w.status}</td>
+        <td>${w.time}</td>
+        <td><button onclick="approve(${start+i})">Approve</button></td>
+        </tr>`;
+    });
+    html+='</table>';
+    html+=`<button onclick="prevPage()">Prev</button> Page ${page} <button onclick="nextPage()">Next</button>`;
+    document.getElementById('withdrawalTable').innerHTML=html;
+}
+
+function approve(i){
+    withdrawals[i].status='Paid';
+    document.getElementById('status'+i).innerText='Paid';
+}
+
+function prevPage(){if(currentPage>1){currentPage--;renderTable(currentPage);}}
+function nextPage(){if(currentPage*itemsPerPage<withdrawals.length){currentPage++;renderTable(currentPage);}}
+
+renderTable(currentPage);
+</script>
+
+</body>
+</html>
