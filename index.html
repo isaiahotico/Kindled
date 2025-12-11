@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini App</title>
+<link rel="stylesheet" href="style.css">
+<script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
+</head>
+<body class="charcoal-bg">
+
+<div class="header">
+  <h1 class="rainbow-text">Mini App Dashboard</h1>
+  <div class="currency-display">
+    <img src="assets/ruby-icon.png" alt="Ruby" class="ruby-icon"> 
+    <span id="ruby-count">0</span> Rubies
+  </div>
+</div>
+
+<div class="nav-buttons">
+  <button onclick="navigateTo('withdrawals.html')">Withdrawals</button>
+  <button onclick="adminPanel()">Admin Panel</button>
+  <button onclick="adminLink()">Admin Link</button>
+  <button onclick="navigateTo('ads.html')">ADS CORNER</button>
+</div>
+
+<div id="effects-container"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
