@@ -1,0 +1,119 @@
+/* ---------------- General Background ---------------- */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #222;
+    overflow-x: hidden;
+    transition: background-color 0.3s;
+}
+
+/* ---------------- Rainbow Text ---------------- */
+.rainbow-text {
+    font-size: 14px;
+    font-weight: bold;
+    background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 3s linear infinite;
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ---------------- Buttons ---------------- */
+button {
+    padding: 12px 24px;
+    margin: 8px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    color: #fff;
+    background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+    background-size: 400% 400%;
+    animation: rainbowButton 3s ease infinite;
+    box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+}
+
+button:hover {
+    transform: scale(1.3) rotate(5deg);
+    box-shadow: 0 0 30px rgba(255,255,255,0.6), 0 0 60px rgba(255,255,255,0.3);
+    animation: rainbowButtonFast 1s linear infinite;
+}
+
+@keyframes rainbowButton {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes rainbowButtonFast {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+button:active {
+    animation: bounceSpin 0.5s;
+}
+
+@keyframes bounceSpin {
+    0% { transform: scale(1.2) rotate(0deg); }
+    25% { transform: scale(0.8) rotate(45deg); }
+    50% { transform: scale(1.3) rotate(-45deg); }
+    75% { transform: scale(1.1) rotate(15deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+/* ---------------- Coins Display ---------------- */
+#coins {
+    font-size: 18px;
+    font-weight: bold;
+    color: gold;
+    text-shadow: 0 0 8px orange, 0 0 12px yellow;
+    position: fixed;
+    top: 10px;
+    right: 20px;
+}
+
+/* ---------------- Star & Shape Backgrounds ---------------- */
+.star, .shape, .happyFace {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.8;
+    pointer-events: none;
+    animation: floatStars linear infinite;
+}
+
+@keyframes floatStars {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-100vh) rotate(360deg); }
+}
+
+.happyFace {
+    font-size: 20px;
+    color: yellow;
+}
+
+/* ---------------- Inputs ---------------- */
+input, select {
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+/* ---------------- Links ---------------- */
+a {
+    color: cyan;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
