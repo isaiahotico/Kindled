@@ -1,0 +1,9 @@
+{
+  "name": "Reward Clicker Ads",
+  "short_name": "RewardAds",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00ffe1",
+  "icons": []
+}
