@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Click Gold — Auto Ads</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <!-- Monetag SDK (keeps your original) -->
+  <script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123' defer></script>
+</head>
+<body>
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- GEO / VPN LOCK UI -->
+  <div id="lockOverlay" class="overlay hidden">
+    <div class="panel">
+      <h2>Access Restricted</h2>
+      <p id="lockReason">Checking location...</p>
+      <button id="retryBtn" class="glass-btn">Retry Check</button>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div class="wrap" id="appRoot" aria-hidden="true">
+    <header class="topbar">
+      <h1 class="title">CLICK GOLD</h1>
+      <div class="top-actions">
+        <button id="installBtn" class="glass-btn small install" title="Install PWA">📥 Install</button>
+      </div>
+    </header>
+
+    <main class="card" role="main">
+      <div class="counter" id="counterDisplay">Ads shown today: <span id="counterValue">0</span></div>
+
+      <div id="adSimulator" class="simulator">
+        <div class="sim-row">
+          <div class="sim-status" id="simStatus">Ready</div>
+          <div class="sim-progress" id="simProgressWrap" aria-hidden="true">
+            <div id="simProgressBar" class="bar"></div>
+          </div>
+        </div>
+        <div class="btn-grid" id="btnGrid">
+          <button class="glass-btn gold btn-ad" id="btn1"><span class="btn-label">Click Gold 1</span></button>
+          <button class="glass-btn gold btn-ad" id="btn2"><span class="btn-label">Click Gold 2</span></button>
+          <button class="glass-btn gold btn-ad" id="btn3"><span class="btn-label">Click Gold 3</span></button>
+          <button class="glass-btn gold btn-ad" id="btn4"><span class="btn-label">Click Gold 4</span></button>
+        </div>
+      </div>
+
+      <p class="hint">Auto-play ads, auto-close after 10s. Install PWA for best experience.</p>
+    </main>
+
+    <footer class="footer"><small>Fast UI • Ultra animations • Anti-VPN lock (US only)</small></footer>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
