@@ -1,0 +1,12 @@
+{
+  "name": "Reward Clicker Ads",
+  "short_name": "ClickAds",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0e0e10",
+  "theme_color": "#ff69b4",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon.png", "sizes": "192x192", "type": "image/png" }
+  ]
+}
