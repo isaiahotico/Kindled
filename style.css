@@ -1,0 +1,97 @@
+/* style.css — Rainbow AIDE option B, responsive + fast UI */
+
+/* Root colors */
+:root{
+  --bg: #0e0e10;
+  --panel: #151519;
+  --muted: #c7ced6;
+  --accent1: #ff69b4;
+  --accent2: #00ffff;
+  --accent3: #ffff66;
+}
+
+/* Reset & base */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: "Inter","Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+  background:var(--bg);
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow:hidden;
+}
+
+/* stars canvas */
+canvas#starsCanvas{
+  position:fixed; inset:0; z-index:-1; display:block;
+}
+
+/* container */
+#app{max-width:520px;margin:12px auto;padding:12px;}
+
+/* title */
+.title{display:inline-block;font-weight:800;font-size:28px;margin-bottom:8px;letter-spacing:0.6px;line-height:1}
+
+/* stats */
+.stats-box{
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  padding:10px;border-radius:10px;margin:8px 0;display:grid;gap:6px;align-items:center;
+}
+.stats-box .label{font-size:13px;color:var(--muted)}
+
+/* buttons - responsive + compact */
+.buttons-row{display:grid;grid-template-columns:1fr;gap:8px;margin:10px 0}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:100%;padding:10px;border-radius:10px;border:0;font-weight:700;cursor:pointer;
+  text-transform:uppercase;letter-spacing:0.6px;box-shadow:0 6px 16px rgba(0,0,0,0.45);
+  transition:transform .12s ease, box-shadow .12s ease;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+}
+.btn:active{transform:translateY(1px)}
+.btn-main{background:#151518;color:#fff}
+.btn-secondary{background:#2a2a2d;color:#fff}
+.btn-admin{background:#0bb783;color:#041d12}
+
+/* panels */
+.panel{
+  position:fixed;left:6%;width:88%;max-width:640px;max-height:84%;overflow:hidden;background:var(--panel);
+  border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.04);backdrop-filter: blur(6px);z-index:80;
+  transform:translateY(-110%);opacity:0;transition:transform .28s cubic-bezier(.2,.9,.3,1),opacity .28s;
+}
+.panel.slide-down{transform:translateY(6%);opacity:1}
+.panel.hidden{display:none}
+.panel .panel-title{margin:0 0 8px 0;font-size:18px}
+
+/* scrollable */
+.scrollable{max-height:260px;overflow-y:auto;padding:6px;background:rgba(255,255,255,0.02);border-radius:8px}
+
+/* chat */
+.chat-log p{margin:6px 0;padding:6px;border-radius:8px;background:rgba(0,0,0,0.18)}
+.chat-log .msg-user{font-weight:800;margin-right:8px}
+
+/* tiny floating point bubble */
+.point-bubble{position:fixed;font-weight:800;font-size:14px;pointer-events:none;z-index:120;color:#fff;text-shadow:0 0 8px rgba(0,0,0,0.6)}
+
+/* guardian bar */
+.guardian-bar-container{position:relative;width:100%;height:26px;background:#222;border-radius:8px;overflow:hidden;margin:10px 0}
+.guardian-bar{height:100%;width:100%;background:linear-gradient(90deg,#fff,#ff69b4);transform-origin:left center}
+#guardianHP{position:absolute;left:50%;top:0;transform:translateX(-50%);line-height:26px;font-weight:800;color:#fff}
+
+/* event desc */
+.event-desc{font-size:13px;color:#dfe5ee;margin-bottom:10px}
+
+/* rainbow-letter helper (JS uses inline style color) */
+.rainbow-letter{display:inline-block}
+
+/* responsive adjustments */
+@media (min-width:420px){
+  .buttons-row{grid-template-columns:repeat(2,1fr)}
+  .btn{font-size:13px;padding:12px}
+}
+@media (min-width:720px){
+  #app{padding:18px}
+  .title{font-size:32px}
+}
