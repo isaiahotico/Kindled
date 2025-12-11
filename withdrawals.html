@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdrawals</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js"></script>
+</head>
+<body>
+<div id="withdrawalsPage" class="page">
+<h1 class="rb">Withdraw Coins</h1>
+<p>Watch the video to get the withdrawal code:</p>
+<input id="withdrawCode" placeholder="Enter Code">
+<button class="main-btn" onclick="processWithdrawal()">Withdraw</button>
+<h2>Options:</h2>
+<p>GCash: 1 coin = 0.005 PHP</p>
+<p>FaucetPay: 1 coin = 0.000085 USDT, 0.003 TRX, 0.000001 LTC</p>
+<button class="main-btn" onclick="backHome()">Back</button>
+<div id="coinDisplay">💰 Coins: <span id="userCoins">0</span></div>
+</div>
+</body>
+</html>
