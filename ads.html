@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ads Corner</title>
+<link rel="stylesheet" href="style.css">
+<script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+
+<div id="coins">Coins: 0</div>
+<h1 class="rainbow-text">ADS CORNER</h1>
+
+<button onclick="watchAd(1)">Ad Button 1</button>
+<button onclick="watchAd(2)">Ad Button 2</button>
+<button onclick="watchAd(3)">Ad Button 3</button>
+<button onclick="watchAd(4)">Ad Button 4</button>
+
+<button onclick="location.href='index.html'">Return Home</button>
+
+<script>
+// Auto next ads simulation
+function watchAd(buttonNum){
+    if(buttonNum===1 || buttonNum===2){
+        show_10276123().then(()=>updateCoins(1));
+    } else {
+        show_10276123('pop').then(()=>updateCoins(0));
+    }
+    alert(`Ad ${buttonNum} is being shown`);
+}
+
+// In-app interstitial simulation
+show_10276123({
+  type: 'inApp',
+  inAppSettings: {
+    frequency: 2,
+    capping: 0.1,
+    interval: 30,
+    timeout: 5,
+    everyPage: false
+  }
+});
+</script>
+
+</body>
+</html>
