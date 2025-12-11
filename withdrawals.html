@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdrawals</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js"></script>
+</head>
+<body>
+<div id="withdrawalsPage" class="page">
+  <h2 class="rb">Withdraw Coins</h2>
+  <div id="coinDisplay">💰 Coins: <span id="userCoins">0</span></div>
+
+  <div>
+    <h3>GCash Withdrawal</h3>
+    <input type="text" id="gcashNumber" placeholder="Enter Mobile Number">
+    <p>1 coin = 0.005 PHP | Min: 500 coins | Max per withdrawal: 10000 coins</p>
+  </div>
+
+  <div>
+    <h3>FaucetPay Withdrawal</h3>
+    <select id="cryptoChoice">
+      <option value="USDT">USDT (1 coin = 0.000085)</option>
+      <option value="TRX">TRX (1 coin = 0.003)</option>
+      <option value="LTC">LTC (1 coin = 0.000001)</option>
+    </select>
+    <input type="text" id="faucetPayAccount" placeholder="Enter FaucetPay Account">
+    <p>Min: 500 coins | Max per withdrawal: 10000 coins</p>
+  </div>
+
+  <div>
+    <p class="rb">Watch full video to know the secret code for withdrawal:</p>
+    <input type="text" id="withdrawCode" placeholder="Enter Secret Code">
+    <button class="main-btn" onclick="processWithdrawal()">Withdraw</button>
+  </div>
+
+  <button class="back-btn main-btn" onclick="backHome()">Back</button>
+</div>
+</body>
+</html>
