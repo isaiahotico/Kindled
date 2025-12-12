@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EchoStream Portal</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+<div class="container">
+  <h1>🎶 EchoStream Portal</h1>
+
+  <div class="upload-section">
+    <input type="text" id="musicLink" placeholder="Paste YouTube, SoundCloud, or MP3 link">
+    <button class="btn-main" id="generateBtn">Generate Echo Orb</button>
+    <button class="btn-main" id="profileBtn">My Profile</button>
+    <button class="btn-main" id="missionsBtn">Daily Missions</button>
+  </div>
+
+  <h2>✨ Echo Orbs</h2>
+  <div id="echoContainer" class="echo-container"></div>
+
+  <h2>⚔ White Star Guardian</h2>
+  <div class="guardian-container">
+    <div id="guardianHP" class="guardian-hp-bar"></div>
+    <div id="guardianText"></div>
+    <button class="btn-event" id="guardianInfo">Battle Info</button>
+  </div>
+
+  <h2>🏆 Leaderboard</h2>
+  <ol id="leaderboard"></ol>
+</div>
+
+<!-- Profile Modal -->
+<div id="profileModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeProfile">&times;</span>
+    <h2>My Profile</h2>
+    <div id="profileContent"></div>
+  </div>
+</div>
+
+<!-- Missions Modal -->
+<div id="missionsModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeMissions">&times;</span>
+    <h2>Daily Missions</h2>
+    <div id="missionsContent">
+      <p>Upload 1 track → +10 EP</p>
+      <p>Play 5 tracks → +5 EP</p>
+      <p>Like 5 tracks → +5 EP</p>
+    </div>
+  </div>
+</div>
+
+<!-- Reward Popup -->
+<div id="rewardPopup" class="modal">
+  <div class="modal-content">
+    <h2>🎉 Guardian Defeated! 🎉</h2>
+    <div id="rewardContent"></div>
+    <button class="btn-main" id="closeReward">Close</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
