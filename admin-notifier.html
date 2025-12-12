@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin Notifier</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<h1>Admin Notifier</h1>
+<p>Password required: Propetas6</p>
+<input type="text" id="msgInput" placeholder="Type message">
+<button onclick="sendAdminNotice()">Send</button>
+<button onclick="nav('index.html')">Back</button>
+<script>
+function sendAdminNotice(){
+  const msg = document.getElementById('msgInput').value;
+  if(!msg) return;
+  let notices = JSON.parse(localStorage.getItem('notices')||'[]');
+  notices.push(msg);
+  localStorage.setItem('notices', JSON.stringify(notices));
+  alert('Notification sent!');
+  document.getElementById('msgInput').value='';
+}
+</script>
+</body>
+</html>

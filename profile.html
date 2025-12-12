@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Profile</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<h1>User Profile</h1>
+<div>
+  <label>Username:</label>
+  <input type="text" id="username" placeholder="Enter Name">
+</div>
+<div>
+  <label>Bio:</label>
+  <textarea id="bio" placeholder="Enter Bio"></textarea>
+</div>
+<div>
+  <label>Unique ID:</label>
+  <span id="uniqueID"></span>
+</div>
+<button onclick="saveProfile()">Save</button>
+<button onclick="nav('index.html')">Back</button>
+<script>
+window.onload=function(){
+  if(!localStorage.getItem('uid')){
+    localStorage.setItem('uid', 'UID'+Math.floor(Math.random()*100000));
+  }
+  document.getElementById('uniqueID').innerText = localStorage.getItem('uid');
+  if(localStorage.getItem('username')) document.getElementById('username').value = localStorage.getItem('username');
+  if(localStorage.getItem('bio')) document.getElementById('bio').value = localStorage.getItem('bio');
+}
+function saveProfile(){
+  localStorage.setItem('username', document.getElementById('username').value);
+  localStorage.setItem('bio', document.getElementById('bio').value);
+  alert('Profile Saved!');
+}
+</script>
+</body>
+</html>

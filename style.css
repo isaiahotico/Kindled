@@ -1,0 +1,8 @@
+:root{--bg:#111;--card:#1a1a1a;--accent:#00ffcc;--muted:rgba(255,255,255,.6);}
+body{margin:0;font-family:ui-monospace,'Roboto Mono',monospace;color:#fff;background:var(--bg);}
+.btn, .ad-btn{padding:12px;border-radius:12px;background:var(--card);border:none;color:#fff;cursor:pointer;transition:transform .1s, color .3s;}
+.btn:hover, .ad-btn:hover{animation:rainbow 2s linear infinite;}
+@keyframes rainbow{0%{color:#f00;}20%{color:#f90;}40%{color:#ff0;}60%{color:#0f0;}80%{color:#00f;}100%{color:#f0f;}}
+.coin-display{position:fixed;top:10px;left:50%;transform:translateX(-50%);font-size:16px;color:#ff0;}
+.happy{position:fixed;font-size:18px;pointer-events:none;animation:rise 700ms ease-out forwards;}
+@keyframes rise{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-120px) scale(.6);opacity:0}}
