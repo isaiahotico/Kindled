@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MiniApp Home</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<div class="container">
+  <h1 class="rainbow-text">Welcome to MiniApp</h1>
+  <div class="buttons">
+    <button onclick="navigate('ads.html')">ADS CORNER</button>
+    <button onclick="navigate('withdrawals.html')">Withdrawals</button>
+    <button onclick="navigate('background-music.html')">Background Music</button>
+    <button onclick="navigate('affiliates.html')">Affiliates</button>
+    <button onclick="navigate('profile.html')">Profile</button>
+    <button onclick="navigate('chat.html')">Chat</button>
+    <button onclick="navigate('topics.html')">Topics</button>
+    <button onclick="navigate('special-event.html')">SPECIAL EVENT</button>
+    <button onclick="navigate('notifications.html')">Notifications <span id="notif-count"></span></button>
+    <button onclick="adminAccess()">Admin Panel</button>
+  </div>
+  <div id="coin-display">💰 Coins: <span id="coin">0</span></div>
+</div>
+</body>
+</html>

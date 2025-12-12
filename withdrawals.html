@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdrawals</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<h1 class="rainbow-text">Withdrawals</h1>
+<p>Watch the video to get secret code for withdrawal:</p>
+<div id="youtube-link"></div>
+<input type="text" id="withdraw-code" placeholder="Enter secret code">
+<select id="withdraw-method">
+  <option value="gcash">GCash</option>
+  <option value="faucetpay_usdt">FaucetPay USDT</option>
+  <option value="faucetpay_trx">FaucetPay TRX</option>
+  <option value="faucetpay_ltc">FaucetPay LTC</option>
+</select>
+<button onclick="processWithdrawal()">Withdraw</button>
+<button onclick="navigate('index.html')">Back</button>
+<div id="withdraw-status"></div>
+<div id="coin-display">💰 Coins: <span id="coin">0</span></div>
+</body>
+</html>
