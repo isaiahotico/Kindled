@@ -1,11 +1,10 @@
 {
   "name": "PAPER HOUSE INC.",
-  "short_name": "PAPER HOUSE",
-  "start_url": "./index.html",
+  "short_name": "PAPERHOUSE",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#1e1e1e",
-  "theme_color": "#ffcc00",
-  "description": "Watch ads, earn rewards, and manage affiliate system in PAPER HOUSE INC.",
+  "background_color": "#222222",
+  "theme_color": "#ff0055",
   "icons": [
     {
       "src": "icon-192.png",
