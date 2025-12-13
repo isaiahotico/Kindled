@@ -18,7 +18,7 @@
     <button onclick="watchAllAds()">🎬 Watch All Ads (1 Session) +₱0.03</button>
     <button onclick="withdraw()">💸 Withdraw</button>
     <button onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
-    <button onclick="window.location.href='withdraw.html'">💰 Withdrawals</button>
+    <button onclick="window.location.href='withdraw.html'">💰 Withdrawal History</button>
     <button onclick="showAdminPanel()">🔒 Admin Panel</button>
 </div>
 
@@ -26,6 +26,9 @@
     <h2>⚡ Admin Withdrawal Panel ⚡</h2>
     <div id="withdraw-requests"></div>
 </div>
+
+<!-- Notification container -->
+<div id="notification-container" style="position: fixed; top: 20px; right: 0; z-index: 9999;"></div>
 
 <script src="app.js"></script>
 </body>
