@@ -1,0 +1,13 @@
+body{background:#1e1e1e;color:#fff;font-family:Arial;text-align:center;margin:0;padding:0}
+.charcoal{background:#1e1e1e;}
+.rainbow{font-size:26px;background:linear-gradient(90deg,red,orange,yellow,green,cyan,blue,violet);-webkit-background-clip:text;color:transparent;animation:shine 3s linear infinite;}
+@keyframes shine{to{background-position:200%}}
+.magic-btn{padding:15px 30px;border-radius:30px;border:none;margin:12px;font-size:16px;cursor:pointer;transition:0.2s;}
+.magic-btn:active{transform:scale(1.15);}
+.blue{background:#2a7fff;color:white;}
+.coins, .coins-display{font-size:18px;margin:10px;}
+.profile-card{background:#222;padding:15px;border-radius:15px;margin:15px;}
+.small-btn{padding:8px 14px;margin-top:10px;}
+.home{position:fixed;top:10px;left:10px;}
+progress{width:80%;height:20px;margin:10px 0;}
+.center{text-align:center;margin-top:20px;}
