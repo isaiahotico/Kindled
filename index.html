@@ -3,41 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PAPER HOUSE INC.</title>
-<link rel="stylesheet" href="style.css">
+<title>Paper House Inc. - Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="manifest.json">
+<script type="module" defer src="js/app.js"></script>
+<script type="module" defer src="js/referral.js"></script>
 </head>
 <body>
-
-<h1>PAPER HOUSE INC. - Global Leaderboard</h1>
-<div id="leaderboard"></div>
-
-<button id="watchAdsBtn">Watch Ads</button>
-<p id="rewardInfo"></p>
-
-<!-- Notification -->
-<div id="notification"></div>
-
-<!-- Firebase v8 -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-<!-- Telegram WebApp SDK -->
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDMGU5X7BBp-C6tIl34Uuu5N9MXAVFTn7c",
-  authDomain: "paper-house-inc.firebaseapp.com",
-  databaseURL: "https://paper-house-inc-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "paper-house-inc",
-  storageBucket: "paper-house-inc.appspot.com",
-  messagingSenderId: "658389836376",
-  appId: "1:658389836376:web:2ab1e2743c593f4ca8e02d"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-</script>
-
-<script src="app.js"></script>
+<header>
+  <h1>Paper House Inc.</h1>
+  <nav>
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="ads.html">Ads</a></li>
+      <li><a href="leaderboard.html">Leaderboard</a></li>
+      <li><a href="chat.html">Chat</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="withdraw.html">Withdraw</a></li>
+      <li><a href="admin-withdraw.html">Admin Panel</a></li>
+    </ul>
+  </nav>
+</header>
+<main>
+  <section class="stats">
+    <div class="stat">Coins: <span id="coins">0</span></div>
+    <div class="stat">Total Referral Earnings: <span id="referral-coins">0</span></div>
+  </section>
+  <section class="events">
+    <h2>Notifications & Events</h2>
+    <div id="event-popup" class="popup"></div>
+  </section>
+</main>
+<div id="notifications"></div>
 </body>
 </html>
