@@ -1,0 +1,8 @@
+{
+"name":"Guardian Mini App",
+"short_name":"Guardians",
+"start_url":"index.html",
+"display":"standalone",
+"background_color":"#111",
+"theme_color":"#2196f3"
+}

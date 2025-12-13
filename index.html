@@ -1,0 +1,17 @@
+<!DOCTYPE html><html><head>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head><body onclick="changeBG()">
+<div id="coinBar">💰 <span id="coins">0</span></div>
+
+<h2 class="rainbow-text">WELCOME HERO</h2>
+<button class="btn" onclick="location='profile.html'">User Profile</button>
+<button class="btn" onclick="location='ads.html'">ADS CORNER</button>
+<button class="btn" onclick="location='withdraw.html'">Withdrawals</button>
+<button class="btn" onclick="adminLogin(prompt('Password'))">Admin Panel</button>
+
+<script>
+const d=JSON.parse(localStorage.app||'{}');
+document.getElementById('coins').innerText=d.coins||0;
+</script>
+</body></html>
