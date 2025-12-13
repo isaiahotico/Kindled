@@ -1,0 +1,9 @@
+body{background:#1e1e1e;color:#fff;font-family:Arial;text-align:center}
+.rainbow{font-size:26px;background:linear-gradient(90deg,red,orange,yellow,green,cyan,blue,violet);
+-webkit-background-clip:text;color:transparent;animation:shine 3s linear infinite}
+@keyframes shine{to{background-position:200%}}
+.btn{padding:15px 30px;border-radius:30px;border:none;margin:12px;font-size:16px;cursor:pointer}
+.blue{background:#2a7fff;color:#fff}
+.coins{font-size:18px}
+.home{position:fixed;top:10px;left:10px}
+progress{width:80%;height:20px}
