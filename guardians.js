@@ -15,11 +15,7 @@ let gIndex = Number(localStorage.getItem("gIndex")||0);
 let hp = Number(localStorage.getItem("gHP")||0);
 let board = JSON.parse(localStorage.getItem("gBoard")||"{}");
 
-function heal(uid){
-  hp++; board[uid]=(board[uid]||0)+1; saveState();
-  if(hp>=guardians[gIndex].maxHP){rewardTopUsers(); rotateGuardian();}
-  updateUI();
-}
+function rotateGuardian(){ gIndex=(gIndex+1)%guardians.length; hp=0; board={}; saveState(); updateUI(); }
 
 function rewardTopUsers(){
   let top=Object.entries(board).sort((a,b)=>b[1]-a[1]).slice(0,6);
@@ -36,7 +32,4 @@ function rewardTopUsers(){
   });
 }
 
-function rotateGuardian(){gIndex=(gIndex+1)%guardians.length; hp=0; board={}; saveState(); updateUI();}
 function saveState(){localStorage.setItem("gIndex",gIndex); localStorage.setItem("gHP",hp); localStorage.setItem("gBoard",JSON.stringify(board));}
-function updateUI(){if(document.getElementById("hp")) document.getElementById("hp").value=hp;}
-window.onload=updateUI;
