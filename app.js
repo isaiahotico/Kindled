@@ -1,44 +1,57 @@
+// Constants
 const MIN_WITHDRAW = 1;
 const SESSION_REWARD = 0.03;
 const SESSION_COOLDOWN = 30;
+const ADMIN_PASSWORD = "Propetas6";
 
-let user = JSON.parse(localStorage.getItem('adgramUser')) || {
-    username: prompt("Enter your username:", "User") || "User",
-    balance: 0,
-    adsWatched: 0,
-    referrer: null,
-    lastSession: 0,
-    withdrawHistory: []
-};
+// User initialization
+let user = JSON.parse(localStorage.getItem('paperHouseUser'));
+if(!user){
+    let username = prompt("Enter your username:", "User") || "User";
+    let userCode = prompt("Create your permanent code (random string):");
+    let referrer = prompt("Enter referral code (if any):") || null;
+    user = {
+        username,
+        code: userCode,
+        balance: 0,
+        adsWatched: 0,
+        referrer: referrer,
+        totalAffiliateBonus: 0,
+        lastSession: 0,
+        withdrawHistory: []
+    };
+    localStorage.setItem('paperHouseUser', JSON.stringify(user));
+}
 
-function saveUser() {
-    localStorage.setItem('adgramUser', JSON.stringify(user));
+// Save user
+function saveUser(){
+    localStorage.setItem('paperHouseUser', JSON.stringify(user));
 }
 
 // Dashboard
-function updateDashboard() {
+function updateDashboard(){
     const dash = document.getElementById('dashboard');
     const now = Date.now();
     const remaining = Math.max(0, Math.ceil((SESSION_COOLDOWN*1000 - (now - user.lastSession))/1000));
     dash.innerHTML = `
 ╔════════════════════╗<br>
-║     ADGRAM DASHBOARD ║<br>
+║     PAPER HOUSE INC. ║<br>
 ╚════════════════════╝<br>
 User: ${user.username}<br>
+Code: ${user.code}<br>
 💰 Balance: ₱${user.balance.toFixed(3)}<br>
 🎯 Ads Watched: ${user.adsWatched}<br>
-Cooldown: ${remaining > 0 ? remaining + "s" : "Ready"}<br>
+🧾 Total Affiliate Bonus: ₱${user.totalAffiliateBonus.toFixed(3)}<br>
+Cooldown: ${remaining>0?remaining+"s":"Ready"}<br>
 `;
     updateLeaderboard();
-    renderAdminRequests(); // Always render admin panel
 }
 
 // Watch all ads
-function watchAllAds() {
+function watchAllAds(){
     const now = Date.now();
     if(now - user.lastSession < SESSION_COOLDOWN*1000){
-        const remaining = Math.ceil((SESSION_COOLDOWN*1000 - (now - user.lastSession))/1000);
-        alert(`⏳ Cooldown active. Please wait ${remaining}s.`);
+        alert(`⏳ Cooldown active. Wait ${Math.ceil((SESSION_COOLDOWN*1000-(now-user.lastSession))/1000)}s`);
         return;
     }
 
@@ -46,25 +59,29 @@ function watchAllAds() {
         show_10276123(),
         show_10276123('pop'),
         show_10276123({ type:'inApp', inAppSettings:{ frequency:2, capping:0.1, interval:30, timeout:5, everyPage:false } })
-    ]).then(() => {
+    ]).then(()=>{
         user.balance += SESSION_REWARD;
         user.adsWatched += 3;
         user.lastSession = Date.now();
 
+        // Referral bonus
         if(user.referrer){
-            let ref = JSON.parse(localStorage.getItem('adgramReferrals')) || {};
-            ref[user.referrer] = (ref[user.referrer] || 0) + SESSION_REWARD*0.10;
-            localStorage.setItem('adgramReferrals', JSON.stringify(ref));
+            let allUsers = JSON.parse(localStorage.getItem('allPaperUsers')) || {};
+            if(allUsers[user.referrer]){
+                allUsers[user.referrer].balance += SESSION_REWARD*0.10;
+                allUsers[user.referrer].totalAffiliateBonus += SESSION_REWARD*0.10;
+            }
+            localStorage.setItem('allPaperUsers', JSON.stringify(allUsers));
         }
 
         saveUser();
         alert(`✅ Session completed! +₱${SESSION_REWARD}`);
         updateDashboard();
-    }).catch(e => alert("Ad session failed to load."));
+    }).catch(()=>alert("Ad session failed."));
 }
 
 // Withdraw request
-function withdraw() {
+function withdraw(){
     if(user.balance < MIN_WITHDRAW){
         alert(`Minimum withdrawal is ₱${MIN_WITHDRAW}`);
         return;
@@ -72,53 +89,61 @@ function withdraw() {
     let amount = user.balance;
     user.balance = 0;
     user.lastSession = 0;
-    user.withdrawHistory.push({ amount: amount, status: "Pending" });
+    user.withdrawHistory.push({ amount, status:"Pending" });
 
+    // Save global withdrawal requests
     let allRequests = JSON.parse(localStorage.getItem('allWithdrawRequests')) || [];
-    allRequests.push({ username: user.username, amount: amount, status: "Pending" });
+    allRequests.push({ username:user.username, amount, status:"Pending" });
     localStorage.setItem('allWithdrawRequests', JSON.stringify(allRequests));
 
     saveUser();
-    alert(`💸 Withdrawal requested! Amount: ₱${amount.toFixed(3)}\n(Admin approval required)`);
+    alert(`💸 Withdrawal requested! Amount: ₱${amount.toFixed(3)} (Admin approval required)`);
     updateDashboard();
 }
 
 // Leaderboard
-function updateLeaderboard() {
+function updateLeaderboard(){
     const lb = document.getElementById('leaderboard');
     if(!lb) return;
-    let allUsers = JSON.parse(localStorage.getItem('allUsers')) || {};
-    allUsers[user.username] = user.balance;
-    localStorage.setItem('allUsers', JSON.stringify(allUsers));
+    let allUsers = JSON.parse(localStorage.getItem('allPaperUsers')) || {};
+    allUsers[user.code] = user; // Save current user
+    localStorage.setItem('allPaperUsers', JSON.stringify(allUsers));
 
-    let topUsers = Object.entries(allUsers)
-        .sort((a,b) => b[1]-a[1])
-        .slice(0,10);
-
-    let html = "";
-    topUsers.forEach((u,i) => {
-        html += `${i+1}. ${u[0]} - ₱${u[1].toFixed(3)}<br>`;
-    });
-    lb.innerHTML = html;
+    if(lb){
+        let topUsers = Object.values(allUsers).sort((a,b)=>b.balance-a.balance).slice(0,10);
+        let html = "";
+        topUsers.forEach((u,i)=>html+=`${i+1}. ${u.username} - ₱${u.balance.toFixed(3)}<br>`);
+        lb.innerHTML = html;
+    }
 }
 
-// Admin panel
-function renderAdminRequests() {
+// Admin Panel
+function showAdminPanel(){
+    let pass = prompt("Enter admin password:");
+    if(pass !== ADMIN_PASSWORD){
+        alert("❌ Wrong password!");
+        return;
+    }
+    document.getElementById('admin-panel').style.display = "block";
+    renderAdminRequests();
+}
+
+function renderAdminRequests(){
     let requestsDiv = document.getElementById('withdraw-requests');
     let allRequests = JSON.parse(localStorage.getItem('allWithdrawRequests')) || [];
-    if(allRequests.length === 0){
+    if(allRequests.length===0){
         requestsDiv.innerHTML = "No withdrawal requests yet.";
         return;
     }
 
     let html = "";
-    allRequests.forEach((req, index)=>{
-        if(req.status === "Pending"){
-            html += `${index+1}. ${req.username} - ₱${req.amount.toFixed(3)} 
+    allRequests.forEach((req,index)=>{
+        if(req.status==="Pending"){
+            html+=`${index+1}. ${req.username} - ₱${req.amount.toFixed(3)} 
             <button onclick="approveRequest(${index})">✅ Approve</button>
             <button onclick="rejectRequest(${index})">❌ Reject</button><br>`;
-        } else {
-            html += `${index+1}. ${req.username} - ₱${req.amount.toFixed(3)} - ${req.status}<br>`;
+        }else{
+            html+=`${index+1}. ${req.username} - ₱${req.amount.toFixed(3)} - ${req.status}<br>`;
         }
     });
     requestsDiv.innerHTML = html;
@@ -140,7 +165,7 @@ function rejectRequest(index){
     renderAdminRequests();
 }
 
-// Initialize
+// Init
 saveUser();
 updateDashboard();
-setInterval(updateDashboard, 1000);
+setInterval(updateDashboard,1000);
