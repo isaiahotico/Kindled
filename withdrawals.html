@@ -13,23 +13,20 @@
 <h2 class="rainbow">Withdraw Coins</h2>
 
 <p>Available Coins: <span id="usercoins">0</span></p>
-<p>Minimum: 500 coins | Maximum: 10000 coins</p>
+<p>Minimum: 500 | Maximum: 10000 coins</p>
 
 <form id="withdrawForm" class="profile-card">
-  <label for="amount">Amount to Withdraw:</label>
+  <label>Amount:</label>
   <input type="number" id="amount" min="500" max="10000" required>
-
-  <label for="method">Choose Withdrawal Method:</label>
+  <label>Method:</label>
   <select id="method">
-    <option value="gcash">GCash (₱0.005 per coin)</option>
-    <option value="usdt">FaucetPay USDT (0.000085 per coin)</option>
-    <option value="trx">FaucetPay TRX (0.003 per coin)</option>
-    <option value="ltc">FaucetPay LTC (0.000001 per coin)</option>
+    <option value="gcash">GCash</option>
+    <option value="usdt">FaucetPay USDT</option>
+    <option value="trx">FaucetPay TRX</option>
+    <option value="ltc">FaucetPay LTC</option>
   </select>
-
-  <label for="account">Account Info:</label>
+  <label>Account Info:</label>
   <input type="text" id="account" placeholder="Enter account number or FaucetPay ID" required>
-
   <button type="submit" class="magic-btn blue">Submit Withdrawal</button>
 </form>
 
@@ -37,45 +34,39 @@
 <ol id="withdrawList"></ol>
 
 <script>
-let coins = Number(localStorage.getItem("coins") || 0);
-document.getElementById("usercoins").innerText = coins;
+let coins = Number(localStorage.getItem("coins")||0);
+document.getElementById("usercoins").innerText=coins;
 
-function loadWithdrawals() {
-  let list = document.getElementById("withdrawList");
-  list.innerHTML = "";
-  let withdrawals = JSON.parse(localStorage.getItem("withdrawals") || "[]");
-  withdrawals.forEach(w => {
-    let li = document.createElement("li");
-    li.textContent = `${w.time} – ${w.amount} coins via ${w.method} (${w.status})`;
+function loadWithdrawals(){
+  let list=document.getElementById("withdrawList");
+  list.innerHTML="";
+  let withdrawals=JSON.parse(localStorage.getItem("withdrawals")||"[]");
+  withdrawals.forEach(w=>{
+    let li=document.createElement("li");
+    li.textContent=`${w.time} - ${w.amount} via ${w.method} (${w.status})`;
     list.appendChild(li);
   });
 }
 loadWithdrawals();
 
-document.getElementById("withdrawForm").onsubmit = function(e) {
+document.getElementById("withdrawForm").onsubmit=function(e){
   e.preventDefault();
-  let amount = Number(document.getElementById("amount").value);
-  if(amount < 500 || amount > 10000){ alert("❌ Invalid amount"); return; }
-  if(amount > coins){ alert("❌ Not enough coins"); return; }
+  let amount=Number(document.getElementById("amount").value);
+  if(amount<500||amount>10000){alert("❌ Invalid amount");return;}
+  if(amount>coins){alert("❌ Not enough coins");return;}
+  coins-=amount;
+  localStorage.setItem("coins",coins);
+  document.getElementById("usercoins").innerText=coins;
 
-  let method = document.getElementById("method").value;
-  let account = document.getElementById("account").value;
-
-  // Deduct coins
-  coins -= amount;
-  localStorage.setItem("coins", coins);
-  document.getElementById("usercoins").innerText = coins;
-
-  // Add withdrawal
-  let withdrawals = JSON.parse(localStorage.getItem("withdrawals") || "[]");
-  withdrawals.unshift({amount, method, account, status:"Processing", time:new Date().toLocaleString()});
-  localStorage.setItem("withdrawals", JSON.stringify(withdrawals));
-
-  alert(`✅ Withdrawal submitted: ${amount} coins via ${method}`);
-  document.getElementById("withdrawForm").reset();
+  let method=document.getElementById("method").value;
+  let account=document.getElementById("account").value;
+  let withdrawals=JSON.parse(localStorage.getItem("withdrawals")||"[]");
+  withdrawals.unshift({amount,method,account,status:"Processing",time:new Date().toLocaleString()});
+  localStorage.setItem("withdrawals",JSON.stringify(withdrawals));
+  alert(`✅ Withdrawal submitted: ${amount} via ${method}`);
+  this.reset();
   loadWithdrawals();
 }
 </script>
-
 </body>
 </html>
