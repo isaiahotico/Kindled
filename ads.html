@@ -8,6 +8,9 @@
 <script src="https://libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
 <script src="guardians.js"></script>
 <script src="app.js"></script>
+<style>
+#leaderboardBody td{color:white;}
+</style>
 </head>
 <body class="charcoal">
 
@@ -36,16 +39,22 @@
 </div>
 
 <script>
-document.getElementById("healBtn").onclick=healGuardian;
-const modal=document.getElementById("leaderboardModal");
-document.getElementById("showLeaderboardBtn").onclick=function(){updateLeaderboard(); modal.style.display="block";}
-document.getElementById("closeModal").onclick=function(){modal.style.display="none";}
-window.onclick=function(e){if(e.target==modal) modal.style.display="none";}
+// Heal guardian with ads
+document.getElementById("healBtn").onclick = function(){ healGuardian(); };
 
-function updateHPText(){document.getElementById("hpText").innerText=`HP: ${hp} / ${guardians[gIndex].maxHP}`;}
+// Modal leaderboard
+const modal = document.getElementById("leaderboardModal");
+document.getElementById("showLeaderboardBtn").onclick = function(){ updateLeaderboard(); modal.style.display="block"; };
+document.getElementById("closeModal").onclick = function(){ modal.style.display="none"; };
+window.onclick = function(e){ if(e.target == modal) modal.style.display="none"; };
+
+// Update HP bar text
+function updateHPText(){ document.getElementById("hpText").innerText = `HP: ${hp} / ${guardians[gIndex].maxHP}`; }
+
+// Leaderboard table
 function updateLeaderboard(){
   let tbody=document.getElementById("leaderboardBody"); tbody.innerHTML="";
-  let sorted=Object.entries(board).sort((a,b)=>b[1]-a[1]);
+  let sorted = Object.entries(board).sort((a,b)=>b[1]-a[1]);
   let userFound=false;
   for(let i=0;i<10;i++){
     if(i>=sorted.length) break;
@@ -64,15 +73,17 @@ function updateLeaderboard(){
     tbody.appendChild(tr);
   }
 }
+
+// Update UI
 function updateGuardianUI(){
-  const guardian=guardians[gIndex];
-  document.getElementById("gname").innerText=`${guardian.name} – ${guardian.maxHP} HP`;
-  document.getElementById("glore").innerText=guardian.lore;
-  document.getElementById("hp").value=hp;
+  const guardian = guardians[gIndex];
+  document.getElementById("gname").innerText = `${guardian.name} – ${guardian.maxHP} HP`;
+  document.getElementById("glore").innerText = guardian.lore;
+  document.getElementById("hp").value = hp;
   updateHPText();
   updateLeaderboard();
 }
-window.onload=updateGuardianUI;
+window.onload = updateGuardianUI;
 </script>
 </body>
 </html>
