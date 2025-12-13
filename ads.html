@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper House Inc. - Ads</title>
+<link rel="stylesheet" href="css/style.css">
+<script type="module" defer src="js/ads.js"></script>
+<script type="module" defer src="js/referral.js"></script>
+</head>
+<body>
+<header>
+  <h1>Watch Ads & Earn Coins</h1>
+</header>
+<main>
+  <div class="ad-panel">
+    <button id="watch-ad">Watch Ad</button>
+    <p id="ad-timer">Cooldown: 0s</p>
+  </div>
+  <div class="streak">
+    <p>Daily Streak: <span id="daily-streak">0</span></p>
+  </div>
+</main>
+<div id="notifications"></div>
+<script>
+import { initAds } from './js/ads.js';
+const userTelegramId = '<USER_TELEGRAM_ID>'; // Replace dynamically
+initAds(userTelegramId);
+</script>
+</body>
+</html>
