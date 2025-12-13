@@ -1,11 +1,11 @@
 {
-  "name": "AdGram Mini App",
-  "short_name": "AdGram",
+  "name": "PAPER HOUSE INC.",
+  "short_name": "PAPER HOUSE",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1e1e1e",
   "theme_color": "#ffcc00",
-  "description": "Watch ads and earn rewards in a mini app! Admin panel included.",
+  "description": "Watch ads, earn rewards, and manage affiliate system in PAPER HOUSE INC.",
   "icons": [
     {
       "src": "icon-192.png",
