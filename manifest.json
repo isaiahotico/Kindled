@@ -1,13 +1,21 @@
 {
-  "name": "Guardian Coins App",
-  "short_name": "GuardianApp",
-  "start_url": "index.html",
+  "name": "AdGram Mini App",
+  "short_name": "AdGram",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#333333",
-  "theme_color": "#00FF88",
-  "description": "Top world-class Guardian Coins app with events, ads, and affiliate rewards.",
+  "background_color": "#1e1e1e",
+  "theme_color": "#ffcc00",
+  "description": "Watch ads and earn rewards in a mini app!",
   "icons": [
-    {"src":"icon-192.png","sizes":"192x192","type":"image/png"},
-    {"src":"icon-512.png","sizes":"512x512","type":"image/png"}
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
