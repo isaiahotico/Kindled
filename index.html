@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AdGram Mini App</title>
+<title>PAPER HOUSE INC.</title>
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
 <script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
 </head>
 <body>
 
-<h1>🌟 ADGRAM DASHBOARD 🌟</h1>
+<h1>🌟 PAPER HOUSE INC. 🌟</h1>
 
 <div id="dashboard"></div>
 
@@ -19,11 +19,11 @@
     <button onclick="withdraw()">💸 Withdraw</button>
     <button onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
     <button onclick="window.location.href='withdraw.html'">💰 Withdrawals</button>
+    <button onclick="showAdminPanel()">🔒 Admin Panel</button>
 </div>
 
-<!-- Admin panel visible for simplicity -->
-<div id="admin-panel" style="display:block; margin-top:20px; border: 2px solid #ffcc00; padding: 10px;">
-    <h2>⚡ Admin Withdrawal Panel (Admin Only) ⚡</h2>
+<div id="admin-panel" style="display:none; margin-top:20px; border:2px solid #ffcc00; padding:10px;">
+    <h2>⚡ Admin Withdrawal Panel ⚡</h2>
     <div id="withdraw-requests"></div>
 </div>
 
