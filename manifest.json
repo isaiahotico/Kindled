@@ -1,0 +1,16 @@
+{
+  "name": "Earnify Lite",
+  "short_name": "Earnify",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#3FFFD8",
+  "description": "Watch ads, earn coins, and withdraw securely. A storytelling-style indie earning app.",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

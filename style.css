@@ -1,0 +1,74 @@
+/* General body */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: linear-gradient(135deg, #121212, #181818);
+  color: #f2f2f2;
+}
+
+/* App container */
+.app {
+  padding: 24px;
+  max-width: 420px;
+  margin: auto;
+}
+
+/* Greeting text */
+.greeting {
+  font-size: 18px;
+  opacity: 0.8;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+/* Balance */
+.balance {
+  font-size: 42px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 6px;
+  color: #3FFFD8;
+}
+
+/* Hint text */
+.hint {
+  font-size: 14px;
+  opacity: 0.7;
+  text-align: center;
+}
+
+.hint.small {
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* Buttons */
+.primary-btn, .secondary-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  margin-top: 16px;
+  border-radius: 14px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s all;
+}
+
+.primary-btn {
+  background: #3FFFD8;
+  color: #000;
+}
+
+.primary-btn:active {
+  box-shadow: 0 0 12px #3FFFD8;
+}
+
+.secondary-btn {
+  background: #444;
+  color: #FFF;
+}
+
+.secondary-btn:active {
+  box-shadow: 0 0 8px #888;
+}
