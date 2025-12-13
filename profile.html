@@ -12,7 +12,7 @@
 <a class="home" href="index.html">🏠 Home</a>
 <h2 class="rainbow">User Profile</h2>
 
-<!-- All Users Display -->
+<!-- Display All Users IDs -->
 <div id="allUsers" style="color:white; margin-bottom:10px;"></div>
 
 <div class="profile-card">
@@ -55,7 +55,7 @@ let uid = localStorage.getItem("uid") || Math.floor(100000 + Math.random() * 900
 localStorage.setItem("uid", uid);
 document.getElementById("userid").innerText = uid;
 
-// Load all users IDs
+// Display all users
 function showAllUsers(){
   let allKeys = Object.keys(localStorage).filter(k=>!k.startsWith('coins_') && k!=='profile' && k!=='uid' && k!=='allAffiliates');
   document.getElementById("allUsers").innerText = "All Users IDs: "+[uid, ...allKeys].join(", ");
@@ -69,7 +69,7 @@ document.getElementById("userbio").value = profile.bio || "";
 document.getElementById("usersex").value = profile.sex || "Unknown";
 document.getElementById("userrel").value = profile.rel || "Single";
 
-// Auto save on input change
+// Auto-save on input change
 ['username','userbio','usersex','userrel'].forEach(id=>{
   document.getElementById(id).addEventListener("input",()=>{
     profile.name = document.getElementById("username").value;
