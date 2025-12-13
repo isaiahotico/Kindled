@@ -1,203 +1,131 @@
-// Constants
-const MIN_WITHDRAW = 1;
-const SESSION_REWARD = 0.03;
-const SESSION_COOLDOWN = 30;
-const ADMIN_PASSWORD = "Propetas6";
-const MAX_APPROVED_DISPLAY = 10;
+// ===== Telegram WebApp User =====
+const tgUser = Telegram.WebApp.initDataUnsafe?.user || {id: prompt("Enter Telegram ID"), username: prompt("Enter username")};
+const tgStartParam = Telegram.WebApp.initDataUnsafe?.start_param || "";
+const tgId = tgUser.id.toString();
+let currentUser = null;
 
-// User initialization
-let user = JSON.parse(localStorage.getItem('paperHouseUser'));
-if(!user){
-    let username = prompt("Enter your username:", "User") || "User";
-    let userCode = prompt("Create your permanent code (random string):");
-    let referrer = prompt("Enter referral code (if any):") || null;
-    user = {
-        username,
-        code: userCode,
-        balance: 0,
-        adsWatched: 0,
-        referrer: referrer,
-        totalAffiliateBonus: 0,
-        lastSession: 0,
-        withdrawHistory: []
-    };
-    localStorage.setItem('paperHouseUser', JSON.stringify(user));
+// ===== Utility =====
+function generateCode(length=6){
+  let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code="";
+  for(let i=0;i<length;i++) code+=chars.charAt(Math.floor(Math.random()*chars.length));
+  return code;
 }
 
-// Save user
-function saveUser(){ localStorage.setItem('paperHouseUser', JSON.stringify(user)); }
-
-// Dashboard
-function updateDashboard(){
-    const dash = document.getElementById('dashboard');
-    const now = Date.now();
-    const remaining = Math.max(0, Math.ceil((SESSION_COOLDOWN*1000 - (now - user.lastSession))/1000));
-    dash.innerHTML = `
-╔════════════════════╗<br>
-║     PAPER HOUSE INC. ║<br>
-╚════════════════════╝<br>
-User: ${user.username}<br>
-Code: ${user.code}<br>
-💰 Balance: ₱${user.balance.toFixed(3)}<br>
-🎯 Ads Watched: ${user.adsWatched}<br>
-🧾 Total Affiliate Bonus: ₱${user.totalAffiliateBonus.toFixed(3)}<br>
-Cooldown: ${remaining>0?remaining+"s":"Ready"}<br>
-`;
-    updateLeaderboard();
-    renderAdminRequests();
+// ===== Firebase Save User =====
+function saveUserGlobal(user){
+  if(!user||!user.tgId) return;
+  db.ref("users/"+user.tgId).set(user);
 }
 
-// Watch all ads
-function watchAllAds(){
-    const now = Date.now();
-    if(now - user.lastSession < SESSION_COOLDOWN*1000){
-        alert(`⏳ Cooldown active. Wait ${Math.ceil((SESSION_COOLDOWN*1000-(now-user.lastSession))/1000)}s`);
-        return;
-    }
-
-    Promise.all([
-        show_10276123(),
-        show_10276123('pop'),
-        show_10276123({ type:'inApp', inAppSettings:{ frequency:2, capping:0.1, interval:30, timeout:5, everyPage:false } })
-    ]).then(()=>{
-        user.balance += SESSION_REWARD;
-        user.adsWatched += 3;
-        user.lastSession = Date.now();
-
-        // Referral bonus
-        if(user.referrer){
-            let allUsers = JSON.parse(localStorage.getItem('allPaperUsers')) || {};
-            if(allUsers[user.referrer]){
-                allUsers[user.referrer].balance += SESSION_REWARD*0.10;
-                allUsers[user.referrer].totalAffiliateBonus += SESSION_REWARD*0.10;
-            }
-            localStorage.setItem('allPaperUsers', JSON.stringify(allUsers));
-        }
-
-        saveUser();
-        alert(`✅ Session completed! +₱${SESSION_REWARD}`);
-        updateDashboard();
-    }).catch(()=>alert("Ad session failed."));
+// ===== Load Single User =====
+function loadUser(tgId,callback){
+  db.ref("users/"+tgId).once("value").then(snapshot=>{
+    callback(snapshot.exists()?snapshot.val():null);
+  });
 }
 
-// Withdraw request
-function withdraw(){
-    if(user.balance < MIN_WITHDRAW){
-        alert(`Minimum withdrawal is ₱${MIN_WITHDRAW}`);
-        return;
-    }
-    let amount = user.balance;
-    user.balance = 0;
-    user.lastSession = 0;
-    user.withdrawHistory.push({ amount, status:"Pending" });
-
-    // Save global withdrawal requests
-    let allRequests = JSON.parse(localStorage.getItem('allWithdrawRequests')) || [];
-    allRequests.push({ username:user.username, amount, status:"Pending" });
-    localStorage.setItem('allWithdrawRequests', JSON.stringify(allRequests));
-
-    saveUser();
-    alert(`💸 Withdrawal requested! Amount: ₱${amount.toFixed(3)} (Admin approval required)`);
-    updateDashboard();
+// ===== Create User if Not Exists =====
+function createUserIfNotExists(){
+  loadUser(tgId,user=>{
+    if(!user){
+      currentUser={
+        tgId:tgId,
+        username: tgUser.username||"User",
+        balance:0,
+        totalEarned:0,
+        referralCode:generateCode(),
+        referredBy: tgStartParam || "",
+        referralBonus:0,
+        lastActive:Date.now()
+      };
+      saveUserGlobal(currentUser);
+    } else currentUser=user;
+    updateUI();
+  });
 }
 
-// Leaderboard
-function updateLeaderboard(){
-    const lb = document.getElementById('leaderboard');
-    let allUsers = JSON.parse(localStorage.getItem('allPaperUsers')) || {};
-    allUsers[user.code] = user; // Save current user
-    localStorage.setItem('allPaperUsers', JSON.stringify(allUsers));
-
-    if(lb){
-        let topUsers = Object.values(allUsers).sort((a,b)=>b.balance-a.balance).slice(0,10);
-        let html = "";
-        topUsers.forEach((u,i)=>html+=`${i+1}. ${u.username} - ₱${u.balance.toFixed(3)}<br>`);
-        lb.innerHTML = html;
-    }
+// ===== Global Leaderboard =====
+function loadLeaderboard(){
+  db.ref("users").orderByChild("totalEarned").limitToLast(10).on("value",snap=>{
+    let users=[];
+    snap.forEach(s=>users.push(s.val()));
+    users.reverse();
+    let html="";
+    users.forEach((u,i)=>html+=`${i+1}. ${u.username} — ₱${(u.totalEarned||0).toFixed(2)}<br>`);
+    document.getElementById("leaderboard").innerHTML=html;
+  });
 }
 
-// Admin Panel
-function showAdminPanel(){
-    let pass = prompt("Enter admin password:");
-    if(pass !== ADMIN_PASSWORD){
-        alert("❌ Wrong password!");
-        return;
-    }
-    document.getElementById('admin-panel').style.display = "block";
-    renderAdminRequests();
-}
+// ===== Ad Reward System =====
+let adCooldown=false;
+document.getElementById("watchAdsBtn").addEventListener("click",()=>{
+  if(adCooldown){ alert("Wait 30 seconds before next ad!"); return; }
+  rewardAds(0.03);
+  adCooldown=true;
+  setTimeout(()=>adCooldown=false,30000);
+});
 
-function renderAdminRequests(){
-    let requestsDiv = document.getElementById('withdraw-requests');
-    let allRequests = JSON.parse(localStorage.getItem('allWithdrawRequests')) || [];
-    if(allRequests.length===0){
-        requestsDiv.innerHTML = "No withdrawal requests yet.";
-        return;
-    }
+// Reward user and give referral bonus
+function rewardAds(amount){
+  if(!currentUser) return;
+  currentUser.balance+=amount;
+  currentUser.totalEarned+=amount;
+  saveUserGlobal(currentUser);
 
-    let html = "";
-    allRequests.forEach((req,index)=>{
-        if(req.status==="Pending"){
-            html+=`${index+1}. ${req.username} - ₱${req.amount.toFixed(3)} 
-            <button onclick="approveRequest(${index})">✅ Approve</button>
-            <button onclick="rejectRequest(${index})">❌ Reject</button><br>`;
-        }else{
-            html+=`${index+1}. ${req.username} - ₱${req.amount.toFixed(3)} - ${req.status}<br>`;
-        }
+  // Referral bonus 10%
+  if(currentUser.referredBy){
+    db.ref("users").orderByChild("referralCode").equalTo(currentUser.referredBy).once("value").then(snap=>{
+      snap.forEach(ref=>{
+        const refUser=ref.val();
+        refUser.balance+=(amount*0.1);
+        refUser.referralBonus+=(amount*0.1);
+        saveUserGlobal(refUser);
+        showNotification(`Referral bonus ₱${(amount*0.1).toFixed(2)} to ${refUser.username}`);
+      });
     });
-    requestsDiv.innerHTML = html;
+  }
+
+  document.getElementById("rewardInfo").innerText=`You earned ₱${amount.toFixed(2)}!`;
+  showNotification(`${currentUser.username} earned ₱${amount.toFixed(2)}`);
 }
 
-function approveRequest(index){
-    let allRequests = JSON.parse(localStorage.getItem('allWithdrawRequests'));
-    allRequests[index].status = "Approved";
-    localStorage.setItem('allWithdrawRequests', JSON.stringify(allRequests));
-
-    // Trigger notification for all users
-    showNotification(`${allRequests[index].username} withdrawal approved: ₱${allRequests[index].amount.toFixed(3)}`);
-
-    alert("✅ Withdrawal approved!");
-    renderAdminRequests();
+// ===== Live Notifications =====
+function showNotification(msg){
+  const notif=document.getElementById("notification");
+  notif.innerText=msg;
+  notif.style.right="10px";
+  setTimeout(()=>{notif.style.right="-300px";},4000);
 }
 
-function rejectRequest(index){
-    let allRequests = JSON.parse(localStorage.getItem('allWithdrawRequests'));
-    allRequests[index].status = "Rejected";
-    localStorage.setItem('allWithdrawRequests', JSON.stringify(allRequests));
-    alert("❌ Withdrawal rejected!");
-    renderAdminRequests();
+// ===== Admin Hidden Panel =====
+function showAdminPanel(){
+  const pass=prompt("Enter Admin Password");
+  if(pass!=="Propetas6") return;
+  const panel=document.createElement("div");
+  panel.style.position="fixed"; panel.style.bottom="10px"; panel.style.left="10px";
+  panel.style.background="#222"; panel.style.color="#fff"; panel.style.padding="10px"; panel.style.zIndex=9999;
+  panel.innerHTML=`<h3>Admin Panel</h3>
+  <button onclick="approveWithdrawals()">Approve Withdrawals</button>`;
+  document.body.appendChild(panel);
 }
 
-// Notification
-function showNotification(message){
-    const container = document.getElementById('notification-container');
-    const div = document.createElement('div');
-    div.className = "notification";
-    div.innerText = message;
-    container.appendChild(div);
-
-    div.style.position = "fixed";
-    div.style.top = "20px";
-    div.style.right = "-300px";
-    div.style.background = "#ffcc00";
-    div.style.color = "#000";
-    div.style.padding = "10px 20px";
-    div.style.borderRadius = "5px";
-    div.style.zIndex = "9999";
-    div.style.whiteSpace = "nowrap";
-
-    let pos = 0;
-    const interval = setInterval(()=>{
-        pos += 10;
-        div.style.right = pos + "px";
-        if(pos > window.innerWidth + 300){
-            clearInterval(interval);
-            container.removeChild(div);
-        }
-    },20);
+function approveWithdrawals(){
+  db.ref("withdrawals").orderByChild("status").equalTo("pending").once("value").then(snap=>{
+    snap.forEach(w=>{
+      const data=w.val();
+      data.status="approved";
+      db.ref("withdrawals/"+w.key).set(data);
+      showNotification(`Withdrawal ₱${data.amount} approved for ${data.username}`);
+    });
+  });
 }
 
-// Init
-saveUser();
-updateDashboard();
-setInterval(updateDashboard,1000);
+// ===== Update UI =====
+function updateUI(){
+  loadLeaderboard();
+  showAdminPanel();
+}
+
+// ===== Init =====
+createUserIfNotExists();
