@@ -1,19 +1,16 @@
-// User data
 let uid = localStorage.getItem("uid") || Math.floor(100000+Math.random()*900000);
 localStorage.setItem("uid",uid);
 let coins = Number(localStorage.getItem("coins")||0);
 let profile = JSON.parse(localStorage.getItem("profile")||"{}");
 
-// Affiliates
+// Affiliate system
 let allAffiliates = JSON.parse(localStorage.getItem("allAffiliates")||"{}");
 if(!allAffiliates[uid]) allAffiliates[uid]=[];
 localStorage.setItem("allAffiliates",JSON.stringify(allAffiliates));
 
-// Coins display
 function updateCoinsDisplay(){document.querySelectorAll("#coins,#usercoins").forEach(e=>e.innerText=coins);}
 updateCoinsDisplay();
 
-// Affiliate bonus
 function giveAffiliateBonus(amount){
   const params=new URLSearchParams(window.location.search);
   const invitedCode=params.get("ref");
@@ -31,22 +28,7 @@ function giveAffiliateBonus(amount){
   }
 }
 
-// Save profile
-function saveProfile(name,bio,sex,rel){
-  profile.name=name; profile.bio=bio; profile.sex=sex; profile.rel=rel;
-  localStorage.setItem("profile",JSON.stringify(profile));
-}
-
-// Claim reward
-function claimReward(){
-  let reward=Math.floor(Math.random()*500)+500;
-  coins+=reward;
-  localStorage.setItem("coins",coins);
-  updateCoinsDisplay();
-  giveAffiliateBonus(reward);
-}
-
-// Guardian event
+// Guardian Event
 let gIndex = Number(localStorage.getItem("gIndex")||0);
 let hp = Number(localStorage.getItem("gHP")||0);
 let board = JSON.parse(localStorage.getItem("gBoard")||"{}");
@@ -71,6 +53,8 @@ function healGuardian(){
 
 function updateGuardianUI(){
   document.getElementById("hp")?document.getElementById("hp").value=hp:null;
+  if(document.getElementById("hpText")) document.getElementById("hpText").innerText=`HP: ${hp} / ${guardians[gIndex].maxHP}`;
+  updateLeaderboard?updateLeaderboard():null;
 }
 
 function saveGuardianState(){
