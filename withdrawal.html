@@ -10,32 +10,20 @@
 
 <h1>💸 WITHDRAWAL HISTORY 💸</h1>
 <div id="withdrawals"></div>
-<button onclick="goBack()">⬅️ Back to Dashboard</button>
+<button onclick="window.location.href='index.html'">⬅️ Back to Dashboard</button>
 
 <script>
-function displayWithdrawals() {
-    const div = document.getElementById('withdrawals');
-    let user = JSON.parse(localStorage.getItem('adgramUser')) || {withdrawHistory: []};
-    let history = user.withdrawHistory || [];
-    
-    if(history.length === 0) {
-        div.innerHTML = "No withdrawals yet.";
-        return;
-    }
-    
+let user = JSON.parse(localStorage.getItem('adgramUser')) || {withdrawHistory: []};
+let div = document.getElementById('withdrawals');
+if(!user.withdrawHistory || user.withdrawHistory.length===0){
+    div.innerHTML = "No withdrawals yet.";
+}else{
     let html = "";
-    history.forEach((w,i) => {
+    user.withdrawHistory.forEach((w,i)=>{
         html += `${i+1}. Amount: ₱${w.amount.toFixed(3)} - Status: ${w.status}<br>`;
     });
     div.innerHTML = html;
 }
-
-function goBack() {
-    window.location.href = "index.html";
-}
-
-// Initialize
-displayWithdrawals();
 </script>
 
 </body>
