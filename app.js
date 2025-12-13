@@ -3,6 +3,7 @@ const MIN_WITHDRAW = 1;
 const SESSION_REWARD = 0.03;
 const SESSION_COOLDOWN = 30;
 const ADMIN_PASSWORD = "Propetas6";
+const MAX_APPROVED_DISPLAY = 10;
 
 // User initialization
 let user = JSON.parse(localStorage.getItem('paperHouseUser'));
@@ -24,9 +25,7 @@ if(!user){
 }
 
 // Save user
-function saveUser(){
-    localStorage.setItem('paperHouseUser', JSON.stringify(user));
-}
+function saveUser(){ localStorage.setItem('paperHouseUser', JSON.stringify(user)); }
 
 // Dashboard
 function updateDashboard(){
@@ -45,6 +44,7 @@ Code: ${user.code}<br>
 Cooldown: ${remaining>0?remaining+"s":"Ready"}<br>
 `;
     updateLeaderboard();
+    renderAdminRequests();
 }
 
 // Watch all ads
@@ -104,7 +104,6 @@ function withdraw(){
 // Leaderboard
 function updateLeaderboard(){
     const lb = document.getElementById('leaderboard');
-    if(!lb) return;
     let allUsers = JSON.parse(localStorage.getItem('allPaperUsers')) || {};
     allUsers[user.code] = user; // Save current user
     localStorage.setItem('allPaperUsers', JSON.stringify(allUsers));
@@ -153,6 +152,10 @@ function approveRequest(index){
     let allRequests = JSON.parse(localStorage.getItem('allWithdrawRequests'));
     allRequests[index].status = "Approved";
     localStorage.setItem('allWithdrawRequests', JSON.stringify(allRequests));
+
+    // Trigger notification for all users
+    showNotification(`${allRequests[index].username} withdrawal approved: ₱${allRequests[index].amount.toFixed(3)}`);
+
     alert("✅ Withdrawal approved!");
     renderAdminRequests();
 }
@@ -163,6 +166,35 @@ function rejectRequest(index){
     localStorage.setItem('allWithdrawRequests', JSON.stringify(allRequests));
     alert("❌ Withdrawal rejected!");
     renderAdminRequests();
+}
+
+// Notification
+function showNotification(message){
+    const container = document.getElementById('notification-container');
+    const div = document.createElement('div');
+    div.className = "notification";
+    div.innerText = message;
+    container.appendChild(div);
+
+    div.style.position = "fixed";
+    div.style.top = "20px";
+    div.style.right = "-300px";
+    div.style.background = "#ffcc00";
+    div.style.color = "#000";
+    div.style.padding = "10px 20px";
+    div.style.borderRadius = "5px";
+    div.style.zIndex = "9999";
+    div.style.whiteSpace = "nowrap";
+
+    let pos = 0;
+    const interval = setInterval(()=>{
+        pos += 10;
+        div.style.right = pos + "px";
+        if(pos > window.innerWidth + 300){
+            clearInterval(interval);
+            container.removeChild(div);
+        }
+    },20);
 }
 
 // Init
