@@ -12,6 +12,9 @@
 <a class="home" href="index.html">🏠 Home</a>
 <h2 class="rainbow">User Profile</h2>
 
+<!-- All Users Display -->
+<div id="allUsers" style="color:white; margin-bottom:10px;"></div>
+
 <div class="profile-card">
   <label>Name:</label>
   <input type="text" id="username" placeholder="Enter your name">
@@ -35,7 +38,6 @@
   <p>Unique ID / Affiliate Code: <span id="userid"></span></p>
   <p>Coins: <span id="usercoins">0</span></p>
 
-  <button class="magic-btn blue" id="saveProfile">💾 Save Profile</button>
   <button class="magic-btn blue" id="claimReward">🎁 Claim Reward</button>
 </div>
 
@@ -53,24 +55,34 @@ let uid = localStorage.getItem("uid") || Math.floor(100000 + Math.random() * 900
 localStorage.setItem("uid", uid);
 document.getElementById("userid").innerText = uid;
 
-let coins = Number(localStorage.getItem("coins") || 0);
-document.getElementById("usercoins").innerText = coins;
+// Load all users IDs
+function showAllUsers(){
+  let allKeys = Object.keys(localStorage).filter(k=>!k.startsWith('coins_') && k!=='profile' && k!=='uid' && k!=='allAffiliates');
+  document.getElementById("allUsers").innerText = "All Users IDs: "+[uid, ...allKeys].join(", ");
+}
+showAllUsers();
 
+// Load profile
 let profile = JSON.parse(localStorage.getItem("profile") || "{}");
 document.getElementById("username").value = profile.name || "";
 document.getElementById("userbio").value = profile.bio || "";
 document.getElementById("usersex").value = profile.sex || "Unknown";
 document.getElementById("userrel").value = profile.rel || "Single";
 
-// Save profile
-document.getElementById("saveProfile").onclick = function(){
-  profile.name = document.getElementById("username").value;
-  profile.bio = document.getElementById("userbio").value;
-  profile.sex = document.getElementById("usersex").value;
-  profile.rel = document.getElementById("userrel").value;
-  localStorage.setItem("profile", JSON.stringify(profile));
-  alert("✅ Profile saved successfully!");
-}
+// Auto save on input change
+['username','userbio','usersex','userrel'].forEach(id=>{
+  document.getElementById(id).addEventListener("input",()=>{
+    profile.name = document.getElementById("username").value;
+    profile.bio = document.getElementById("userbio").value;
+    profile.sex = document.getElementById("usersex").value;
+    profile.rel = document.getElementById("userrel").value;
+    localStorage.setItem("profile", JSON.stringify(profile));
+  });
+});
+
+// Coins display
+let coins = Number(localStorage.getItem("coins") || 0);
+document.getElementById("usercoins").innerText = coins;
 
 // Claim reward
 document.getElementById("claimReward").onclick = function(){
@@ -78,23 +90,22 @@ document.getElementById("claimReward").onclick = function(){
   coins += reward;
   localStorage.setItem("coins", coins);
   document.getElementById("usercoins").innerText = coins;
-  alert(`🎉 You claimed ${reward} coins!`);
   giveAffiliateBonus(reward);
+  alert(`🎉 You claimed ${reward} coins!`);
 }
 
-// Affiliate tracking
+// Affiliates table
 let allAffiliates = JSON.parse(localStorage.getItem("allAffiliates") || "{}");
 if(!allAffiliates[uid]) allAffiliates[uid]=[];
 localStorage.setItem("allAffiliates", JSON.stringify(allAffiliates));
 
-// Update affiliate table
 function updateAffiliateTable(){
   let tbody = document.getElementById("affiliateTable");
   tbody.innerHTML="";
   let userAffiliates = allAffiliates[uid] || [];
   userAffiliates.forEach(a=>{
-    let tr=document.createElement("tr");
-    tr.innerHTML=`<td>${a.uid}</td><td>${a.reward||0}</td>`;
+    let tr = document.createElement("tr");
+    tr.innerHTML = `<td>${a.uid}</td><td>${a.reward || 0}</td>`;
     tbody.appendChild(tr);
   });
 }
