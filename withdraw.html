@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdraw Earnings</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Withdraw Your Earnings</h1>
+    <p>Available earnings: <span id="earnings">0</span> PHP</p>
+    <input type="number" id="withdrawAmount" placeholder="Enter amount 1-99 PHP">
+    <input type="text" id="gcashNumber" placeholder="Enter your GCash number">
+    <button onclick="requestWithdraw(document.getElementById('withdrawAmount').value, document.getElementById('gcashNumber').value)">Withdraw</button>
+    <button onclick="location.href='index.html'">Return Home</button>
+</div>
+<footer id="footer"></footer>
+<script src="app.js"></script>
+<script>
+let earnings = parseFloat(localStorage.getItem('earnings')) || 0;
+document.getElementById('earnings').innerText = earnings.toFixed(3);
+updateFooter();
+</script>
+</body>
+</html>
