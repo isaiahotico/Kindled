@@ -5,30 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PAPER HOUSE INC.</title>
 <link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
-<script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
 </head>
 <body>
 
-<h1>🌟 PAPER HOUSE INC. 🌟</h1>
+<h1>PAPER HOUSE INC. - Global Leaderboard</h1>
+<div id="leaderboard"></div>
 
-<div id="dashboard"></div>
+<button id="watchAdsBtn">Watch Ads</button>
+<p id="rewardInfo"></p>
 
-<div class="buttons">
-    <button onclick="watchAllAds()">🎬 Watch All Ads (1 Session) +₱0.03</button>
-    <button onclick="withdraw()">💸 Withdraw</button>
-    <button onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
-    <button onclick="window.location.href='withdraw.html'">💰 Withdrawal History</button>
-    <button onclick="showAdminPanel()">🔒 Admin Panel</button>
-</div>
+<!-- Notification -->
+<div id="notification"></div>
 
-<div id="admin-panel" style="display:none; margin-top:20px; border:2px solid #ffcc00; padding:10px;">
-    <h2>⚡ Admin Withdrawal Panel ⚡</h2>
-    <div id="withdraw-requests"></div>
-</div>
+<!-- Firebase v8 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-<!-- Notification container -->
-<div id="notification-container" style="position: fixed; top: 20px; right: 0; z-index: 9999;"></div>
+<!-- Telegram WebApp SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDMGU5X7BBp-C6tIl34Uuu5N9MXAVFTn7c",
+  authDomain: "paper-house-inc.firebaseapp.com",
+  databaseURL: "https://paper-house-inc-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "paper-house-inc",
+  storageBucket: "paper-house-inc.appspot.com",
+  messagingSenderId: "658389836376",
+  appId: "1:658389836376:web:2ab1e2743c593f4ca8e02d"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+</script>
 
 <script src="app.js"></script>
 </body>
