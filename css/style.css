@@ -1,0 +1,11 @@
+body { margin:0;font-family:'Roboto','Noto Sans Devanagari',sans-serif;background:#1b1b1b;color:#fff; }
+header { background:#222;padding:10px;text-align:center; }
+nav ul { display:flex; justify-content:center; list-style:none; padding:0; }
+nav li { margin:0 10px; }
+nav a { color:#fff;text-decoration:none; }
+button { background:linear-gradient(90deg,#ff6a00,#ee0979); border:none; padding:10px 20px; color:#fff; border-radius:8px; cursor:pointer; transition:all 0.2s; }
+button:hover { transform:scale(1.05); box-shadow:0 0 10px #ff6a00; }
+table { width:100%; border-collapse:collapse; }
+th,td { padding:10px; border:1px solid #333; text-align:center; }
+.popup { display:none; background:#333; padding:10px; border-radius:8px; }
+#notifications { position:fixed; top:10px; right:10px; width:300px; }
