@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdrawals</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js"></script>
+</head>
+<body class="charcoal">
+
+<a class="home" href="index.html">🏠 Home</a>
+<h2 class="rainbow">Withdraw Coins</h2>
+
+<p>Available Coins: <span id="usercoins">0</span></p>
+<p>Min: 500 coins | Max: 10000 coins</p>
+
+<form id="withdrawForm">
+  <label>Amount to Withdraw:</label>
+  <input type="number" id="amount" min="500" max="10000" required>
+  
+  <label>Choose Method:</label>
+  <select id="method">
+    <option value="gcash">GCash (₱0.005 per coin)</option>
+    <option value="usdt">FaucetPay USDT (0.000085 per coin)</option>
+    <option value="trx">FaucetPay TRX (0.003 per coin)</option>
+    <option value="ltc">FaucetPay LTC (0.000001 per coin)</option>
+  </select>
+  
+  <label>Account Info:</label>
+  <input type="text" id="account" placeholder="Enter GCash number or FaucetPay ID" required>
+  
+  <button type="submit" class="magic-btn blue">Withdraw</button>
+</form>
+
+<script>
+let coins = Number(localStorage.getItem("coins")||0);
+document.getElementById("usercoins").innerText = coins;
+
+document.getElementById("withdrawForm").onsubmit = function(e){
+  e.preventDefault();
+  let amount = Number(document.getElementById("amount").value);
+  if(amount < 500 || amount > 10000){
+    alert("Invalid amount!");
+    return;
+  }
+  if(amount > coins){
+    alert("Not enough coins!");
+    return;
+  }
+  let method = document.getElementById("method").value;
+  let account = document.getElementById("account").value;
+  
+  // Deduct coins
+  coins -= amount;
+  localStorage.setItem("coins", coins);
+  document.getElementById("usercoins").innerText = coins;
+  
+  // Save withdrawal info
+  let withdrawals = JSON.parse(localStorage.getItem("withdrawals")||"[]");
+  withdrawals.push({amount, method, account, status:"Processing", time:new Date().toLocaleString()});
+  localStorage.setItem("withdrawals", JSON.stringify(withdrawals));
+  
+  alert(`✅ Withdrawal request submitted: ${amount} coins via ${method}`);
+  document.getElementById("withdrawForm").reset();
+}
+</script>
+
+</body>
+</html>
