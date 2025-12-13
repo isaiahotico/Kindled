@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Owner Panel</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Owner Auto-Approval Panel</h1>
+    <input type="password" id="ownerPassword" placeholder="Enter Owner Password">
+    <button onclick="ownerApprove(document.getElementById('ownerPassword').value)">Approve All Withdrawals</button>
+    <button onclick="location.href='index.html'">Return Home</button>
+
+    <h2>Pending Withdrawals</h2>
+    <ul id="pendingList"></ul>
+</div>
+<script src="app.js"></script>
+<script>
+    function loadPending() {
+        let pending = JSON.parse(localStorage.getItem('withdrawals')) || [];
+        const list = document.getElementById('pendingList');
+        list.innerHTML = '';
+        pending.forEach((w,i) => {
+            list.innerHTML += `<li>Request ${i+1}: ${w.amount} PHP - ${w.approved ? 'Approved' : 'Pending'}</li>`;
+        });
+    }
+    loadPending();
+</script>
+</body>
+</html>
