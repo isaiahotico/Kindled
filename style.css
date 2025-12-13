@@ -1,13 +1,11 @@
-body{background:#1e1e1e;color:#fff;font-family:Arial;text-align:center;margin:0;padding:0}
-.charcoal{background:#1e1e1e;}
-.rainbow{font-size:26px;background:linear-gradient(90deg,red,orange,yellow,green,cyan,blue,violet);-webkit-background-clip:text;color:transparent;animation:shine 3s linear infinite;}
-@keyframes shine{to{background-position:200%}}
-.magic-btn{padding:15px 30px;border-radius:30px;border:none;margin:12px;font-size:16px;cursor:pointer;transition:0.2s;}
-.magic-btn:active{transform:scale(1.15);}
-.blue{background:#2a7fff;color:white;}
-.coins, .coins-display{font-size:18px;margin:10px;}
-.profile-card{background:#222;padding:15px;border-radius:15px;margin:15px;}
-.small-btn{padding:8px 14px;margin-top:10px;}
-.home{position:fixed;top:10px;left:10px;}
-progress{width:80%;height:20px;margin:10px 0;}
-.center{text-align:center;margin-top:20px;}
+body.charcoal{background-color:#333;color:#fff;font-family:sans-serif;}
+.rainbow{background-image:linear-gradient(45deg,red,orange,yellow,green,blue,indigo,violet);-webkit-background-clip:text;color:transparent;font-size:2em;font-weight:bold;}
+.magic-btn{padding:10px 20px;margin:10px;border:none;border-radius:12px;font-size:16px;cursor:pointer;transition:all 0.3s;}
+.magic-btn:hover{transform:scale(1.2);box-shadow:0 0 10px #fff;}
+.blue{background-color:#0088ff;color:#fff;}
+.green{background-color:#00cc88;color:#fff;}
+.profile-card{background:#222;padding:15px;margin:15px;border-radius:12px;}
+.modal{display:none;position:fixed;z-index:100;padding-top:60px;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:rgba(0,0,0,0.7);}
+.modal-content{background-color:#222;margin:auto;padding:20px;border-radius:10px;width:90%;max-width:500px;color:#fff;}
+.close{color:#ff5555;float:right;font-size:28px;font-weight:bold;cursor:pointer;}
+.buttons-container{display:flex;flex-wrap:wrap;gap:10px;}
