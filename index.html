@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guardian Coins App</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js"></script>
+</head>
+<body class="charcoal">
+
+<h1 class="rainbow">🛡️ Guardian Coins App 🛡️</h1>
+<p>Coins: <span id="coins">0</span></p>
+
+<div class="buttons-container">
+  <button class="magic-btn" onclick="window.location.href='profile.html'">👤 User Profile</button>
+  <button class="magic-btn" onclick="window.location.href='ads.html'">📺 ADS Corner</button>
+  <button class="magic-btn" onclick="window.location.href='withdrawals.html'">💰 Withdrawals</button>
+</div>
+
+<script>
+// Change background on click
+document.body.addEventListener("click", ()=>{
+  document.body.style.backgroundColor = ['#333','#00ff88','#ff88cc'][Math.floor(Math.random()*3)];
+});
+</script>
+</body>
+</html>
