@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Withdraw History - AdGram</title>
+<title>Withdraw History - PAPER HOUSE INC.</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,14 +13,14 @@
 <button onclick="window.location.href='index.html'">⬅️ Back to Dashboard</button>
 
 <script>
-let user = JSON.parse(localStorage.getItem('adgramUser')) || {withdrawHistory: []};
+let user = JSON.parse(localStorage.getItem('paperHouseUser')) || {withdrawHistory: []};
 let div = document.getElementById('withdrawals');
 if(!user.withdrawHistory || user.withdrawHistory.length===0){
     div.innerHTML = "No withdrawals yet.";
 }else{
     let html = "";
     user.withdrawHistory.forEach((w,i)=>{
-        html += `${i+1}. Amount: ₱${w.amount.toFixed(3)} - Status: ${w.status}<br>`;
+        html+=`${i+1}. Amount: ₱${w.amount.toFixed(3)} - Status: ${w.status}<br>`;
     });
     div.innerHTML = html;
 }
