@@ -1,11 +1,32 @@
-body.charcoal{background:#333;color:white;font-family:sans-serif;}
-.rainbow{background:linear-gradient(90deg,red,orange,yellow,green,blue,indigo,violet);-webkit-background-clip:text;color:transparent;font-size:2em;font-weight:bold;}
-.magic-btn{padding:10px 20px;margin:10px;border:none;border-radius:12px;font-size:16px;cursor:pointer;transition:all 0.3s;}
-.magic-btn:hover{transform:scale(1.2);box-shadow:0 0 10px #fff;}
-.blue{background-color:#0088ff;color:#fff;}
-.green{background-color:#00cc88;color:#fff;}
-.profile-card{background:#222;padding:15px;margin:15px;border-radius:12px;}
-.modal{display:none;position:fixed;z-index:100;padding-top:60px;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:rgba(0,0,0,0.7);}
-.modal-content{background-color:#222;margin:auto;padding:20px;border-radius:10px;width:90%;max-width:500px;color:#fff;}
-.close{color:#ff5555;float:right;font-size:28px;font-weight:bold;cursor:pointer;}
-.buttons-container{display:flex;flex-wrap:wrap;gap:10px;}
+body {
+    background-color: #1e1e1e;
+    color: #fff;
+    font-family: monospace;
+    text-align: center;
+    padding: 20px;
+}
+
+h1, h2 {
+    color: #ffcc00;
+}
+
+button {
+    background: linear-gradient(90deg,#ff0066,#00ffff);
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+#dashboard, #leaderboard {
+    margin-top: 20px;
+    text-align: left;
+    display: inline-block;
+}
