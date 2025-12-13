@@ -8,9 +8,7 @@
 <script src="https://libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
 <script src="guardians.js"></script>
 <script src="app.js"></script>
-<style>
-#leaderboardBody td{color:white;}
-</style>
+<style>#leaderboardBody td{color:white;}</style>
 </head>
 <body class="charcoal">
 
@@ -42,16 +40,16 @@
 // Heal guardian with ads
 document.getElementById("healBtn").onclick = function(){ healGuardian(); };
 
-// Modal leaderboard
+// Leaderboard modal
 const modal = document.getElementById("leaderboardModal");
 document.getElementById("showLeaderboardBtn").onclick = function(){ updateLeaderboard(); modal.style.display="block"; };
 document.getElementById("closeModal").onclick = function(){ modal.style.display="none"; };
 window.onclick = function(e){ if(e.target == modal) modal.style.display="none"; };
 
-// Update HP bar text
+// Update HP text
 function updateHPText(){ document.getElementById("hpText").innerText = `HP: ${hp} / ${guardians[gIndex].maxHP}`; }
 
-// Leaderboard table
+// Leaderboard
 function updateLeaderboard(){
   let tbody=document.getElementById("leaderboardBody"); tbody.innerHTML="";
   let sorted = Object.entries(board).sort((a,b)=>b[1]-a[1]);
