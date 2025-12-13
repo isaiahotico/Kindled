@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Profile</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js"></script>
+</head>
+<body class="charcoal">
+
+<a class="home" href="index.html">🏠 Home</a>
+<h2 class="rainbow">User Profile</h2>
+
+<div class="profile-card">
+  <label for="username">Name:</label>
+  <input type="text" id="username" placeholder="Enter your name">
+
+  <label for="userbio">Bio:</label>
+  <textarea id="userbio" placeholder="Enter your bio"></textarea>
+
+  <label for="usersex">Sex:</label>
+  <select id="usersex">
+    <option value="Unknown">Unknown</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <label for="userrel">Relationship Status:</label>
+  <select id="userrel">
+    <option value="Single">Single</option>
+    <option value="In a Relationship">In a Relationship</option>
+    <option value="Married">Married</option>
+    <option value="Complicated">Complicated</option>
+  </select>
+
+  <p>Unique ID / Affiliate Code: <span id="userid"></span></p>
+  <p>Coins: <span id="usercoins">0</span></p>
+
+  <button class="magic-btn blue" id="saveProfile">💾 Save Profile</button>
+  <button class="magic-btn blue" id="claimReward">🎁 Claim Reward</button>
+</div>
+
+<h3>Affiliate Stats</h3>
+<table class="profile-card" border="1">
+  <thead>
+    <tr>
+      <th>Invited User ID</th>
+      <th>Reward Earned</th>
+    </tr>
+  </thead>
+  <tbody id="affiliateTable"></tbody>
+</table>
+
+<script>
+  // Initialize UID
+  let uid = localStorage.getItem("uid") || Math.floor(100000 + Math.random() * 900000);
+  localStorage.setItem("uid", uid);
+  document.getElementById("userid").innerText = uid;
+
+  // Load coins
+  let coins = Number(localStorage.getItem("coins") || 0);
+  document.getElementById("usercoins").innerText = coins;
+
+  // Load profile
+  let profile = JSON.parse(localStorage.getItem("profile") || "{}");
+  document.getElementById("username").value = profile.name || "";
+  document.getElementById("userbio").value = profile.bio || "";
+  document.getElementById("usersex").value = profile.sex || "Unknown";
+  document.getElementById("userrel").value = profile.rel || "Single";
+
+  // Save profile
+  document.getElementById("saveProfile").onclick = function(){
+    profile.name = document.getElementById("username").value;
+    profile.bio = document.getElementById("userbio").value;
+    profile.sex = document.getElementById("usersex").value;
+    profile.rel = document.getElementById("userrel").value;
+    localStorage.setItem("profile", JSON.stringify(profile));
+    alert("✅ Profile saved successfully!");
+  }
+
+  // Claim reward
+  document.getElementById("claimReward").onclick = function(){
+    let reward = Math.floor(Math.random() * 500) + 500;
+    coins += reward;
+    localStorage.setItem("coins", coins);
+    document.getElementById("usercoins").innerText = coins;
+    alert(`🎉 You claimed ${reward} coins!`);
+  }
+
+  // Affiliate tracking
+  let affiliates = JSON.parse(localStorage.getItem("affiliates") || "[]");
+
+  // Check if user was invited via code
+  const urlParams = new URLSearchParams(window.location.search);
+  const invitedCode = urlParams.get("ref"); // e.g., ?ref=123456
+  if(invitedCode && invitedCode != uid){
+    // Add this user to inviter's affiliates
+    let allAffiliates = JSON.parse(localStorage.getItem("allAffiliates") || "{}");
+    if(!allAffiliates[invitedCode]) allAffiliates[invitedCode] = [];
+    if(!allAffiliates[invitedCode].includes(uid)){
+      allAffiliates[invitedCode].push({uid: uid, reward: 0}); // reward to be added
+    }
+    localStorage.setItem("allAffiliates", JSON.stringify(allAffiliates));
+  }
+
+  // Display affiliate table for this user
+  function updateAffiliateTable(){
+    let tbody = document.getElementById("affiliateTable");
+    tbody.innerHTML = "";
+    let allAffiliates = JSON.parse(localStorage.getItem("allAffiliates") || "{}");
+    let userAffiliates = allAffiliates[uid] || [];
+    userAffiliates.forEach(a => {
+      let tr = document.createElement("tr");
+      let td1 = document.createElement("td"); td1.innerText = a.uid;
+      let td2 = document.createElement("td"); td2.innerText = a.reward || 0;
+      tr.appendChild(td1); tr.appendChild(td2);
+      tbody.appendChild(tr);
+    });
+  }
+  updateAffiliateTable();
+</script>
+</body>
+</html>
