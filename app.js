@@ -1,66 +1,97 @@
-let uid = localStorage.getItem("uid") || Math.floor(100000+Math.random()*900000);
-localStorage.setItem("uid",uid);
-let coins = Number(localStorage.getItem("coins")||0);
-let profile = JSON.parse(localStorage.getItem("profile")||"{}");
+const MIN_WITHDRAW = 1;
+const SESSION_REWARD = 0.005;
 
-// Affiliate system
-let allAffiliates = JSON.parse(localStorage.getItem("allAffiliates")||"{}");
-if(!allAffiliates[uid]) allAffiliates[uid]=[];
-localStorage.setItem("allAffiliates",JSON.stringify(allAffiliates));
+// Initialize user
+let user = JSON.parse(localStorage.getItem('adgramUser')) || {
+    username: prompt("Enter your username:", "User") || "User",
+    balance: 0,
+    adsWatched: 0,
+    referrer: null,
+    sessionWatched: false
+};
 
-function updateCoinsDisplay(){document.querySelectorAll("#coins,#usercoins").forEach(e=>e.innerText=coins);}
-updateCoinsDisplay();
+function saveUser() {
+    localStorage.setItem('adgramUser', JSON.stringify(user));
+}
 
-function giveAffiliateBonus(amount){
-  const params=new URLSearchParams(window.location.search);
-  const invitedCode=params.get("ref");
-  if(invitedCode&&invitedCode!=uid){
-    let inviterAffiliates=allAffiliates[invitedCode]||[];
-    let entry=inviterAffiliates.find(a=>a.uid==uid);
-    if(entry){
-      let bonus=Math.floor(amount*0.10);
-      entry.reward=(entry.reward||0)+bonus;
-      coins+=bonus;
-      localStorage.setItem("coins",coins);
-      updateCoinsDisplay();
-      localStorage.setItem("allAffiliates",JSON.stringify(allAffiliates));
+// Dashboard display
+function updateDashboard() {
+    const dash = document.getElementById('dashboard');
+    dash.innerHTML = `
+╔════════════════════╗<br>
+║     ADGRAM DASHBOARD ║<br>
+╚════════════════════╝<br>
+User: ${user.username}<br>
+💰 Balance: ₱${user.balance.toFixed(3)}<br>
+🎯 Ads Watched: ${user.adsWatched}<br>
+Session watched: ${user.sessionWatched ? '✅' : '❌'}<br>
+`;
+    updateLeaderboard();
+}
+
+// Watch all ads in one click
+function watchAllAds() {
+    if(user.sessionWatched) {
+        alert("You already watched this session's ads!");
+        return;
     }
-  }
+
+    // Play rewarded interstitial + popup + inApp (simulate all)
+    Promise.all([
+        show_10276123(),
+        show_10276123('pop'),
+        show_10276123({ type:'inApp', inAppSettings:{ frequency:2, capping:0.1, interval:30, timeout:5, everyPage:false } })
+    ]).then(() => {
+        // Only 1 reward per session
+        user.balance += SESSION_REWARD;
+        user.adsWatched += 3;
+        user.sessionWatched = true;
+
+        // Referral bonus
+        if(user.referrer){
+            let ref = JSON.parse(localStorage.getItem('adgramReferrals')) || {};
+            ref[user.referrer] = (ref[user.referrer] || 0) + SESSION_REWARD*0.10;
+            localStorage.setItem('adgramReferrals', JSON.stringify(ref));
+        }
+
+        saveUser();
+        alert(`✅ Session completed! +₱${SESSION_REWARD}`);
+        updateDashboard();
+    }).catch(e => alert("Ad session failed to load."));
 }
 
-// Guardian Event
-let gIndex = Number(localStorage.getItem("gIndex")||0);
-let hp = Number(localStorage.getItem("gHP")||0);
-let board = JSON.parse(localStorage.getItem("gBoard")||"{}");
-let lastAd = 0;
-
-function healGuardian(){
-  if(Date.now()-lastAd<3000){alert("⏳ Wait 3 seconds"); return;}
-  lastAd=Date.now();
-  if(typeof show_10276123!=="function"){alert("⚠️ Ads SDK not loaded"); return;}
-
-  show_10276123().then(()=>{
-    coins++; localStorage.setItem("coins",coins);
-    board[uid]=(board[uid]||0)+1; hp++;
-    giveAffiliateBonus(1); updateGuardianUI();
-    alert("✨ You healed and got 1 coin!");
-    show_10276123('pop').catch(()=>{});
-  });
-
-  show_10276123({type:'inApp',inAppSettings:{frequency:2,capping:0.1,interval:30,timeout:5,everyPage:false}});
-  saveGuardianState();
+// Withdraw
+function withdraw() {
+    if(user.balance < MIN_WITHDRAW){
+        alert(`Minimum withdrawal is ₱${MIN_WITHDRAW}`);
+        return;
+    }
+    let amount = user.balance;
+    user.balance = 0;
+    user.sessionWatched = false; // reset session for next
+    saveUser();
+    alert(`💸 Withdrawal requested! Amount: ₱${amount.toFixed(3)}\n(Admin approval simulated)`);
+    updateDashboard();
 }
 
-function updateGuardianUI(){
-  document.getElementById("hp")?document.getElementById("hp").value=hp:null;
-  if(document.getElementById("hpText")) document.getElementById("hpText").innerText=`HP: ${hp} / ${guardians[gIndex].maxHP}`;
-  updateLeaderboard?updateLeaderboard():null;
+// Leaderboard
+function updateLeaderboard() {
+    const lb = document.getElementById('leaderboard');
+    let allUsers = JSON.parse(localStorage.getItem('allUsers')) || {};
+    allUsers[user.username] = user.balance;
+    localStorage.setItem('allUsers', JSON.stringify(allUsers));
+
+    let topUsers = Object.entries(allUsers)
+        .sort((a,b) => b[1]-a[1])
+        .slice(0,10);
+
+    let html = "";
+    topUsers.forEach((u,i) => {
+        html += `${i+1}. ${u[0]} - ₱${u[1].toFixed(3)}<br>`;
+    });
+    lb.innerHTML = html;
 }
 
-function saveGuardianState(){
-  localStorage.setItem("gIndex",gIndex);
-  localStorage.setItem("gHP",hp);
-  localStorage.setItem("gBoard",JSON.stringify(board));
-}
-
-window.onload=updateCoinsDisplay;
+// Init
+saveUser();
+updateDashboard();
