@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADS Corner - Guardian Event</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
+<script src="guardians.js"></script>
+<script src="app.js"></script>
+<style>
+/* Modal styles */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 100;
+  padding-top: 60px;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.7);
+}
+.modal-content {
+  background-color: #222;
+  margin: auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  color: #fff;
+}
+.close {
+  color: #ff5555;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+</style>
+</head>
+<body class="charcoal">
+
+<a class="home" href="index.html">🏠 Home</a>
+<h2 class="rainbow">Guardian Event</h2>
+
+<div class="profile-card">
+  <h3 id="gname"></h3>
+  <p id="glore"></p>
+  <progress id="hp" max="50000" value="0" style="width:100%; height:30px;"></progress>
+  <p id="hpText"></p>
+
+  <button class="magic-btn blue" id="healBtn">💖 Heal your Lords!</button>
+  <button class="magic-btn green" id="showLeaderboardBtn">🏆 Show Leaderboard</button>
+</div>
+
+<!-- Modal Popup for Leaderboard -->
+<div id="leaderboardModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h3>Top Contributors</h3>
+    <table border="1" style="width:100%; text-align:left;">
+      <thead>
+        <tr><th>Position</th><th>User ID</th><th>HP Contributed</th></tr>
+      </thead>
+      <tbody id="leaderboardBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// Heal button logic
+document.getElementById("healBtn").onclick = function(){
+  healGuardian();
+}
+
+// Show leaderboard modal
+const modal = document.getElementById("leaderboardModal");
+const btn = document.getElementById("showLeaderboardBtn");
+const span = document.getElementById("closeModal");
+
+btn.onclick = function(){ updateLeaderboard(); modal.style.display = "block"; }
+span.onclick = function(){ modal.style.display = "none"; }
+window.onclick = function(event){ if(event.target == modal) modal.style.display = "none"; }
+
+// Update HP text
+function updateHPText(){
+  const guardian = guardians[gIndex];
+  document.getElementById("hpText").innerText = `HP: ${hp} / ${guardian.maxHP}`;
+}
+
+// Update leaderboard table
+function updateLeaderboard(){
+  const tbody = document.getElementById("leaderboardBody");
+  tbody.innerHTML = "";
+  let sorted = Object.entries(board).sort((a,b)=>b[1]-a[1]);
+  let userFound = false;
+  for(let i=0;i<10;i++){
+    if(i>=sorted.length) break;
+    let [user, points] = sorted[i];
+    let tr = document.createElement("tr");
+    tr.innerHTML = `<td>${i+1}</td><td>${user}</td><td>${points}</td>`;
+    tbody.appendChild(tr);
+    if(user == uid) userFound = true;
+  }
+  // Show current user position if not in top 10
+  if(!userFound){
+    let pos = sorted.findIndex(([user, points])=>user==uid);
+    if(pos==-1) pos = sorted.length;
+    let points = board[uid] || 0;
+    let tr = document.createElement("tr");
+    tr.innerHTML = `<td>${pos+1}</td><td>${uid} (You)</td><td>${points}</td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+// Update UI whenever healing occurs
+function updateGuardianUI(){
+  const guardian = guardians[gIndex];
+  if(document.getElementById("gname")) document.getElementById("gname").innerText = `${guardian.name} – ${guardian.maxHP} HP`;
+  if(document.getElementById("glore")) document.getElementById("glore").innerText = guardian.lore;
+  if(document.getElementById("hp")) document.getElementById("hp").value = hp;
+  updateHPText();
+  updateLeaderboard();
+}
+
+// Initial load
+window.onload = updateGuardianUI;
+</script>
+
+</body>
+</html>
