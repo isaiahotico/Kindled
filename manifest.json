@@ -1,9 +1,0 @@
-{
-  "name":"Paper House Inc.",
-  "short_name":"PaperHouse",
-  "start_url":"index.html",
-  "display":"standalone",
-  "background_color":"#1b1b1b",
-  "theme_color":"#ff6a00",
-  "icons":[]
-}
