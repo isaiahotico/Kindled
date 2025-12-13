@@ -6,7 +6,6 @@
 <title>AdGram Mini App</title>
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
-<!-- Monetag SDK -->
 <script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
 </head>
 <body>
@@ -16,12 +15,11 @@
 <div id="dashboard"></div>
 
 <div class="buttons">
-    <button onclick="watchAllAds()">🎬 Watch All Ads (1 Session) +₱0.005</button>
+    <button onclick="watchAllAds()">🎬 Watch All Ads (1 Session) +₱0.03</button>
     <button onclick="withdraw()">💸 Withdraw</button>
+    <button onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
+    <button onclick="window.location.href='withdraw.html'">💰 Withdrawals</button>
 </div>
-
-<h2>🏆 Leaderboard</h2>
-<div id="leaderboard"></div>
 
 <script src="app.js"></script>
 </body>
