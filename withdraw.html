@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Withdraw</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="container">
+  <h2>Withdraw Earnings</h2>
+  <p>Balance: ₱ <span id="earnings">0</span></p>
+
+  <input id="amount" type="number" placeholder="Amount (1–99)">
+  <input id="gcash" type="text" placeholder="GCash Number">
+
+  <button onclick="withdraw()">Request Withdraw</button>
+
+  <button onclick="go('index.html')">⬅ Return Home</button>
+</div>
+
+<footer id="footer"></footer>
+
+<script src="app.js"></script>
+<script>
+loadBalance();
+updateFooter();
+</script>
+</body>
+</html>
