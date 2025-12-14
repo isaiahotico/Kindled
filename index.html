@@ -17,15 +17,16 @@
 </head>
 <body>
 
-<!-- Landing -->
+<!-- Landing Page -->
 <div class="container" id="landing">
-  <h1 class="neon-text">Welcome to Sentinel Dark</h1>
+  <h1 class="neon-text">Sentinel Dark</h1>
   <p class="neon-text-small">Earn PHP ₱ by watching ads and withdraw via GCash!</p>
   <button onclick="showPage('ads')" class="btn-neon">Watch Ads</button>
   <button onclick="showPage('gifts')" class="btn-neon">Gifts</button>
   <button onclick="showPage('dashboard')" class="btn-neon">Dashboard</button>
   <button onclick="showPage('profile')" class="btn-neon">Profile</button>
-  <button onclick="showPage('owner')" class="btn-neon">Owner Dashboard</button>
+  <button onclick="showPage('affiliate')" class="btn-neon">Affiliate</button>
+  <button onclick="showPage('ownerLogin')" class="btn-neon">Owner Dashboard</button>
 </div>
 
 <!-- Ads Room -->
@@ -69,18 +70,30 @@
   <button onclick="showPage('landing')" class="btn-neon">Back</button>
 </div>
 
-<!-- Owner Dashboard -->
-<div class="container hidden" id="owner">
-  <h1 class="neon-text">Owner Dashboard</h1>
-  <input type="password" id="ownerPass" placeholder="Enter Owner Password" class="input-neon"/>
-  <button onclick="loginOwner()" class="btn-neon">Login</button>
-  <div id="pendingWithdrawals" class="neon-text-small"></div>
-  <button onclick="approveAllWithdrawals()" class="btn-neon">Approve All & Send to Gmail</button>
-  <div id="affiliateSettings" class="neon-text-small"></div>
+<!-- Affiliate Page -->
+<div class="container hidden" id="affiliate">
+  <h1 class="neon-text">Affiliate System</h1>
+  <div id="affiliateLink" class="neon-text-small"></div>
+  <p class="neon-text-small">Share this link and earn 10% from withdrawals of referred users!</p>
   <button onclick="showPage('landing')" class="btn-neon">Back</button>
 </div>
 
-<!-- Footer -->
+<!-- Owner Login -->
+<div class="container hidden" id="ownerLogin">
+  <h1 class="neon-text">Owner Dashboard Login</h1>
+  <input type="password" id="ownerPass" placeholder="Enter Owner Password" class="input-neon"/>
+  <button onclick="loginOwner()" class="btn-neon">Login</button>
+  <button onclick="showPage('landing')" class="btn-neon">Back</button>
+</div>
+
+<!-- Owner Withdrawals -->
+<div class="container hidden" id="owner">
+  <h1 class="neon-text">Owner Withdrawals</h1>
+  <div id="pendingWithdrawals" class="neon-text-small"></div>
+  <button onclick="approveAllWithdrawals()" class="btn-neon">Approve All & Send to Gmail</button>
+  <button onclick="showPage('landing')" class="btn-neon">Back</button>
+</div>
+
 <footer class="neon-text-small">
   Sentinel Dark | Gmail: otico.isai2@gmail.com | <span id="currentDateTime"></span>
 </footer>
