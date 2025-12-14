@@ -1,0 +1,8 @@
+{
+  "name": "Indie Ads Earning Game",
+  "short_name": "IndieAds",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#c8f7c5",
+  "theme_color": "#ff4b2b"
+}
