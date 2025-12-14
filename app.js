@@ -11,37 +11,29 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Persistent User
-let userId = localStorage.getItem('userId');
-let username = localStorage.getItem('username');
-if(!userId){ 
-  userId = 'USER_'+Math.floor(Math.random()*1000000);
-  username = `User${Math.floor(Math.random()*10000)}`;
-  localStorage.setItem('userId', userId);
-  localStorage.setItem('username', username);
-}
-
-// Referral from Telegram link
-const urlParams = new URLSearchParams(window.location.search);
-const startRef = urlParams.get('start');
-if(startRef && startRef!==userId){
-  db.ref('users/'+userId).once('value', snap=>{
-    if(!snap.val()?.referrerId){
-      db.ref('users/'+userId).update({referrerId: startRef});
-      db.ref('users/'+startRef+'/referrals').transaction(c => (c||0)+1);
-    }
-  });
-}
-
-// User data
-let balance=0, streak=0, level=1, referrals=0, affiliateEarn=0;
-let withdrawHistory=[], adsCount=0, giftsCount=0;
-let giftsCooldown=false;
-
-// Owner
+// Owner Password
 const OWNER_PASSWORD = "Propetas6";
 
-// Page nav
+// Telegram WebApp User Info
+let telegramUser = {};
+if(window.Telegram.WebApp){
+  telegramUser = window.Telegram.WebApp.initDataUnsafe.user || {};
+}
+let userId = telegramUser.id || 'USER_'+Math.floor(Math.random()*1000000);
+let username = telegramUser.username || telegramUser.first_name || `User${Math.floor(Math.random()*10000)}`;
+
+// First-time registration
+db.ref('users/'+userId).once('value', snap=>{
+  if(!snap.exists()){
+    db.ref('users/'+userId).set({username, balance:0, affiliateEarn:0, referrals:0});
+  }
+});
+
+// Local variables
+let balance=0, streak=0, level=1, referrals=0, affiliateEarn=0;
+let adsCount=0, giftsCount=0, giftsCooldown=false;
+
+// Page navigation
 function showPage(page){
   ['landing','ads','gifts','dashboard','profile','affiliate','worldChat','ownerLogin','owner'].forEach(p=>{
     document.getElementById(p).classList.add('hidden');
@@ -55,188 +47,161 @@ function showPage(page){
 
 // UI Updates
 function updateUI(){
-  document.getElementById('balanceAds').innerText = `Balance: ₱${balance.toFixed(3)}`;
-  document.getElementById('balanceDash').innerText = `Balance: ₱${balance.toFixed(3)}`;
-  document.getElementById('streak').innerText = `Daily Streak: ${streak}`;
-  document.getElementById('level').innerText = `Level: ${level}`;
-  document.getElementById('referrals').innerText = `Referrals: ${referrals}`;
-  document.getElementById('affiliateEarn').innerText = `Affiliate Earned: ₱${affiliateEarn.toFixed(3)}`;
-  document.getElementById('adsProgress').innerText = `Ads left: ${4-adsCount}`;
-  document.getElementById('giftsProgress').innerText = `Ads left: ${4-giftsCount}`;
-  document.getElementById('giftsCooldown').innerText = giftsCooldown ? "Cooldown active. Wait 5 minutes." : "";
+  db.ref('users/'+userId).once('value', snap=>{
+    const data = snap.val()||{};
+    balance = data.balance || 0;
+    streak = data.streak || 0;
+    level = data.level || 1;
+    referrals = data.referrals || 0;
+    affiliateEarn = data.affiliateEarn || 0;
+
+    document.getElementById('balanceAds').innerText = `Balance: ₱${balance.toFixed(3)}`;
+    document.getElementById('balanceDash').innerText = `Balance: ₱${balance.toFixed(3)}`;
+    document.getElementById('streak').innerText = `Daily Streak: ${streak}`;
+    document.getElementById('level').innerText = `Level: ${level}`;
+    document.getElementById('referrals').innerText = `Referrals: ${referrals}`;
+    document.getElementById('affiliateEarn').innerText = `Affiliate Earned: ₱${affiliateEarn.toFixed(3)}`;
+    document.getElementById('adsProgress').innerText = `Ads left: ${4-adsCount}`;
+    document.getElementById('giftsProgress').innerText = `Ads left: ${4-giftsCount}`;
+    document.getElementById('giftsCooldown').innerText = giftsCooldown ? "Cooldown active. Wait 5 minutes." : "";
+  });
   updateWithdrawTable();
 }
 
-// Ads Rewards
-function rewardAds(){ 
+// Watch Ads
+async function rewardAds(){
   if(adsCount<4){ adsCount++;
-    if(adsCount===4){ balance+=0.025; adsCount=0; alert("🎉 You earned ₱0.025!"); }
-    else alert(`You earn a reward, click again. Ads left: ${4-adsCount}`);
+    if(adsCount===4){ 
+      balance+=0.025; adsCount=0; 
+      db.ref('users/'+userId).update({balance});
+      alert("🎉 You earned ₱0.025!"); 
+    } else alert(`You earn a reward, click again. Ads left: ${4-adsCount}`);
     updateUI();
   }
 }
 
-// Gifts Rewards
-function rewardGifts(){
-  if(giftsCooldown) return;
-  if(giftsCount<4){ giftsCount++;
-    if(giftsCount===4){ balance+=0.03; giftsCount=0; giftsCooldown=true; alert("🎁 You earned ₱0.03! Cooldown 5 min starts.");
-      setTimeout(()=>{ giftsCooldown=false; updateUI(); }, 5*60*1000);
-    } else alert(`You earn a gift reward, click again. Ads left: ${4-giftsCount}`);
-    updateUI();
-  }
+// Gifts
+async function rewardGifts(){
+  if(giftsCooldown) return alert("Cooldown active. Wait 5 minutes.");
+  giftsCount++;
+  if(giftsCount===4){
+    balance+=0.03; giftsCount=0; giftsCooldown=true;
+    db.ref('users/'+userId).update({balance});
+    alert("🎁 You earned ₱0.03! Cooldown 5 min starts.");
+    setTimeout(()=>{ giftsCooldown=false; updateUI(); }, 5*60*1000);
+  } else alert(`You earn a gift reward, click again. Ads left: ${4-giftsCount}`);
+  updateUI();
 }
 
 // Withdraw
 function withdrawGCash(){
-  const gcash=document.getElementById('gcashNumber').value;
-  if(!gcash){ alert('Enter GCash number'); return; }
-  if(balance<0.025){ alert('Insufficient balance'); return; }
+  const gcash = document.getElementById('gcashNumber').value.trim();
+  if(!gcash) return alert("Enter GCash number");
+  if(balance<0.025) return alert("Insufficient balance");
 
-  const withdrawal={userId, username, amount:balance,gcash,status:'Pending', timestamp:Date.now()};
+  const withdrawal = {userId, username, amount:balance, gcash, status:'Pending', timestamp:Date.now()};
   db.ref('withdrawals').push(withdrawal);
-  balance=0; updateUI();
+  balance=0; db.ref('users/'+userId).update({balance});
+  updateUI();
   alert('Withdrawal request saved!');
 }
 
 // Withdraw table
 function updateWithdrawTable(){
-  const table=document.getElementById('withdrawTable');
+  const table = document.getElementById('withdrawTable');
   db.ref('withdrawals').orderByChild('userId').equalTo(userId).once('value', snap=>{
-    const data=snap.val()||{};
-    withdrawHistory = Object.values(data);
+    const data = snap.val()||{};
     table.innerHTML='<tr><th>Amount</th><th>GCash</th><th>Status</th></tr>';
-    withdrawHistory.forEach(w=>{
+    Object.values(data).forEach(w=>{
       table.innerHTML+=`<tr><td>₱${w.amount.toFixed(2)}</td><td>${w.gcash}</td><td>${w.status}</td></tr>`;
     });
   });
 }
 
 // Ads integration
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('watchAdsBtn').addEventListener('click', async ()=>{
     for(let i=0;i<4;i++){ try{ await show_10276123(); rewardAds(); }catch(e){console.warn(e);} }
   });
-
   document.getElementById('giftsBtn').addEventListener('click', async ()=>{
-    if(giftsCooldown){ alert("Wait 5 minutes cooldown"); return;}
     for(let i=0;i<4;i++){ try{ await show_10276123(); rewardGifts(); }catch(e){console.warn(e);} }
   });
-
   setInterval(()=>{ document.getElementById('currentDateTime').innerText=new Date().toLocaleString(); },1000);
-
-  // Track referrals
-  db.ref('users/'+userId+'/referrals').on('value',snap=>{
-    referrals = snap.val()||0;
-    updateUI();
-  });
-
-  // Track affiliate earnings
-  db.ref('users/'+userId+'/affiliateEarn').on('value',snap=>{
-    affiliateEarn = snap.val()||0;
-    updateUI();
-  });
 });
 
-// Affiliate Page
+// Affiliate
 function updateAffiliateUI(){
   const table=document.getElementById('affiliateTable');
+  const link=`http://t.me/SENTINEL_DARK_bot/start?start=${userId}`;
   table.innerHTML='<tr><th>Link</th><th>Claim Earnings</th></tr>';
-  const link = `http://t.me/SENTINEL_DARK_bot/start?start=${userId}`;
   table.innerHTML+=`<tr><td><input type="text" value="${link}" readonly onclick="this.select()"/></td>
     <td><button onclick="claimAffiliate()" class="btn-neon">Claim</button></td></tr>`;
 }
-
-// Claim affiliate earnings
 function claimAffiliate(){
   db.ref('users/'+userId+'/affiliateEarn').once('value',snap=>{
     const earn = snap.val()||0;
-    if(earn<=0){ alert('No affiliate earnings to claim'); return; }
-    balance += earn;
-    db.ref('users/'+userId).update({affiliateEarn:0});
-    updateUI();
+    if(earn<=0) return alert("No affiliate earnings");
+    balance+=earn; db.ref('users/'+userId).update({balance, affiliateEarn:0});
     alert(`🎉 You claimed ₱${earn.toFixed(2)}!`);
+    updateUI();
   });
 }
 
-// Change Name
+// Profile Name
 function changeName(){
-  const newName = document.getElementById('profileNameInput').value.trim();
-  if(newName===''){ alert('Enter a name'); return; }
-  username = newName;
-  localStorage.setItem('username', username);
+  const newName=document.getElementById('profileNameInput').value.trim();
+  if(!newName) return alert("Enter a name");
+  username=newName;
   db.ref('users/'+userId).update({username});
-  alert('Name updated!');
+  alert("Name updated!");
   updateUI();
 }
 
-// Owner Login
+// Owner
 function loginOwner(){
   const pass=document.getElementById('ownerPass').value;
-  if(pass===OWNER_PASSWORD){ showPage('owner'); updateOwnerUI(); }
-  else alert('Incorrect password');
+  if(pass===OWNER_PASSWORD) showPage('owner'), updateOwnerUI();
+  else alert("Incorrect password");
 }
-
-// Owner Withdrawals
 function updateOwnerUI(){
   const el=document.getElementById('pendingWithdrawals');
-  db.ref('withdrawals').once('value', snapshot=>{
-    const data=snapshot.val()||{};
-    const list=Object.entries(data);
-    if(list.length===0) el.innerHTML="No pending withdrawals";
-    else{
-      el.innerHTML="<table><tr><th>#</th><th>User</th><th>Amount</th><th>GCash</th><th>Status</th></tr>";
-      list.forEach(([key,w],i)=>{
-        el.innerHTML+=`<tr>
-          <td>${i+1}</td>
-          <td>${w.username}</td>
-          <td>₱${w.amount.toFixed(2)}</td>
-          <td>${w.gcash}</td>
-          <td>${w.status}</td>
-        </tr>`;
-      });
-      el.innerHTML+="</table>";
-    }
+  db.ref('withdrawals').once('value', snap=>{
+    const data = snap.val()||{};
+    if(!Object.keys(data).length){ el.innerHTML="No pending withdrawals"; return; }
+    el.innerHTML="<table><tr><th>#</th><th>User</th><th>Amount</th><th>GCash</th><th>Status</th></tr>";
+    Object.entries(data).forEach(([k,w],i)=>{
+      el.innerHTML+=`<tr><td>${i+1}</td><td>${w.username}</td><td>₱${w.amount.toFixed(2)}</td><td>${w.gcash}</td><td>${w.status}</td></tr>`;
+    });
+    el.innerHTML+="</table>";
   });
 }
-
-// Approve all withdrawals
 function approveAllWithdrawals(){
-  db.ref('withdrawals').once('value', snapshot=>{
-    const data = snapshot.val() || {};
-    const list = Object.entries(data);
-    if(list.length===0){ alert('No withdrawals'); return; }
-
-    list.forEach(([key,w])=>{
-      db.ref('withdrawals/'+key).update({status:'Paid'});
+  db.ref('withdrawals').once('value', snap=>{
+    const data = snap.val()||{};
+    Object.entries(data).forEach(([k,w])=>{
+      db.ref('withdrawals/'+k).update({status:'Paid'});
     });
-
-    let emailBody = list.map(([_,w])=>`User: ${w.username}, Amount: ₱${w.amount.toFixed(2)}, GCash: ${w.gcash}, Status: Paid`).join('%0D%0A');
+    let emailBody = Object.entries(data).map(([_,w])=>`User: ${w.username}, Amount: ₱${w.amount.toFixed(2)}, GCash: ${w.gcash}, Status: Paid`).join('%0D%0A');
     window.location.href=`mailto:otico.isai2@gmail.com?subject=Sentinel Dark Withdrawals&body=${emailBody}`;
-    alert('All withdrawals approved and sent to Gmail!');
-    updateOwnerUI();
+    updateOwnerUI(); alert("All withdrawals approved and sent to Gmail!");
   });
 }
 
 // World Chat
 function updateChatUI(){
-  const chatBox=document.getElementById('chatBox');
-  chatBox.innerHTML='';
+  const chatBox=document.getElementById('chatBox'); chatBox.innerHTML='';
   db.ref('chat').orderByChild('timestamp').on('child_added',snap=>{
     const msg=snap.val();
     const p=document.createElement('p');
     p.innerHTML=`<strong>${msg.username}:</strong> ${msg.message}`;
-    chatBox.appendChild(p);
-    chatBox.scrollTop=chatBox.scrollHeight;
+    chatBox.appendChild(p); chatBox.scrollTop=chatBox.scrollHeight;
   });
 }
-
 function sendChat(){
-  const input=document.getElementById('chatInput');
-  const text=input.value.trim();
-  if(text==='') return;
-  db.ref('chat').push({userId, username, message:text, timestamp:Date.now()});
-  input.value='';
+  const text=document.getElementById('chatInput').value.trim();
+  if(!text) return;
+  db.ref('chat').push({telegramId:userId, username, message:text, timestamp:Date.now()});
+  document.getElementById('chatInput').value='';
 }
 
 // Initialize
