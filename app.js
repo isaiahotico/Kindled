@@ -1,173 +1,97 @@
-// 🔥 Firebase
-firebase.initializeApp({
-  /* YOUR FIREBASE CONFIG */
-});
+/* ---------- FIREBASE ---------- */
+firebase.initializeApp({ /* YOUR CONFIG */ });
 const db = firebase.database();
 
-// Telegram account separation
+/* ---------- USER ID ---------- */
 const telegramId =
-  window.Telegram?.WebApp?.initDataUnsafe?.user?.id
-  || "guest_" + Math.random().toString(36).slice(2);
+  window.Telegram?.WebApp?.initDataUnsafe?.user?.id ||
+  "guest_" + Math.random().toString(36).slice(2);
 
-// Helpers
-const $ = id => document.getElementById(id);
-const now = ()=>Date.now();
+/* ---------- STATE ---------- */
+let balance = Number(localStorage.getItem(telegramId+"_bal")) || 0;
+let progress = Number(localStorage.getItem(telegramId+"_prog")) || 0;
+let canClick = true;
 
-// Balance
-let balance = Number(localStorage.getItem(telegramId+"_bal")||0);
-$("balance").innerText = balance.toFixed(3);
+/* ---------- CONSTANTS ---------- */
+const ADS_MIN = 5, ADS_MAX = 7;
+const CLICK_COOLDOWN = 4000;
 
-// Popup
-function popup(msg){
-  const p=$("popup");
-  p.innerText=msg;
-  p.style.opacity=1;
-  setTimeout(()=>p.style.opacity=0,2000);
+/* ---------- UI INIT ---------- */
+updateUI();
+
+/* ---------- SAFE AD CALL ---------- */
+async function showAdSafe(){
+  try{ await show_10276123(); }
+  catch(e){ console.warn("Ad skipped"); }
 }
 
-// 🔥 Monetag Revenue-Optimized Rotation
-async function showOptimizedAd(){
-  const rotation = [
-    ()=>show_10276123(),          // Rewarded interstitial
-    ()=>show_10276123('pop'),     // Rewarded popup
-    ()=>show_10276123({           // In-app fallback
-      type:'inApp',
-      inAppSettings:{
-        frequency:1,
-        capping:0.1,
-        interval:20,
-        timeout:5,
-        everyPage:false
-      }
-    })
-  ];
-
-  for(let fn of rotation){
-    try{
-      await new Promise(res=>{
-        let done=false;
-        const finish=()=>{if(!done){done=true;res()}};
-        const p=fn();
-        if(p?.then) p.then(finish).catch(finish);
-        else finish();
-        setTimeout(finish,7000);
-      });
-      return true;
-    }catch(e){}
-  }
-  return true; // Never block reward
-}
-
-// Save user
-function save(){
-  localStorage.setItem(telegramId+"_bal",balance);
-  db.ref("users/"+telegramId).set({balance});
-  $("balance").innerText = balance.toFixed(3);
-}
-
-// Reward logic
+/* ---------- REWARD LOGIC ---------- */
 function randomReward(){
-  const r=Math.random();
-  if(r<0.30) return 0.025;
-  if(r<0.60) return 0.030;
-  if(r<0.85) return 0.035;
-  return 0.040;
+  return [0.025,0.03,0.035,0.04][Math.floor(Math.random()*4)];
 }
 
-// MAIN ADS (4–5 ads, 1 reward)
-$("adsBtn").onclick=async()=>{
-  let ads=4+Math.floor(Math.random()*2);
-  for(let i=ads;i>0;i--){
-    popup("Ads left: "+(i-1));
-    await showOptimizedAd();
+async function playAds(){
+  if(!canClick) return alert("Cooldown…");
+  canClick = false;
+
+  const count = ADS_MIN + Math.floor(Math.random()*(ADS_MAX-ADS_MIN+1));
+  for(let i=0;i<count;i++){
+    await showAdSafe();
+    await new Promise(r=>setTimeout(r,800));
   }
-  const reward=randomReward();
-  balance+=reward;
-  popup("🎉 You earned ₱"+reward.toFixed(3));
+
+  const reward = randomReward();
+  balance += reward;
+  progress++;
+
   save();
-};
+  popup(reward);
 
-// DAILY LOGIN
-const DAILY=30*60*1000;
-$("dailyBtn").onclick=async()=>{
-  const last=Number(localStorage.getItem(telegramId+"_daily")||0);
-  if(now()-last<DAILY) return;
-  await showOptimizedAd();
-  balance+=0.04;
-  localStorage.setItem(telegramId+"_daily",now());
-  popup("🎁 Daily +₱0.04");
+  setTimeout(()=>canClick=true, CLICK_COOLDOWN);
+}
+
+document.getElementById("btnAllAds").onclick = playAds;
+
+/* ---------- DAILY ---------- */
+const DAILY = 0.04;
+document.getElementById("dailyLoginBtn").onclick = async ()=>{
+  await showAdSafe();
+  balance += DAILY;
   save();
+  popup(DAILY);
 };
 
-// GIFT
-const GIFT=60*60*1000;
-$("giftBtn").onclick=async()=>{
-  const last=Number(localStorage.getItem(telegramId+"_gift")||0);
-  if(now()-last<GIFT) return;
-  await showOptimizedAd();
-  balance+=0.02;
-  localStorage.setItem(telegramId+"_gift",now());
-  popup("🎉 Gift +₱0.02");
+/* ---------- GIFT ---------- */
+document.getElementById("giftBtn").onclick = async ()=>{
+  await showAdSafe();
+  balance += 0.02;
   save();
+  popup(0.02);
 };
 
-// Withdraw
-$("withdrawBtn").onclick=()=>{
-  if(balance<1) return alert("Minimum ₱1");
-  db.ref("withdraw").push({
-    user:telegramId,
-    gcash:$("gcash").value,
-    amount:balance
-  });
-  balance=0;
-  save();
-};
+/* ---------- SAVE ---------- */
+function save(){
+  localStorage.setItem(telegramId+"_bal", balance);
+  localStorage.setItem(telegramId+"_prog", progress);
+  updateUI();
+  db.ref("users/"+telegramId).set({balance,progress});
+}
 
-// Leaderboard
-db.ref("users").on("value",s=>{
-  const list=[];
-  s.forEach(c=>list.push(c.val()));
-  list.sort((a,b)=>b.balance-a.balance);
-  $("leaderboard").innerHTML=list.slice(0,10)
-    .map(u=>`<li>₱${u.balance.toFixed(2)}</li>`).join("");
-});
+/* ---------- UI ---------- */
+function updateUI(){
+  document.getElementById("balance").innerText = "₱"+balance.toFixed(3);
+  document.getElementById("storyLevel").innerText = "Level "+(Math.floor(progress/5)+1);
+  document.getElementById("progressFill").style.width = (progress%5)*20+"%";
+}
 
-// Owner panel
-$("ownerBtn").onclick=()=>{
-  if($("ownerPass").value!=="Propetas6") return;
-  $("ownerPanel").style.display="block";
-  db.ref("withdraw").on("value",s=>{
-    $("withdrawList").innerHTML="";
-    s.forEach(c=>{
-      const v=c.val();
-      $("withdrawList").innerHTML+=
-        `<li>${v.user} ₱${v.amount}</li>`;
-    });
-  });
-};
+function popup(val){
+  const p=document.getElementById("rewardPopup");
+  p.innerText = "+₱"+val.toFixed(3);
+  p.style.opacity=1;
+  setTimeout(()=>p.style.opacity=0,2200);
+}
 
-// Email withdrawals
-$("emailWithdrawals").onclick=()=>{
-  db.ref("withdraw").once("value").then(s=>{
-    let body="";
-    s.forEach(c=>{
-      const v=c.val();
-      body+=`User:${v.user}\nGCash:${v.gcash}\nAmount:${v.amount}\n\n`;
-    });
-    location.href=
-      "mailto:Otico.isai2@gmail.com?subject=Withdrawals&body="+
-      encodeURIComponent(body);
-  });
-};
-
-// Time & quotes
-setInterval(()=>$("time").innerText=new Date().toLocaleString(),1000);
-const quotes=[
-  "Consistency builds wealth",
-  "Focus creates results",
-  "Small actions compound",
-  "Progress beats perfection",
-  "Discipline pays dividends"
-];
-setInterval(()=>$("quote").innerText=
-  quotes[Math.floor(Math.random()*quotes.length)],8000);
+/* ---------- TIME ---------- */
+setInterval(()=>{
+  document.getElementById("timeDate").innerText=new Date().toLocaleString();
+},1000);
