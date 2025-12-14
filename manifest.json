@@ -5,12 +5,8 @@
   "display": "standalone",
   "background_color": "#0d0d0d",
   "theme_color": "#00fffc",
-  "description": "Watch ads, earn PHP, withdraw via GCash, chat, referrals, affiliate system.",
+  "description": "Watch ads, earn PHP, withdraw via GCash, Telegram-linked chat, referrals, affiliate system.",
   "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
+    { "src": "icon.png", "sizes": "192x192", "type": "image/png" }
   ]
 }
