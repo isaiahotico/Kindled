@@ -1,42 +1,23 @@
-const tg = window.Telegram.WebApp;
-tg.ready();
-
-const REWARD = 0.025;
-const COOLDOWN = 60000;
-
-const balanceEl = document.getElementById('balance');
-const watchBtn = document.getElementById('watchAdBtn');
-const cooldownText = document.getElementById('cooldownText');
-
-const user = tg.initDataUnsafe?.user;
-if (!user) alert('Open inside Telegram');
-
-const KEY = `user_${user.id}`;
-let data = JSON.parse(localStorage.getItem(KEY)) || { balance: 0, lastAd: 0 };
-
-watchBtn.onclick = () => {
-  const now = Date.now();
-  if (now - data.lastAd < COOLDOWN) return;
-
-  show_10276123('pop').then(() => {
-    data.balance += REWARD;
-    data.lastAd = Date.now();
-    save();
-    update();
-    tg.HapticFeedback.impactOccurred('medium');
-  });
-};
-
-function update() {
-  balanceEl.textContent = `₱${data.balance.toFixed(3)}`;
-  const r = COOLDOWN - (Date.now() - data.lastAd);
-  watchBtn.disabled = r > 0;
-  cooldownText.textContent = r > 0 ? `⏳ Wait ${Math.ceil(r / 1000)}s` : '';
+// Open ADS ROOM
+function openAdsRoom(){
+  window.location.href = "ads-room.html";
 }
 
-function save() {
-  localStorage.setItem(KEY, JSON.stringify(data));
-}
+// Load all inline ads
+function loadAllAds(){
+  const adsContainer = document.getElementById("adsContainer");
+  if(!adsContainer) return;
 
-setInterval(update, 1000);
-update();
+  adsContainer.innerHTML = "";
+  const ADS_COUNT = 4; // change how many ads you want
+
+  for(let i=0;i<ADS_COUNT;i++){
+    const ad = document.createElement("div");
+    ad.className = "ad-box";
+    ad.innerHTML = `<div data-monetag-zone="3136495" style="width:100%;height:250px;"></div>`;
+    adsContainer.appendChild(ad);
+  }
+
+  // Monetag reload
+  if(window.monetag) monetag.reload();
+}
