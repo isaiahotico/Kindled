@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Indie Ads Earning</title>
 
 <link rel="stylesheet" href="style.css">
 
+<!-- Monetag SDK -->
 <script src="//libtl.com/sdk.js"
  data-zone="10276123"
  data-sdk="show_10276123"></script>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
@@ -21,7 +23,7 @@
 <h1>💸 Indie Ads Earning</h1>
 
 <div class="top-left">
-  <button id="dailyBtn">🎁 Daily</button>
+  <button id="dailyBtn">🎁 Daily Login</button>
   <div id="dailyTimer"></div>
 
   <button id="giftBtn">🎉 Gift</button>
@@ -30,7 +32,7 @@
 
 <p class="desc">
 Watch 4–5 ads per click.  
-Reward adapts to CPM quality.
+Earn ₱0.025 – ₱0.040 per session.
 </p>
 
 <button id="adsBtn" class="main">▶ Watch Ads</button>
@@ -45,14 +47,16 @@ Reward adapts to CPM quality.
 <div id="time"></div>
 <div id="quote"></div>
 
+<h3>Withdraw</h3>
 <input id="gcash" placeholder="GCash Number">
 <button id="withdrawBtn">Withdraw</button>
 
-<input id="ownerPass" type="password" placeholder="Owner Password">
-<button id="ownerBtn">Owner Login</button>
+<h3>Owner</h3>
+<input id="ownerPass" type="password" placeholder="Password">
+<button id="ownerBtn">Login</button>
 
 <div id="ownerPanel" style="display:none">
-  <button id="emailWithdrawals">📧 Email Withdrawals</button>
+  <button id="emailWithdrawals">📧 Send Withdrawals</button>
   <ul id="withdrawList"></ul>
 </div>
 
