@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Watch</title>
+<link rel="stylesheet" href="style.css">
+<script src="//libtl.com/sdk.js"
+        data-zone="10276123"
+        data-sdk="show_10276123"
+        async></script>
+</head>
+
+<body>
+<main class="wrap">
+  <h2>Watch & Earn</h2>
+
+  <div class="balance">
+    ₱ <span id="earnings">0.000</span>
+  </div>
+
+  <button id="adBtn" class="primary">▶ Play Ad</button>
+
+  <p class="hint">
+    ₱0.025 per full watch<br>
+    Reward after confirmation
+  </p>
+
+  <button class="ghost" onclick="go('index.html')">Return Home</button>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="app.js"></script>
+<script>
+loadBalance();
+updateFooter();
+document.getElementById("adBtn").onclick = playAdSafe;
+</script>
+</body>
+</html>
