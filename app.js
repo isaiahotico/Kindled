@@ -11,7 +11,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// User Data
+// User data
 let balance=0, streak=0, level=1, referrals=0, affiliateEarn=0;
 let withdrawHistory=[], adsCount=0, giftsCount=0;
 let giftsCooldown=false;
@@ -22,13 +22,14 @@ const OWNER_PASSWORD = "Propetas6";
 
 // Page nav
 function showPage(page){
-  ['landing','ads','gifts','dashboard','profile','affiliate','ownerLogin','owner'].forEach(p=>{
+  ['landing','ads','gifts','dashboard','profile','affiliate','worldChat','ownerLogin','owner'].forEach(p=>{
     document.getElementById(p).classList.add('hidden');
   });
   document.getElementById(page).classList.remove('hidden');
   updateUI();
   if(page==='affiliate') updateAffiliateUI();
   if(page==='owner') updateOwnerUI();
+  if(page==='worldChat') updateChatUI();
 }
 
 // UI Updates
@@ -46,7 +47,7 @@ function updateUI(){
 }
 
 // Ads Rewards
-function rewardAds(){
+function rewardAds(){ 
   if(adsCount<4){ adsCount++;
     if(adsCount===4){ balance+=0.025; adsCount=0; alert("🎉 You earned ₱0.025!"); }
     else alert(`You earn a reward, click again. Ads left: ${4-adsCount}`);
@@ -74,17 +75,6 @@ function withdrawGCash(){
   const withdrawal={userId,amount:balance,gcash,status:'Pending', timestamp:Date.now()};
   withdrawHistory.push(withdrawal);
   db.ref('withdrawals').push(withdrawal);
-
-  // Affiliate reward
-  db.ref('users/'+userId).once('value',snap=>{
-    const userData = snap.val()||{};
-    if(userData.referrerId){
-      db.ref('users/'+userData.referrerId+'/balance').once('value',s=>{
-        db.ref('users/'+userData.referrerId).update({balance:(s.val()||0)+balance*0.1});
-      });
-    }
-  });
-
   balance=0; updateUI();
   alert('Withdrawal request saved!');
 }
@@ -114,7 +104,23 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 // Affiliate Page
 function updateAffiliateUI(){
-  document.getElementById('affiliateLink').innerText = `Your Telegram Referral Link: http://t.me/SENTINEL_DARK_bot/start?ref=${userId}`;
+  const table=document.getElementById('affiliateTable');
+  table.innerHTML='<tr><th>Link</th><th>Claim Earnings</th></tr>';
+  const link = `http://t.me/SENTINEL_DARK_bot/start?start=${userId}`;
+  table.innerHTML+=`<tr><td><input type="text" value="${link}" readonly onclick="this.select()"/></td>
+    <td><button onclick="claimAffiliate()" class="btn-neon">Claim</button></td></tr>`;
+}
+
+// Claim affiliate earnings
+function claimAffiliate(){
+  db.ref('users/'+userId+'/affiliateEarn').once('value',snap=>{
+    const earn = snap.val()||0;
+    if(earn<=0){ alert('No affiliate earnings to claim'); return; }
+    balance += earn;
+    db.ref('users/'+userId).update({affiliateEarn:0});
+    updateUI();
+    alert(`🎉 You claimed ₱${earn.toFixed(2)}!`);
+  });
 }
 
 // Owner Login
@@ -156,11 +162,6 @@ function approveAllWithdrawals(){
 
     list.forEach(([key,w])=>{
       db.ref('withdrawals/'+key).update({status:'Paid'});
-      if(w.referrerId){
-        db.ref('users/'+w.referrerId+'/balance').once('value',s=>{
-          db.ref('users/'+w.referrerId).update({balance:(s.val()||0)+w.amount*0.1});
-        });
-      }
     });
 
     let emailBody = list.map(([_,w])=>`User: ${w.userId}, Amount: ₱${w.amount.toFixed(2)}, GCash: ${w.gcash}, Status: Paid`).join('%0D%0A');
@@ -168,6 +169,27 @@ function approveAllWithdrawals(){
     alert('All withdrawals approved and sent to Gmail!');
     updateOwnerUI();
   });
+}
+
+// World Chat
+function updateChatUI(){
+  const chatBox=document.getElementById('chatBox');
+  chatBox.innerHTML='';
+  db.ref('chat').on('child_added',snap=>{
+    const msg=snap.val();
+    const p=document.createElement('p');
+    p.innerHTML=`<strong>${msg.userId}:</strong> ${msg.message}`;
+    chatBox.appendChild(p);
+    chatBox.scrollTop=chatBox.scrollHeight;
+  });
+}
+
+function sendChat(){
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim();
+  if(text==='') return;
+  db.ref('chat').push({userId,message:text,timestamp:Date.now()});
+  input.value='';
 }
 
 // Initialize
