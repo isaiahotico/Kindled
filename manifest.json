@@ -3,7 +3,7 @@
   "short_name": "IndieAds",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#ffecd2",
+  "background_color": "#c8f7c5",
   "theme_color": "#ff4b2b",
   "description": "Earn coins by watching ads, level up, and get rewards!",
   "icons": [
