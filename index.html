@@ -6,7 +6,7 @@
 <title>Sentinel Dark</title>
 <link rel="stylesheet" href="style.css">
 
-<!-- Monetag Ads -->
+<!-- Monetag Ads SDK -->
 <script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
 
 <!-- Firebase -->
@@ -26,6 +26,7 @@
   <button onclick="showPage('dashboard')" class="btn-neon">Dashboard</button>
   <button onclick="showPage('profile')" class="btn-neon">Profile</button>
   <button onclick="showPage('affiliate')" class="btn-neon">Affiliate</button>
+  <button onclick="showPage('worldChat')" class="btn-neon">World Chat</button>
   <button onclick="showPage('ownerLogin')" class="btn-neon">Owner Dashboard</button>
 </div>
 
@@ -73,8 +74,19 @@
 <!-- Affiliate Page -->
 <div class="container hidden" id="affiliate">
   <h1 class="neon-text">Affiliate System</h1>
-  <div id="affiliateLink" class="neon-text-small"></div>
-  <p class="neon-text-small">Share this link and earn 10% from withdrawals of referred users!</p>
+  <table id="affiliateTable" class="neon-text-small">
+    <tr><th>Link</th><th>Claim Earnings</th></tr>
+  </table>
+  <p class="neon-text-small">Share your affiliate link to invite friends! 10% commission on withdrawals.</p>
+  <button onclick="showPage('landing')" class="btn-neon">Back</button>
+</div>
+
+<!-- World Chat Page -->
+<div class="container hidden" id="worldChat">
+  <h1 class="neon-text">World Chat</h1>
+  <div id="chatBox" class="chat-box"></div>
+  <input type="text" id="chatInput" placeholder="Type a message..." class="input-neon"/>
+  <button onclick="sendChat()" class="btn-neon">Send</button>
   <button onclick="showPage('landing')" class="btn-neon">Back</button>
 </div>
 
