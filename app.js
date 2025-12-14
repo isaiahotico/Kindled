@@ -1,23 +1,54 @@
-// Open ADS ROOM
-function openAdsRoom(){
-  window.location.href = "ads-room.html";
+// =====================
+// Navigation from index.html
+// =====================
+const adsRoomBtn = document.getElementById('adsRoomBtn');
+if (adsRoomBtn) {
+    adsRoomBtn.addEventListener('click', () => {
+        window.location.href = 'ads-room.html';
+    });
 }
 
-// Load all inline ads
-function loadAllAds(){
-  const adsContainer = document.getElementById("adsContainer");
-  if(!adsContainer) return;
+// =====================
+// Auto-play Ads Logic
+// =====================
+async function autoPlayAds() {
+    try {
+        // Rewarded Interstitial
+        show_10276123().then(() => {
+            console.log('Rewarded Interstitial watched');
+            // Add your reward logic here
+        }).catch(e => console.error(e));
 
-  adsContainer.innerHTML = "";
-  const ADS_COUNT = 4; // change how many ads you want
+        // Rewarded Popup
+        show_10276123('pop').then(() => {
+            console.log('Rewarded Popup watched');
+            // Add your reward logic here
+        }).catch(e => console.error(e));
 
-  for(let i=0;i<ADS_COUNT;i++){
-    const ad = document.createElement("div");
-    ad.className = "ad-box";
-    ad.innerHTML = `<div data-monetag-zone="3136495" style="width:100%;height:250px;"></div>`;
-    adsContainer.appendChild(ad);
-  }
+        // In-App Interstitial
+        show_10276123({
+            type: 'inApp',
+            inAppSettings: {
+                frequency: 9999,
+                capping: 0,
+                interval: 1,
+                timeout: 0,
+                everyPage: true
+            }
+        }).then(() => console.log('In-App Interstitial shown'))
+          .catch(e => console.error(e));
 
-  // Monetag reload
-  if(window.monetag) monetag.reload();
+        console.log('All ads triggered automatically.');
+    } catch (err) {
+        console.error('Error auto-playing ads:', err);
+    }
+}
+
+// Trigger ads automatically on ads-room.html
+if (window.location.pathname.includes('ads-room.html')) {
+    window.addEventListener('load', () => {
+        autoPlayAds();
+        // Repeat every 60s
+        setInterval(autoPlayAds, 60000);
+    });
 }
