@@ -1,14 +1,21 @@
-body { background: linear-gradient(135deg,#0d0d0d,#1a1a1a); color:#00fffc;
-  font-family:'Roboto Mono',monospace; display:flex; flex-direction:column; align-items:center;
-  justify-content:flex-start; min-height:100vh; margin:0; padding:0; }
-.container{text-align:center; padding:20px;}
+body{
+  margin:0; font-family:Arial, sans-serif;
+  background: linear-gradient(145deg, #0b0b0b, #1a1a1a);
+  color:#00fffc; text-align:center;
+}
+.neon-text{color:#00f0ff; text-shadow:0 0 5px #0ff;}
+.neon-text-small{color:#0ff; font-size:0.9em;}
+input.input-neon{
+  background:#111; border:1px solid #0ff; color:#0ff; padding:5px; border-radius:5px;
+}
+button.btn-neon{
+  padding:6px 10px; margin:4px; cursor:pointer;
+  border:none; border-radius:5px; background:#0ff; color:#000; font-weight:bold;
+}
+button.btn-neon:disabled{ background:#555; color:#aaa; cursor:not-allowed;}
+.chat-box{
+  height:300px; overflow-y:auto; border:1px solid #0ff;
+  margin:10px; padding:5px; background:#111;
+}
+.container{padding:10px;}
 .hidden{display:none;}
-.neon-text{font-size:2rem;color:#00fffc;text-shadow:0 0 5px #00fffc,0 0 10px #00fffc,0 0 20px #00bfff;}
-.neon-text-small{font-size:1.2rem;color:#00fffc;text-shadow:0 0 3px #00fffc,0 0 6px #00fffc;}
-.btn-neon{padding:10px 20px;margin:5px;font-size:1rem;color:#fff;background:#0b0b0b;border:1px solid #00fffc;border-radius:5px;cursor:pointer;text-shadow:0 0 5px #00fffc;}
-.btn-neon:hover{background:#00fffc;color:#000;}
-.input-neon{padding:5px; border-radius:5px; border:1px solid #00fffc; background:#111;color:#00fffc; text-align:center;}
-.chat-box{height:300px; overflow-y:auto; border:1px solid #00fffc; margin-bottom:5px; padding:5px; background:#111;}
-table{width:90%; margin:0 auto; border-collapse:collapse;}
-th,td{border:1px solid #00fffc; padding:5px; color:#00fffc;}
-footer{margin-top:20px;}
