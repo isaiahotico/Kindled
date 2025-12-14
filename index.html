@@ -13,16 +13,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#00fffc">
 
-<!-- Service Worker -->
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(()=>console.log("Service Worker Registered"))
-      .catch(err=>console.error("SW registration failed", err));
-  }
-</script>
-
-<!-- Firebase + App JS -->
+<!-- App JS -->
 <script type="module" src="app.js" defer></script>
 </head>
 <body>
