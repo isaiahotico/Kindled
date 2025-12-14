@@ -14,17 +14,14 @@
 <body>
   <div class="container">
     <h1 class="indie-text">💸 Indie Ads Earning Game</h1>
-    <p class="subtitle">Watch ads, earn coins, level up your story!</p>
+    <p class="subtitle">Watch ads, earn coins, level up, and stay inspired!</p>
 
-    <!-- Main Button -->
     <button id="btnAllAds">Watch Ads & Earn</button>
 
-    <!-- Balance Display -->
     <div class="balance-container">
       <h2>Balance: <span id="balance">₱0.00</span></h2>
     </div>
 
-    <!-- Progress & Story Level -->
     <div class="story-container">
       <div id="storyLevel">Story Level: 1</div>
       <div class="progress-bar">
@@ -33,16 +30,19 @@
       <div id="badgeContainer"></div>
     </div>
 
-    <!-- Reward Popup -->
     <div id="rewardPopup" class="reward-popup"></div>
 
-    <!-- Leaderboard -->
     <div class="leaderboard">
-      <h3>Leaderboard</h3>
+      <h3>Leaderboard (Top 10)</h3>
       <ul id="leaderboardList"></ul>
     </div>
 
-    <!-- Referral -->
+    <div id="timeDate"></div>
+
+    <div class="quote-slider">
+      <div id="quoteText"></div>
+    </div>
+
     <div class="referral">
       <h3>Referral Link</h3>
       <input type="text" id="referralLink" readonly>
@@ -50,15 +50,12 @@
       <div id="referralNotifications"></div>
     </div>
 
-    <!-- Withdraw -->
     <div class="withdraw-container">
       <h3>Withdraw via GCash</h3>
       <input type="text" id="gcashNumber" placeholder="Enter GCash Number">
       <button id="withdrawBtn">Withdraw</button>
-      <p id="withdrawMessage"></p>
     </div>
 
-    <!-- Owner Dashboard -->
     <div class="owner-dashboard">
       <h3>Owner Dashboard</h3>
       <input type="password" id="ownerPassword" placeholder="Enter Password">
@@ -66,6 +63,8 @@
       <div id="ownerPanel" style="display:none;">
         <h4>Withdraw Requests</h4>
         <ul id="withdrawRequests"></ul>
+        <h4>User Data</h4>
+        <ul id="userData"></ul>
       </div>
     </div>
   </div>
