@@ -1,39 +1,71 @@
-let uid='guest_'+Math.random().toString(36).slice(2);
-let balance=parseFloat(localStorage.getItem(uid+'_bal')||0);
-let progress=parseInt(localStorage.getItem(uid+'_prog')||0);
-const rewards=[0.025,0.03,0.035,0.04];
-const ADS_PER_LEVEL=5;
-const $=id=>document.getElementById(id);
+// User data
+let balance = 0;
+let streak = 0;
+let level = 1;
+let referrals = 0;
+let withdrawHistory = [];
 
-$('balance').innerText=`₱${balance.toFixed(3)}`;
-
-function popup(val){
- const p=$('rewardPopup');
- p.innerText=`+₱${val.toFixed(3)}`;
- p.style.opacity=1;
- setTimeout(()=>p.style.opacity=0,2000);
+// Page navigation
+function showPage(page) {
+  ['landing','ads','dashboard','profile'].forEach(p=>{
+    document.getElementById(p).classList.add('hidden');
+  });
+  document.getElementById(page).classList.remove('hidden');
+  updateUI();
 }
 
-async function playRandomAd(){
- const ads=[()=>show_10276123(),()=>show_10276123('pop'),()=>show_10276123({type:'inApp',inAppSettings:{frequency:1,interval:20}})];
- await ads[Math.floor(Math.random()*ads.length)]();
+// Update UI elements
+function updateUI() {
+  ['balanceAds','balanceDash'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.innerText = `Balance: ₱${balance.toFixed(3)}`;
+  });
+  const streakEl = document.getElementById('streak');
+  if(streakEl) streakEl.innerText = `Daily Streak: ${streak}`;
+  const levelEl = document.getElementById('level');
+  if(levelEl) levelEl.innerText = `Level: ${level}`;
+  const refEl = document.getElementById('referrals');
+  if(refEl) refEl.innerText = `Referrals: ${referrals}`;
+  const historyEl = document.getElementById('withdrawHistory');
+  if(historyEl) {
+    historyEl.innerHTML = withdrawHistory.map(w=>`<div>₱${w.amount.toFixed(2)} → ${w.gcash}</div>`).join('');
+  }
 }
 
-async function watchAds(count){
- for(let i=0;i<count;i++){
-  await playRandomAd();
-  await new Promise(r=>setTimeout(r,800));
- }
- const reward=rewards[Math.floor(Math.random()*rewards.length)];
- balance+=reward; progress++;
- localStorage.setItem(uid+'_bal',balance);
- localStorage.setItem(uid+'_prog',progress);
- $('balance').innerText=`₱${balance.toFixed(3)}`;
- popup(reward);
- $('progressFill').style.width=`${(progress%ADS_PER_LEVEL)/ADS_PER_LEVEL*100}%`;
- $('storyLevel').innerText=`Story Level: ${Math.floor(progress/ADS_PER_LEVEL)+1}`;
+// Reward function
+function rewardUser(amount=0.025){
+  balance += amount;
+  streak++;
+  if(streak % 50 === 0) level++;
+  updateUI();
 }
 
-$('btnAllAds').onclick=()=>watchAds(5);
-$('dailyLoginBtn').onclick=()=>watchAds(3);
-$('giftBtn').onclick=()=>watchAds(1);
+// Withdraw function
+function withdrawGCash(){
+  const gcash = document.getElementById('gcashNumber').value;
+  if(!gcash){ alert('Enter your GCash number'); return; }
+  if(balance < 0.025){ alert('Insufficient balance'); return; }
+  withdrawHistory.push({amount:balance,gcash});
+  balance=0;
+  updateUI();
+  alert('Withdrawal request sent!');
+}
+
+// Monetag Ads sequence
+document.addEventListener('DOMContentLoaded',()=>{
+  const watchBtn = document.getElementById('watchAdsBtn');
+  if(!watchBtn) return;
+
+  watchBtn.addEventListener('click', async ()=>{
+    for(let i=0;i<4;i++){
+      try{
+        await show_10276123(); rewardUser();
+        await show_10276123('pop'); rewardUser();
+        await show_10276123({type:'inApp', inAppSettings:{frequency:1, capping:0.1, interval:10, timeout:2, everyPage:false}}); rewardUser();
+      }catch(e){ console.warn('Ad error:', e);}
+    }
+  });
+});
+
+// Initialize UI
+showPage('landing');
