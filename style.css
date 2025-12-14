@@ -25,15 +25,15 @@ body {
 }
 
 button {
-  padding: 15px 50px;
-  font-size: 18px;
+  padding: 12px 30px;
+  font-size: 16px;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   background-color: #ff4b2b;
   color: white;
   cursor: pointer;
-  margin: 10px;
-  box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+  margin: 5px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
   transition: transform 0.2s, background-color 0.3s;
 }
 
@@ -43,16 +43,16 @@ button:hover {
 }
 
 input {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 6px;
   border: 1px solid #ccc;
   margin: 5px 0;
-  width: 200px;
+  width: 180px;
 }
 
-.balance-container, .withdraw-container, .owner-dashboard, .leaderboard, .referral, .story-container {
-  margin-top: 20px;
+.balance-container, .withdraw-container, .owner-dashboard, .leaderboard, .referral, .story-container, #timeDate, .quote-slider {
+  margin-top: 15px;
 }
 
 .reward-popup {
@@ -62,10 +62,10 @@ input {
   transform: translateX(-50%);
   background: #ff416c;
   color: white;
-  padding: 15px 25px;
-  font-size: 18px;
+  padding: 12px 20px;
+  font-size: 16px;
   font-weight: bold;
-  border-radius: 12px;
+  border-radius: 10px;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s, transform 0.5s;
@@ -90,14 +90,42 @@ input {
 }
 
 #badgeContainer {
-  margin-top: 10px;
-  font-size: 20px;
+  margin-top: 5px;
+  font-size: 18px;
   font-weight: bold;
   color: #ff4b2b;
 }
 
 #referralNotifications {
-  margin-top: 10px;
+  margin-top: 5px;
   color: green;
   font-weight: bold;
+}
+
+#timeDate {
+  font-size: 14px;
+  color: #333;
+  margin-top: 10px;
+}
+
+.quote-slider {
+  width: 90%;
+  overflow: hidden;
+  margin: 10px auto;
+  border-top: 1px solid #ff4b2b;
+  border-bottom: 1px solid #ff4b2b;
+  padding: 5px 0;
+  font-style: italic;
+  color: #ff416c;
+}
+
+#quoteText {
+  display: inline-block;
+  white-space: nowrap;
+  animation: slideQuote 20s linear infinite;
+}
+
+@keyframes slideQuote {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
