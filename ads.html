@@ -1,30 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Watch Ads</title>
-<link rel="stylesheet" href="style.css">
-<script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123'></script>
-</head>
-
-<body>
 <div class="container">
-  <h2>Watch & Earn</h2>
-  <p>Your Balance: ₱ <span id="earnings">0</span></p>
+  <h2>Watch Ad & Earn</h2>
+  <p>Earnings: <span id="earnings">0</span> PHP</p>
 
   <button onclick="playAd()">▶ Play Ad</button>
 
-  <p class="note">₱0.025 per ad • Auto reward after 10 seconds</p>
-
-  <button onclick="go('index.html')">⬅ Return Home</button>
+  <button onclick="goHome()">Return Home</button>
 </div>
-
 <footer id="footer"></footer>
-
-<script src="app.js"></script>
-<script>
-loadBalance();
-updateFooter();
-</script>
-</body>
-</html>
