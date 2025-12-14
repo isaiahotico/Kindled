@@ -1,18 +1,19 @@
 {
-  "name": "Monetag Ads App",
-  "short_name": "AdsApp",
-  "start_url": "index.html",
+  "name": "Click Ads Monetag App",
+  "short_name": "ClickAds",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#fff8e1",
-  "theme_color": "#ff3c00",
+  "background_color": "#f5f5f5",
+  "theme_color": "#4CAF50",
+  "description": "App to show Monetag ads with double rewards",
   "icons": [
     {
-      "src": "assets/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "assets/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
