@@ -3,42 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SiliconEarn</title>
+<title>Sentinel Dark</title>
 <link rel="stylesheet" href="style.css">
+
+<!-- Monetag Ads -->
 <script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script src="app.js" defer></script>
 </head>
 <body>
-  <div class="container" id="landing">
-    <h1 class="neon-text">Welcome to SiliconEarn</h1>
-    <p class="neon-text-small">Earn PHP ₱ by watching ads and withdraw via GCash!</p>
-    <button onclick="showPage('ads')" class="btn-neon">Watch Ads</button>
-    <button onclick="showPage('dashboard')" class="btn-neon">Dashboard</button>
-    <button onclick="showPage('profile')" class="btn-neon">Profile</button>
-  </div>
 
-  <div class="container hidden" id="ads">
-    <h1 class="neon-text">Ads Room</h1>
-    <button id="watchAdsBtn" class="btn-neon">WATCH ADS</button>
-    <div id="balanceAds" class="neon-text-small">Balance: ₱0.00</div>
-    <button onclick="showPage('landing')" class="btn-neon">Back</button>
-  </div>
+<!-- Landing -->
+<div class="container" id="landing">
+  <h1 class="neon-text">Welcome to Sentinel Dark</h1>
+  <p class="neon-text-small">Earn PHP ₱ by watching ads and withdraw via GCash!</p>
+  <button onclick="showPage('ads')" class="btn-neon">Watch Ads</button>
+  <button onclick="showPage('gifts')" class="btn-neon">Gifts</button>
+  <button onclick="showPage('dashboard')" class="btn-neon">Dashboard</button>
+  <button onclick="showPage('profile')" class="btn-neon">Profile</button>
+  <button onclick="showPage('owner')" class="btn-neon">Owner Dashboard</button>
+</div>
 
-  <div class="container hidden" id="dashboard">
-    <h1 class="neon-text">Dashboard</h1>
-    <div id="balanceDash" class="neon-text-small">Balance: ₱0.00</div>
-    <input type="text" id="gcashNumber" placeholder="Enter GCash number" class="input-neon"/>
-    <button onclick="withdrawGCash()" class="btn-neon">Withdraw</button>
-    <div id="withdrawHistory" class="neon-text-small"></div>
-    <button onclick="showPage('landing')" class="btn-neon">Back</button>
-  </div>
+<!-- Ads Room -->
+<div class="container hidden" id="ads">
+  <h1 class="neon-text">Watch Ads</h1>
+  <button id="watchAdsBtn" class="btn-neon">WATCH 4 ADS</button>
+  <div id="adsProgress" class="neon-text-small">Ads left: 4</div>
+  <div id="balanceAds" class="neon-text-small">Balance: ₱0.00</div>
+  <button onclick="showPage('landing')" class="btn-neon">Back</button>
+</div>
 
-  <div class="container hidden" id="profile">
-    <h1 class="neon-text">Profile & Achievements</h1>
-    <div id="streak" class="neon-text-small">Daily Streak: 0</div>
-    <div id="level" class="neon-text-small">Level: 1</div>
-    <div id="referrals" class="neon-text-small">Referrals: 0</div>
-    <button onclick="showPage('landing')" class="btn-neon">Back</button>
-  </div>
+<!-- Gifts Room -->
+<div class="container hidden" id="gifts">
+  <h1 class="neon-text">Gifts</h1>
+  <button id="giftsBtn" class="btn-neon">WATCH 4 ADS (₱0.03)</button>
+  <div id="giftsProgress" class="neon-text-small">Ads left: 4</div>
+  <div id="giftsCooldown" class="neon-text-small"></div>
+  <button onclick="showPage('landing')" class="btn-neon">Back</button>
+</div>
+
+<!-- Dashboard -->
+<div class="container hidden" id="dashboard">
+  <h1 class="neon-text">Dashboard</h1>
+  <div id="balanceDash" class="neon-text-small">Balance: ₱0.00</div>
+  <input type="text" id="gcashNumber" placeholder="Enter GCash number" class="input-neon"/>
+  <button onclick="withdrawGCash()" class="btn-neon">Withdraw</button>
+  <h3 class="neon-text-small">Recent Withdrawals</h3>
+  <table id="withdrawTable" class="neon-text-small">
+    <tr><th>Amount</th><th>GCash</th><th>Status</th></tr>
+  </table>
+  <button onclick="showPage('landing')" class="btn-neon">Back</button>
+</div>
+
+<!-- Profile -->
+<div class="container hidden" id="profile">
+  <h1 class="neon-text">Profile & Achievements</h1>
+  <div id="streak" class="neon-text-small">Daily Streak: 0</div>
+  <div id="level" class="neon-text-small">Level: 1</div>
+  <div id="referrals" class="neon-text-small">Referrals: 0</div>
+  <div id="affiliateEarn" class="neon-text-small">Affiliate Earned: ₱0.00</div>
+  <button onclick="showPage('landing')" class="btn-neon">Back</button>
+</div>
+
+<!-- Owner Dashboard -->
+<div class="container hidden" id="owner">
+  <h1 class="neon-text">Owner Dashboard</h1>
+  <input type="password" id="ownerPass" placeholder="Enter Owner Password" class="input-neon"/>
+  <button onclick="loginOwner()" class="btn-neon">Login</button>
+  <div id="pendingWithdrawals" class="neon-text-small"></div>
+  <button onclick="sendWithdrawalsEmail()" class="btn-neon">Send All Withdrawals to Gmail</button>
+  <button onclick="showPage('landing')" class="btn-neon">Back</button>
+</div>
+
+<!-- Footer -->
+<footer class="neon-text-small">
+  Sentinel Dark | Gmail: otico.isai2@gmail.com | <span id="currentDateTime"></span>
+</footer>
+
 </body>
 </html>
