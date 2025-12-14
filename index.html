@@ -16,12 +16,23 @@
     <h1 class="indie-text">💸 Indie Ads Earning Game</h1>
     <p class="subtitle">Watch ads, earn coins, level up, and stay inspired!</p>
 
+    <!-- Daily Login Bonus -->
+    <div class="daily-login">
+      <button id="dailyLoginBtn">Daily Login Bonus 💎</button>
+      <div id="dailyTimer">Ready</div>
+    </div>
+
+    <!-- Ads Description -->
+    <p class="ads-desc">Directly watch ads first; it takes 5–7 ads before you earn cash 0.025 up to 0.040 pesos</p>
+
+    <!-- Single optimized ad button -->
     <button id="btnAllAds">Watch Ads & Earn</button>
 
     <div class="balance-container">
       <h2>Balance: <span id="balance">₱0.00</span></h2>
     </div>
 
+    <!-- Story & Progress -->
     <div class="story-container">
       <div id="storyLevel">Story Level: 1</div>
       <div class="progress-bar">
@@ -32,8 +43,9 @@
 
     <div id="rewardPopup" class="reward-popup"></div>
 
+    <!-- Leaderboard -->
     <div class="leaderboard">
-      <h3>Leaderboard (Top 10)</h3>
+      <h3>Leaderboard (All Users)</h3>
       <ul id="leaderboardList"></ul>
     </div>
 
@@ -43,19 +55,22 @@
       <div id="quoteText"></div>
     </div>
 
+    <!-- Referral -->
     <div class="referral">
       <h3>Referral Link</h3>
       <input type="text" id="referralLink" readonly>
-      <p>Share this link and earn 10% of referred users' earnings!</p>
+      <p>Share this Telegram link to earn 10% of referred users' earnings!</p>
       <div id="referralNotifications"></div>
     </div>
 
+    <!-- Withdraw -->
     <div class="withdraw-container">
       <h3>Withdraw via GCash</h3>
       <input type="text" id="gcashNumber" placeholder="Enter GCash Number">
       <button id="withdrawBtn">Withdraw</button>
     </div>
 
+    <!-- Owner Dashboard -->
     <div class="owner-dashboard">
       <h3>Owner Dashboard</h3>
       <input type="password" id="ownerPassword" placeholder="Enter Password">
