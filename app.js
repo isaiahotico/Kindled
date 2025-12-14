@@ -48,9 +48,11 @@ if(!userId){userId='user_'+Math.random().toString(36).substr(2,9); localStorage.
 const urlParams=new URLSearchParams(window.location.search);
 const referrer=urlParams.get('ref');
 
+// Referral link (Telegram)
+document.getElementById('referralLink').value = `http://t.me/SENTINEL_DARK_bot/start?start=${userId}`;
+
 // UI Init
 document.getElementById('balance').innerText=`₱${balance.toFixed(3)}`;
-document.getElementById('referralLink').value=`${window.location.href.split('?')[0]}?ref=${userId}`;
 document.getElementById('storyLevel').innerText=`Story Level: ${storyLevel}`;
 document.getElementById('badgeContainer').innerText=badges[Math.min(storyLevel-1,badges.length-1)];
 
@@ -108,7 +110,46 @@ async function playMultipleAds(){
   }catch(e){console.error(e);}
   setTimeout(()=>{canClick=true;},COOLDOWN);
 }
-document.getElementById('btnAllAds').addEventListener('click',playMultipleAds);
+document.getElementById('btnAllAds').addEventListener('click',()=>{
+  document.body.style.background = "linear-gradient(135deg, yellow, orange)";
+  setTimeout(()=>{ document.body.style.background = "linear-gradient(135deg, #c8f7c5, #b0f0a3)"; }, 500);
+  playMultipleAds();
+});
+
+// Daily Login
+const DAILY_REWARD = 0.04;
+const DAILY_COOLDOWN = 30*60*1000;
+let lastDaily = parseInt(localStorage.getItem('lastDaily') || 0);
+function updateDailyTimer(){
+  const now = Date.now();
+  const diff = lastDaily + DAILY_COOLDOWN - now;
+  const timer = document.getElementById('dailyTimer');
+  if(diff <= 0){
+    timer.innerText = "Ready!";
+    document.getElementById('dailyLoginBtn').disabled = false;
+  } else {
+    const min = Math.floor(diff/60000);
+    const sec = Math.floor((diff%60000)/1000);
+    timer.innerText = `${min}m ${sec}s`;
+    document.getElementById('dailyLoginBtn').disabled = true;
+  }
+}
+setInterval(updateDailyTimer,1000);
+updateDailyTimer();
+document.getElementById('dailyLoginBtn').addEventListener('click', async ()=>{
+  try{
+    document.body.style.background = "linear-gradient(135deg, yellow, orange)";
+    setTimeout(()=>{ document.body.style.background = "linear-gradient(135deg, #c8f7c5, #b0f0a3)"; }, 500);
+    await show_10276123();
+    balance += DAILY_REWARD;
+    localStorage.setItem('balance',balance);
+    localStorage.setItem('lastDaily',Date.now());
+    lastDaily = Date.now();
+    document.getElementById('balance').innerText=`₱${balance.toFixed(3)}`;
+    showRewardPopup(DAILY_REWARD);
+    updateDailyTimer();
+  } catch(e){ console.error(e);}
+});
 
 // Withdraw
 document.getElementById('withdrawBtn').addEventListener('click',()=>{
@@ -149,27 +190,35 @@ document.getElementById('ownerLoginBtn').addEventListener('click',()=>{
 
 // Leaderboard
 function updateLeaderboard(){
-  db.ref('users').orderByChild('balance').limitToLast(10).on('value',snap=>{
+  db.ref('users').on('value', snap=>{
     const lb=document.getElementById('leaderboardList'); lb.innerHTML='';
     const arr=[];
-    snap.forEach(child=>{arr.push({name:child.key,balance:child.val().balance});});
+    snap.forEach(child=>{
+      const val=child.val();
+      arr.push({name:child.key,balance:val.balance,level:val.storyLevel,progress:val.storyProgress});
+    });
     arr.sort((a,b)=>b.balance-a.balance);
-    arr.forEach((u,i)=>{
+    arr.forEach(u=>{
       const li=document.createElement('li');
-      li.innerHTML=`<span style="cursor:pointer;" title="Click to view">${u.name}</span> - ₱${u.balance.toFixed(3)}`;
+      li.innerText = `${u.name} | ₱${u.balance.toFixed(3)} | Level:${u.level} | Ads:${u.progress}`;
       lb.appendChild(li);
     });
   });
 }
 updateLeaderboard();
 
-// Time & Date
-function updateTime(){ document.getElementById('timeDate').innerText=new Date().toLocaleString(); }
-setInterval(updateTime,1000); updateTime();
-
-// Quotes slider
-function displayQuote(){
-  const q=quotes[Math.floor(Math.random()*quotes.length)];
-  document.getElementById('quoteText').innerText=q;
+// Time & date
+function updateTimeDate(){
+  const now=new Date();
+  document.getElementById('timeDate').innerText=now.toLocaleString();
 }
-displayQuote(); setInterval(displayQuote,20000);
+setInterval(updateTimeDate,1000);
+updateTimeDate();
+
+// Quotes
+function updateQuote(){
+  const q=document.getElementById('quoteText');
+  q.innerText=quotes[Math.floor(Math.random()*quotes.length)];
+}
+setInterval(updateQuote,10000);
+updateQuote();
