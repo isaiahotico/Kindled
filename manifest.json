@@ -5,7 +5,7 @@
   "display":"standalone",
   "background_color":"#0d0d0d",
   "theme_color":"#00fffc",
-  "description":"Sentinel Dark: Earn PHP watching ads with Neon UI, GCash withdrawal, affiliate system, owner dashboard.",
+  "description":"Sentinel Dark: Earn PHP watching ads with Neon UI, GCash withdrawal, affiliate system, owner dashboard, world chat.",
   "icons":[
     {"src":"icon-192.png","sizes":"192x192","type":"image/png"},
     {"src":"icon-512.png","sizes":"512x512","type":"image/png"}
