@@ -2,21 +2,19 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Owner Panel</title>
+<title>Owner Approval Panel</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="container" id="loginBox">
   <h2>Owner Login</h2>
-  <input type="password" id="ownerPass" placeholder="Password">
-  <button onclick="loginOwner()">Enter</button>
+  <input type="password" id="ownerPass" placeholder="Owner Password">
+  <button onclick="loginOwner()">Enter Panel</button>
 </div>
 
 <div class="container hidden" id="panelBox">
   <h2>Withdrawal Requests</h2>
-
   <table>
     <thead>
       <tr>
@@ -30,12 +28,14 @@
     <tbody id="withdrawTable"></tbody>
   </table>
 
-  <button onclick="go('index.html')">⬅ Return Home</button>
+  <button onclick="goHome()">Return Home</button>
 </div>
 
 <footer id="footer"></footer>
 
 <script src="app.js"></script>
-<script>updateFooter();</script>
+<script>
+updateFooter();
+</script>
 </body>
 </html>
