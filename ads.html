@@ -2,12 +2,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Watch</title>
+<title>Watch Ads</title>
 <link rel="stylesheet" href="style.css">
+
+<!-- REQUIRED MONETAG SDK -->
 <script src="//libtl.com/sdk.js"
         data-zone="10276123"
-        data-sdk="show_10276123"
-        async></script>
+        data-sdk="show_10276123"></script>
 </head>
 
 <body>
@@ -18,11 +19,12 @@
     ₱ <span id="earnings">0.000</span>
   </div>
 
-  <button id="adBtn" class="primary">▶ Play Ad</button>
+  <button class="primary" onclick="playAllAds()">
+    ▶ Watch Sponsored Content
+  </button>
 
   <p class="hint">
-    ₱0.025 per full watch<br>
-    Reward after confirmation
+    One click • Multiple ads • One reward
   </p>
 
   <button class="ghost" onclick="go('index.html')">Return Home</button>
@@ -34,7 +36,6 @@
 <script>
 loadBalance();
 updateFooter();
-document.getElementById("adBtn").onclick = playAdSafe;
 </script>
 </body>
 </html>
