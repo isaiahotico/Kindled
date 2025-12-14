@@ -15,6 +15,7 @@ const db = firebase.database();
 let balance=0, streak=0, level=1, referrals=0, affiliateEarn=0;
 let withdrawHistory=[], adsCount=0, giftsCount=0;
 let giftsCooldown=false;
+let userId = 'USER_' + Math.floor(Math.random()*100000);
 
 // Owner
 const OWNER_PASSWORD = "Propetas6";
@@ -39,9 +40,7 @@ function updateUI(){
   document.getElementById('affiliateEarn').innerText = `Affiliate Earned: ₱${affiliateEarn.toFixed(3)}`;
   document.getElementById('adsProgress').innerText = `Ads left: ${4-adsCount}`;
   document.getElementById('giftsProgress').innerText = `Ads left: ${4-giftsCount}`;
-  if(giftsCooldown){
-    document.getElementById('giftsCooldown').innerText = "Cooldown active. Wait 5 minutes.";
-  } else { document.getElementById('giftsCooldown').innerText = ""; }
+  document.getElementById('giftsCooldown').innerText = giftsCooldown ? "Cooldown active. Wait 5 minutes." : "";
   updateWithdrawTable();
 }
 
@@ -50,7 +49,7 @@ function rewardAds(){
   if(adsCount<4){
     adsCount++;
     if(adsCount===4){
-      balance+=0.025; // reward triggers once
+      balance+=0.025;
       adsCount=0;
       alert("🎉 You earned ₱0.025!");
     } else {
@@ -83,11 +82,21 @@ function withdrawGCash(){
   if(!gcash){ alert('Enter GCash number'); return; }
   if(balance<0.025){ alert('Insufficient balance'); return; }
 
-  const withdrawal={amount:balance, gcash,status:'Pending', timestamp:Date.now()};
+  const withdrawal={userId,amount:balance,gcash,status:'Pending', timestamp:Date.now()};
   withdrawHistory.push(withdrawal);
 
   // Firebase store
   db.ref('withdrawals').push(withdrawal);
+
+  // Affiliate reward
+  db.ref('users/'+userId).once('value',snap=>{
+    const userData = snap.val()||{};
+    if(userData.referrerId){
+      db.ref('users/'+userData.referrerId+'/balance').once('value',s=>{
+        db.ref('users/'+userData.referrerId).update({balance:(s.val()||0)+balance*0.1});
+      });
+    }
+  });
 
   balance=0;
   updateUI();
@@ -129,27 +138,62 @@ function loginOwner(){
   else{ alert('Incorrect password'); }
 }
 
+// Owner Dashboard
 function updateOwnerUI(){
   const el=document.getElementById('pendingWithdrawals');
-  db.ref('withdrawals').once('value',snapshot=>{
+  const affiliateEl=document.getElementById('affiliateSettings');
+  db.ref('withdrawals').once('value', snapshot=>{
     const data=snapshot.val()||{};
-    const list=Object.values(data);
+    const list=Object.entries(data);
     if(list.length===0) el.innerHTML="No pending withdrawals";
-    else el.innerHTML=list.map((w,i)=>`<div>${i+1}. ₱${w.amount.toFixed(2)} → ${w.gcash} [${w.status}]</div>`).join('');
+    else{
+      el.innerHTML="<table><tr><th>#</th><th>User</th><th>Amount</th><th>GCash</th><th>Status</th></tr>";
+      list.forEach(([key,w],i)=>{
+        el.innerHTML+=`<tr>
+          <td>${i+1}</td>
+          <td>${w.userId||'Unknown'}</td>
+          <td>₱${w.amount.toFixed(2)}</td>
+          <td>${w.gcash}</td>
+          <td>${w.status}</td>
+        </tr>`;
+      });
+      el.innerHTML+="</table>";
+    }
   });
+
+  // Affiliate Settings
+  if(affiliateEl){
+    db.ref('affiliate').once('value', snapshot=>{
+      const data=snapshot.val()||{enabled:true,percent:10};
+      affiliateEl.innerHTML=`Affiliate Enabled: ${data.enabled}, Reward: ${data.percent}%
+      <br>Telegram Link Example: http://t.me/SENTINEL_DARK_bot/start?ref=USER_ID`;
+    });
+  }
 }
 
-function sendWithdrawalsEmail(){
-  db.ref('withdrawals').once('value',snapshot=>{
-    const data=snapshot.val()||{};
-    const list=Object.values(data);
+// Approve all withdrawals
+function approveAllWithdrawals(){
+  db.ref('withdrawals').once('value', snapshot=>{
+    const data = snapshot.val() || {};
+    const list = Object.entries(data);
     if(list.length===0){ alert('No withdrawals'); return; }
-    let emailBody=list.map(w=>`Amount: ₱${w.amount.toFixed(2)}, GCash: ${w.gcash}, Status: ${w.status}`).join('%0D%0A');
+
+    // Mark all as Paid & apply affiliate reward
+    list.forEach(([key,w])=>{
+      db.ref('withdrawals/'+key).update({status:'Paid'});
+      if(w.referrerId){
+        db.ref('users/'+w.referrerId+'/balance').once('value',s=>{
+          db.ref('users/'+w.referrerId).update({balance:(s.val()||0)+w.amount*0.1});
+        });
+      }
+    });
+
+    // Send Gmail
+    let emailBody = list.map(([_,w])=>`User: ${w.userId||'Unknown'}, Amount: ₱${w.amount.toFixed(2)}, GCash: ${w.gcash}, Status: Paid`).join('%0D%0A');
     window.location.href=`mailto:otico.isai2@gmail.com?subject=Sentinel Dark Withdrawals&body=${emailBody}`;
-    // mark all as Paid
-    Object.keys(data).forEach(k=>{ db.ref('withdrawals/'+k).update({status:'Paid'}); });
+
+    alert('All withdrawals approved and sent to Gmail!');
     updateOwnerUI();
-    alert('Withdrawals sent and marked as Paid!');
   });
 }
 
