@@ -1,51 +1,40 @@
-body{
-  font-family: Arial, sans-serif;
-  background:#0f172a;
-  color:#fff;
-  text-align:center;
-  margin:0;
-  padding:0;
+body {
+    font-family: Arial, sans-serif;
+    background: #fff8e1;
+    margin: 0;
+    padding: 0;
 }
 
-header{
-  padding:20px;
-  background:#1e293b;
-  font-size:18px;
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
 }
 
-button{
-  cursor:pointer;
-  border:none;
-  border-radius:10px;
-  font-weight:bold;
+h1 {
+    color: #ff3c00;
+    margin-bottom: 20px;
 }
 
-.ads-room-btn{
-  padding:10px 20px;
-  background:linear-gradient(135deg,#ff9800,#ff5722);
-  color:#fff;
-  font-size:14px;
-  margin-top:20px;
+p {
+    color: #555;
+    font-size: 16px;
 }
 
-.watch-btn{
-  padding:12px 25px;
-  font-size:16px;
-  background:#22c55e;
-  color:#000;
-  margin:20px;
+button {
+    padding: 15px 30px;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #ff8c00, #ff3c00);
+    color: #fff;
+    transition: 0.3s;
 }
 
-.ads-container{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:15px;
-  padding:15px;
-}
-
-.ad-box{
-  background:#020617;
-  border-radius:10px;
-  padding:10px;
-  min-height:250px;
+button:hover {
+    transform: scale(1.05);
 }
