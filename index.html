@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Telegram Ads Earn</title>
-  <script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123'></script>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Earning App</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
 </head>
 <body>
-  <div class="app">
-    <h1>💰 Watch Ads & Earn</h1>
-    <div class="card">
-      <p>Balance</p>
-      <h2 id="balance">₱0.000</h2>
-    </div>
-    <button id="watchAdBtn">▶ Watch Ad</button>
-    <p id="cooldownText"></p>
-    <footer><small>₱0.025 per ad • 1 min cooldown</small></footer>
-  </div>
-  <script src="app.js"></script>
+
+<header>
+  <h1>💰 Mini Earning App</h1>
+</header>
+
+<main>
+  <p>Welcome! Start earning by watching ads.</p>
+  <button class="ads-room-btn" onclick="openAdsRoom()">ADS ROOM</button>
+</main>
+
 </body>
 </html>
