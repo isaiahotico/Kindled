@@ -1,4 +1,4 @@
-// Firebase config
+// Firebase Config
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -165,7 +165,7 @@ function loginOwner(){
 }
 function updateOwnerUI(){
   const el=document.getElementById('pendingWithdrawals');
-  db.ref('withdrawals').once('value', snap=>{
+  db.ref('withdrawals').once("value", snap=>{
     const data = snap.val()||{};
     if(!Object.keys(data).length){ el.innerHTML="No pending withdrawals"; return; }
     el.innerHTML="<table><tr><th>#</th><th>User</th><th>Amount</th><th>GCash</th><th>Status</th></tr>";
@@ -208,14 +208,29 @@ function initWorldChat(){
   window.sendChat = function(){
     const text = chatInput.value.trim();
     if(!text) return;
-    db.ref('chat').push({
-      telegramId: userId,
-      username,
-      message: text,
-      timestamp: Date.now()
-    });
-    chatInput.value='';
+
+    // Require 2 ads per message
+    show_10276123('pop').then(()=>{
+      show_10276123().then(()=>{
+        addBalance(0.015);
+        db.ref('chat').push({
+          telegramId: userId,
+          username,
+          message: text,
+          timestamp: Date.now()
+        });
+        alert("Message sent and rewards added");
+        chatInput.value='';
+      }).catch(()=>{ alert("Ad failed"); });
+    }).catch(()=>{ alert("Ad failed"); });
   }
+}
+
+// Balance helper
+function addBalance(amount){
+  balance += amount;
+  db.ref('users/'+userId).update({balance});
+  updateUI();
 }
 
 // Initialize
