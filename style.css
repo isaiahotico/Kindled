@@ -1,13 +1,9 @@
 :root {
   --bg:#0f0f12;
-  --card:#16161d;
-  --text:#eaeaf0;
-  --muted:#8b8b9e;
-  --accent:#7c7cff;
-}
-
-* {
-  box-sizing:border-box;
+  --card:#17171f;
+  --text:#f2f2f7;
+  --muted:#9a9aa5;
+  --accent:#ffb300;
 }
 
 body {
@@ -24,53 +20,49 @@ body {
 }
 
 .logo {
-  font-size:42px;
+  font-size:44px;
   letter-spacing:-1px;
 }
 
 .tagline {
   color:var(--muted);
-  margin-bottom:32px;
-}
-
-.menu button {
-  display:block;
-  width:100%;
-  margin:10px 0;
+  margin-bottom:30px;
 }
 
 .balance {
   font-size:36px;
-  margin:24px 0;
+  margin:20px 0;
 }
 
 button {
+  width:100%;
+  padding:14px;
+  margin:8px 0;
+  border-radius:14px;
+  border:none;
   background:var(--card);
   color:var(--text);
-  border:1px solid #222;
-  padding:14px;
-  border-radius:14px;
   font-size:16px;
 }
 
 button.primary {
-  background:var(--accent);
+  background:linear-gradient(90deg,#ff9800,#ffd54f);
   color:#000;
 }
 
 button.ghost {
-  background:transparent;
+  background:none;
   color:var(--muted);
 }
 
 input {
   width:100%;
-  margin:8px 0;
   padding:12px;
-  background:var(--card);
-  border:1px solid #222;
-  color:var(--text);
+  margin:6px 0;
   border-radius:12px;
+  border:none;
+  background:var(--card);
+  color:var(--text);
 }
 
 table {
@@ -78,7 +70,7 @@ table {
   font-size:13px;
 }
 
-th,td {
+th, td {
   padding:6px;
 }
 
