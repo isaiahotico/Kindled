@@ -1,5 +1,36 @@
-body{font-family:Courier New,monospace;background:#c8f7c5;text-align:center}
-button{padding:12px 24px;border-radius:10px;border:none;background:#ff4b2b;color:#fff;margin:5px}
-.reward-popup{position:fixed;top:20%;left:50%;transform:translateX(-50%);opacity:0;background:#ff416c;color:#fff;padding:10px;border-radius:10px}
-.progress-bar{width:80%;height:20px;background:#ddd;margin:auto}
-#progressFill{height:100%;width:0;background:linear-gradient(90deg,#ff4b2b,#ff416c)}
+body{
+  margin:0;
+  font-family:monospace;
+  background:#c8f7c5;
+  text-align:center;
+}
+.app{padding:20px}
+button{
+  padding:12px 22px;
+  border-radius:10px;
+  border:none;
+  background:#ff4b2b;
+  color:#fff;
+  margin:5px;
+}
+button:active{
+  background:linear-gradient(45deg,yellow,orange);
+}
+.main{font-size:18px}
+.top-left{
+  position:fixed;
+  top:10px;
+  left:10px;
+}
+#popup{
+  position:fixed;
+  top:30%;
+  left:50%;
+  transform:translateX(-50%);
+  background:#ff416c;
+  color:#fff;
+  padding:12px 20px;
+  border-radius:10px;
+  opacity:0;
+  transition:.4s;
+}
