@@ -1,4 +1,4 @@
-/* USER */
+/* ---------- USER ---------- */
 let username = localStorage.getItem("username");
 if (!username) {
   username = "user" + Math.floor(Math.random() * 9999);
@@ -8,10 +8,10 @@ if (!username) {
 let earnings = parseFloat(localStorage.getItem("earnings")) || 0;
 const REWARD = 0.025;
 
-/* NAV */
+/* ---------- NAV ---------- */
 function go(p) { location.href = p; }
 
-/* FOOTER */
+/* ---------- FOOTER ---------- */
 function updateFooter() {
   setInterval(() => {
     const f = document.getElementById("footer");
@@ -19,42 +19,72 @@ function updateFooter() {
   }, 1000);
 }
 
-/* BALANCE */
+/* ---------- BALANCE ---------- */
 function loadBalance() {
   const e = document.getElementById("earnings");
   if (e) e.textContent = earnings.toFixed(3);
 }
 
-/* ADS (MONETAG SAFE) */
-let adBusy = false;
+/* ---------- ADS STACK (ONE CLICK → 6 ADS) ---------- */
+let adLock = false;
 
-function playAdSafe() {
-  if (adBusy) return;
-  if (typeof show_10276123 !== "function") {
-    alert("Ads loading… try again.");
-    return;
+function playAllAds() {
+  if (adLock) return;
+  adLock = true;
+
+  try {
+    // Rewarded Interstitial x2
+    show_10276123().catch(()=>{});
+    show_10276123().catch(()=>{});
+
+    // Rewarded Popup
+    show_10276123('pop').catch(()=>{});
+
+    // In-App Interstitial x2
+    show_10276123({
+      type: 'inApp',
+      inAppSettings: {
+        frequency: 2,
+        capping: 0.1,
+        interval: 30,
+        timeout: 5,
+        everyPage: false
+      }
+    });
+
+    show_10276123({
+      type: 'inApp',
+      inAppSettings: {
+        frequency: 2,
+        capping: 0.1,
+        interval: 30,
+        timeout: 5,
+        everyPage: false
+      }
+    });
+
+    // Final Rewarded Popup
+    show_10276123('pop').catch(()=>{});
+
+  } catch (e) {
+    alert("Ads not available");
   }
 
-  adBusy = true;
-
-  show_10276123()
-    .then(() => {
-      setTimeout(() => {
-        earnings += REWARD;
-        localStorage.setItem("earnings", earnings);
-        loadBalance();
-      }, 10000);
-    })
-    .catch(() => alert("Ad unavailable"))
-    .finally(() => setTimeout(() => adBusy = false, 1500));
+  // SINGLE REWARD
+  setTimeout(() => {
+    earnings += REWARD;
+    localStorage.setItem("earnings", earnings);
+    loadBalance();
+    adLock = false;
+  }, 12000);
 }
 
-/* WITHDRAW */
+/* ---------- WITHDRAW ---------- */
 function withdraw() {
   const amt = parseFloat(amount.value);
   const gc = gcash.value;
 
-  if (amt < 1 || amt > 99) return alert("₱1 – ₱99 only");
+  if (amt < 1 || amt > 99) return alert("₱1–₱99 only");
   if (amt > earnings) return alert("Insufficient balance");
 
   const w = JSON.parse(localStorage.getItem("withdrawals")) || [];
@@ -64,10 +94,10 @@ function withdraw() {
   earnings -= amt;
   localStorage.setItem("earnings", earnings);
   loadBalance();
-  alert("Request sent");
+  alert("Withdraw request sent");
 }
 
-/* OWNER */
+/* ---------- OWNER ---------- */
 function loginOwner() {
   if (ownerPass.value !== "Propetas6") return alert("Wrong password");
 
