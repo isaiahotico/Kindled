@@ -11,11 +11,32 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+// Persistent User
+let userId = localStorage.getItem('userId');
+let username = localStorage.getItem('username');
+if(!userId){ 
+  userId = 'USER_'+Math.floor(Math.random()*1000000);
+  username = `User${Math.floor(Math.random()*10000)}`;
+  localStorage.setItem('userId', userId);
+  localStorage.setItem('username', username);
+}
+
+// Referral from Telegram link
+const urlParams = new URLSearchParams(window.location.search);
+const startRef = urlParams.get('start');
+if(startRef && startRef!==userId){
+  db.ref('users/'+userId).once('value', snap=>{
+    if(!snap.val()?.referrerId){
+      db.ref('users/'+userId).update({referrerId: startRef});
+      db.ref('users/'+startRef+'/referrals').transaction(c => (c||0)+1);
+    }
+  });
+}
+
 // User data
 let balance=0, streak=0, level=1, referrals=0, affiliateEarn=0;
 let withdrawHistory=[], adsCount=0, giftsCount=0;
 let giftsCooldown=false;
-let userId = 'USER_' + Math.floor(Math.random()*100000);
 
 // Owner
 const OWNER_PASSWORD = "Propetas6";
@@ -72,8 +93,7 @@ function withdrawGCash(){
   if(!gcash){ alert('Enter GCash number'); return; }
   if(balance<0.025){ alert('Insufficient balance'); return; }
 
-  const withdrawal={userId,amount:balance,gcash,status:'Pending', timestamp:Date.now()};
-  withdrawHistory.push(withdrawal);
+  const withdrawal={userId, username, amount:balance,gcash,status:'Pending', timestamp:Date.now()};
   db.ref('withdrawals').push(withdrawal);
   balance=0; updateUI();
   alert('Withdrawal request saved!');
@@ -82,9 +102,13 @@ function withdrawGCash(){
 // Withdraw table
 function updateWithdrawTable(){
   const table=document.getElementById('withdrawTable');
-  table.innerHTML='<tr><th>Amount</th><th>GCash</th><th>Status</th></tr>';
-  withdrawHistory.forEach(w=>{
-    table.innerHTML+=`<tr><td>₱${w.amount.toFixed(2)}</td><td>${w.gcash}</td><td>${w.status}</td></tr>`;
+  db.ref('withdrawals').orderByChild('userId').equalTo(userId).once('value', snap=>{
+    const data=snap.val()||{};
+    withdrawHistory = Object.values(data);
+    table.innerHTML='<tr><th>Amount</th><th>GCash</th><th>Status</th></tr>';
+    withdrawHistory.forEach(w=>{
+      table.innerHTML+=`<tr><td>₱${w.amount.toFixed(2)}</td><td>${w.gcash}</td><td>${w.status}</td></tr>`;
+    });
   });
 }
 
@@ -100,6 +124,18 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 
   setInterval(()=>{ document.getElementById('currentDateTime').innerText=new Date().toLocaleString(); },1000);
+
+  // Track referrals
+  db.ref('users/'+userId+'/referrals').on('value',snap=>{
+    referrals = snap.val()||0;
+    updateUI();
+  });
+
+  // Track affiliate earnings
+  db.ref('users/'+userId+'/affiliateEarn').on('value',snap=>{
+    affiliateEarn = snap.val()||0;
+    updateUI();
+  });
 });
 
 // Affiliate Page
@@ -123,6 +159,17 @@ function claimAffiliate(){
   });
 }
 
+// Change Name
+function changeName(){
+  const newName = document.getElementById('profileNameInput').value.trim();
+  if(newName===''){ alert('Enter a name'); return; }
+  username = newName;
+  localStorage.setItem('username', username);
+  db.ref('users/'+userId).update({username});
+  alert('Name updated!');
+  updateUI();
+}
+
 // Owner Login
 function loginOwner(){
   const pass=document.getElementById('ownerPass').value;
@@ -142,7 +189,7 @@ function updateOwnerUI(){
       list.forEach(([key,w],i)=>{
         el.innerHTML+=`<tr>
           <td>${i+1}</td>
-          <td>${w.userId}</td>
+          <td>${w.username}</td>
           <td>₱${w.amount.toFixed(2)}</td>
           <td>${w.gcash}</td>
           <td>${w.status}</td>
@@ -164,7 +211,7 @@ function approveAllWithdrawals(){
       db.ref('withdrawals/'+key).update({status:'Paid'});
     });
 
-    let emailBody = list.map(([_,w])=>`User: ${w.userId}, Amount: ₱${w.amount.toFixed(2)}, GCash: ${w.gcash}, Status: Paid`).join('%0D%0A');
+    let emailBody = list.map(([_,w])=>`User: ${w.username}, Amount: ₱${w.amount.toFixed(2)}, GCash: ${w.gcash}, Status: Paid`).join('%0D%0A');
     window.location.href=`mailto:otico.isai2@gmail.com?subject=Sentinel Dark Withdrawals&body=${emailBody}`;
     alert('All withdrawals approved and sent to Gmail!');
     updateOwnerUI();
@@ -175,10 +222,10 @@ function approveAllWithdrawals(){
 function updateChatUI(){
   const chatBox=document.getElementById('chatBox');
   chatBox.innerHTML='';
-  db.ref('chat').on('child_added',snap=>{
+  db.ref('chat').orderByChild('timestamp').on('child_added',snap=>{
     const msg=snap.val();
     const p=document.createElement('p');
-    p.innerHTML=`<strong>${msg.userId}:</strong> ${msg.message}`;
+    p.innerHTML=`<strong>${msg.username}:</strong> ${msg.message}`;
     chatBox.appendChild(p);
     chatBox.scrollTop=chatBox.scrollHeight;
   });
@@ -188,7 +235,7 @@ function sendChat(){
   const input=document.getElementById('chatInput');
   const text=input.value.trim();
   if(text==='') return;
-  db.ref('chat').push({userId,message:text,timestamp:Date.now()});
+  db.ref('chat').push({userId, username, message:text, timestamp:Date.now()});
   input.value='';
 }
 
