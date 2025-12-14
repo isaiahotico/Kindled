@@ -1,0 +1,6 @@
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#0f0f14;color:#fff}
+.app{max-width:420px;margin:auto;padding:20px;text-align:center}
+.card{background:#1f1f2e;border-radius:16px;padding:20px;margin:20px 0}
+button{width:100%;padding:16px;border:none;border-radius:14px;font-size:18px;font-weight:bold;background:linear-gradient(135deg,#00ffcc,#00b3ff)}
+button:disabled{opacity:.5}
