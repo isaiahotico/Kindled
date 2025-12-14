@@ -25,7 +25,7 @@ let username = telegramUser.username || telegramUser.first_name || `User${Math.f
 // First-time registration
 db.ref('users/'+userId).once('value', snap=>{
   if(!snap.exists()){
-    db.ref('users/'+userId).set({username, balance:0, affiliateEarn:0, referrals:0});
+    db.ref('users/'+userId).set({username, balance:0, affiliateEarn:0, referrals:0, streak:0, level:1});
   }
 });
 
@@ -42,7 +42,7 @@ function showPage(page){
   updateUI();
   if(page==='affiliate') updateAffiliateUI();
   if(page==='owner') updateOwnerUI();
-  if(page==='worldChat') updateChatUI();
+  if(page==='worldChat') initWorldChat();
 }
 
 // UI Updates
@@ -188,20 +188,34 @@ function approveAllWithdrawals(){
 }
 
 // World Chat
-function updateChatUI(){
-  const chatBox=document.getElementById('chatBox'); chatBox.innerHTML='';
-  db.ref('chat').orderByChild('timestamp').on('child_added',snap=>{
-    const msg=snap.val();
-    const p=document.createElement('p');
-    p.innerHTML=`<strong>${msg.username}:</strong> ${msg.message}`;
-    chatBox.appendChild(p); chatBox.scrollTop=chatBox.scrollHeight;
+let chatInitialized = false;
+function initWorldChat(){
+  if(chatInitialized) return; 
+  chatInitialized = true;
+  const chatBox=document.getElementById('chatBox');
+  const chatInput=document.getElementById('chatInput');
+
+  // Listen for all chat messages in real-time (persistent)
+  db.ref('chat').orderByChild('timestamp').on('child_added', snap=>{
+    const msg = snap.val();
+    const p = document.createElement('p');
+    const time = new Date(msg.timestamp).toLocaleTimeString();
+    p.innerHTML = `<strong>${msg.username} [${time}]:</strong> ${msg.message}`;
+    chatBox.appendChild(p);
+    chatBox.scrollTop = chatBox.scrollHeight; 
   });
-}
-function sendChat(){
-  const text=document.getElementById('chatInput').value.trim();
-  if(!text) return;
-  db.ref('chat').push({telegramId:userId, username, message:text, timestamp:Date.now()});
-  document.getElementById('chatInput').value='';
+
+  window.sendChat = function(){
+    const text = chatInput.value.trim();
+    if(!text) return;
+    db.ref('chat').push({
+      telegramId: userId,
+      username,
+      message: text,
+      timestamp: Date.now()
+    });
+    chatInput.value='';
+  }
 }
 
 // Initialize
