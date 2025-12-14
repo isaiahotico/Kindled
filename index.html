@@ -1,64 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Indie Ads Earning Game</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Indie Ads Earning</title>
+
 <link rel="stylesheet" href="style.css">
-<script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
+
+<script src="//libtl.com/sdk.js"
+ data-zone="10276123"
+ data-sdk="show_10276123"></script>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
+
 <body>
-<div class="container">
-  <h1 class="indie-text">💸 Indie Ads Earning Game</h1>
-  <p class="subtitle">Watch ads, earn coins, level up, and stay inspired!</p>
+<div class="app">
 
-  <div class="daily-login">
-    <button id="dailyLoginBtn">Daily Login Bonus 💎</button>
-    <div id="dailyTimer">Ready</div>
-  </div>
+<h1>💸 Indie Ads Earning</h1>
 
-  <div class="gift-box">
-    <button id="giftBtn">🎁 Claim Gift!</button>
-  </div>
+<div class="top-left">
+  <button id="dailyBtn">🎁 Daily</button>
+  <div id="dailyTimer"></div>
 
-  <p class="ads-desc">Watch 4–5 ads per click to earn ₱0.025–₱0.040</p>
-  <button id="btnAllAds">Watch Ads & Earn</button>
-
-  <h2>Balance: <span id="balance">₱0.00</span></h2>
-
-  <div class="story-container">
-    <div id="storyLevel">Story Level: 1</div>
-    <div class="progress-bar"><div id="progressFill"></div></div>
-    <div id="badgeContainer"></div>
-  </div>
-
-  <div id="rewardPopup" class="reward-popup"></div>
-
-  <div class="leaderboard">
-    <h3>Leaderboard</h3>
-    <ul id="leaderboardList"></ul>
-  </div>
-
-  <div id="timeDate"></div>
-  <div class="quote-slider"><div id="quoteText"></div></div>
-
-  <div class="withdraw-container">
-    <input id="gcashNumber" placeholder="GCash Number">
-    <button id="withdrawBtn">Withdraw</button>
-  </div>
-
-  <div class="owner-dashboard">
-    <input type="password" id="ownerPassword" placeholder="Owner Password">
-    <button id="ownerLoginBtn">Login</button>
-    <div id="ownerPanel" style="display:none;">
-      <button id="sendWithdrawalsBtn">Send Withdrawals to Email</button>
-      <ul id="withdrawRequests"></ul>
-      <ul id="userData"></ul>
-    </div>
-  </div>
+  <button id="giftBtn">🎉 Gift</button>
+  <div id="giftTimer"></div>
 </div>
+
+<p class="desc">
+Watch 4–5 ads per click.  
+Reward adapts to CPM quality.
+</p>
+
+<button id="adsBtn" class="main">▶ Watch Ads</button>
+
+<h2>Balance: ₱<span id="balance">0.000</span></h2>
+
+<div id="popup"></div>
+
+<h3>🏆 Leaderboard</h3>
+<ul id="leaderboard"></ul>
+
+<div id="time"></div>
+<div id="quote"></div>
+
+<input id="gcash" placeholder="GCash Number">
+<button id="withdrawBtn">Withdraw</button>
+
+<input id="ownerPass" type="password" placeholder="Owner Password">
+<button id="ownerBtn">Owner Login</button>
+
+<div id="ownerPanel" style="display:none">
+  <button id="emailWithdrawals">📧 Email Withdrawals</button>
+  <ul id="withdrawList"></ul>
+</div>
+
+</div>
+
 <script src="app.js"></script>
 </body>
 </html>
