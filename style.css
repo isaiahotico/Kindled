@@ -34,3 +34,7 @@ button:active{
   opacity:0;
   transition:.4s;
 }
+#quote{
+  margin-top:10px;
+  font-style:italic;
+}
