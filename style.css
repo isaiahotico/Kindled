@@ -3,19 +3,25 @@ body{
   background: linear-gradient(145deg, #0b0b0b, #1a1a1a);
   color:#00fffc; text-align:center;
 }
-.neon-text{color:#00f0ff; text-shadow:0 0 5px #0ff;}
-.neon-text-small{color:#0ff; font-size:0.9em;}
-input.input-neon{
-  background:#111; border:1px solid #0ff; color:#0ff; padding:5px; border-radius:5px;
+header h1{
+  color:#00f0ff; text-shadow: 0 0 5px #0ff;
 }
-button.btn-neon{
+button{
   padding:6px 10px; margin:4px; cursor:pointer;
-  border:none; border-radius:5px; background:#0ff; color:#000; font-weight:bold;
+  border:none; border-radius:5px; background:#0ff;
+  color:#000; font-weight:bold;
 }
-button.btn-neon:disabled{ background:#555; color:#aaa; cursor:not-allowed;}
+button:disabled{
+  background:#555; color:#aaa; cursor:not-allowed;
+}
 .chat-box{
   height:300px; overflow-y:auto; border:1px solid #0ff;
   margin:10px; padding:5px; background:#111;
 }
-.container{padding:10px;}
-.hidden{display:none;}
+#giftCooldown{
+  color:#ff0; margin-top:5px;
+}
+#affiliateLinks{
+  margin-top:5px; background:#111; padding:5px; border:1px solid #0ff;
+  max-height:100px; overflow-y:auto;
+}
