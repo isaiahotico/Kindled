@@ -1,63 +1,19 @@
-body{
-  margin:0;
-  font-family:Segoe UI, sans-serif;
-  background:radial-gradient(circle,#111,#000);
-  color:#fff;
-}
+.hidden { display:none; }
 
-.container{
-  max-width:420px;
-  margin:40px auto;
-  padding:20px;
-  text-align:center;
-  background:#121212;
-  border-radius:20px;
-  box-shadow:0 0 20px #000;
-}
-
-button{
+table {
   width:100%;
-  padding:12px;
-  margin:8px 0;
-  border:none;
-  border-radius:12px;
+  border-collapse: collapse;
+}
+th, td {
+  padding:8px;
+  border-bottom:1px solid #444;
+}
+th { background:#222; }
+
+button {
   background:linear-gradient(90deg,#ff9800,#4caf50);
-  color:#fff;
-  font-size:16px;
-}
-
-input{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  border-radius:10px;
   border:none;
+  border-radius:10px;
+  padding:10px;
+  color:white;
 }
-
-.shine{
-  background:linear-gradient(90deg,#ff9800,#00ffea,#ff9800);
-  background-size:200%;
-  -webkit-background-clip:text;
-  color:transparent;
-  animation:shine 3s linear infinite;
-}
-
-@keyframes shine{
-  from{background-position:0%}
-  to{background-position:200%}
-}
-
-footer{
-  text-align:center;
-  font-size:12px;
-  opacity:.6;
-  margin-top:20px;
-}
-
-.hidden{display:none}
-
-table{
-  width:100%;
-  font-size:13px;
-}
-th,td{padding:6px}
