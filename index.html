@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Indie Ads Earning</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentinel Dark</title>
 
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
 
 <!-- Monetag SDK -->
 <script src="//libtl.com/sdk.js"
- data-zone="10276123"
- data-sdk="show_10276123"></script>
+        data-zone="10276123"
+        data-sdk="show_10276123"></script>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -18,50 +19,74 @@
 </head>
 
 <body>
-<div class="app">
+<div class="container">
 
-<h1>💸 Indie Ads Earning</h1>
+<h1 class="indie-text">🛡 Sentinel Dark</h1>
+<p class="subtitle">Watch ads • Earn rewards • Rise in the ranks</p>
 
-<div class="top-left">
-  <button id="dailyBtn">🎁 Daily Login</button>
-  <div id="dailyTimer"></div>
-
-  <button id="giftBtn">🎉 Gift</button>
-  <div id="giftTimer"></div>
+<!-- Daily -->
+<div class="daily-login">
+  <button id="dailyLoginBtn">Daily Bonus</button>
+  <div id="dailyTimer">Ready</div>
 </div>
 
-<p class="desc">
-Watch 4–5 ads per click.  
-Earn ₱0.025 – ₱0.040 per session.
+<!-- Gift -->
+<div class="gift-box">
+  <button id="giftBtn">🎁 Gift</button>
+</div>
+
+<p class="ads-desc">
+Watch ads (5–7 ads per click) to earn ₱0.025–₱0.040
 </p>
 
-<button id="adsBtn" class="main">▶ Watch Ads</button>
+<button id="btnAllAds">WATCH ADS & EARN</button>
 
-<h2>Balance: ₱<span id="balance">0.000</span></h2>
+<h2>Balance: <span id="balance">₱0.000</span></h2>
 
-<div id="popup"></div>
+<!-- Story -->
+<div class="story-container">
+  <div id="storyLevel">Level 1</div>
+  <div class="progress-bar">
+    <div id="progressFill"></div>
+  </div>
+  <div id="badgeContainer"></div>
+</div>
 
-<h3>🏆 Leaderboard</h3>
-<ul id="leaderboard"></ul>
+<div id="rewardPopup" class="reward-popup"></div>
 
-<div id="time"></div>
-<div id="quote"></div>
+<!-- Leaderboard -->
+<div class="leaderboard">
+  <h3>Global Leaderboard</h3>
+  <ul id="leaderboardList"></ul>
+</div>
 
-<h3>Withdraw</h3>
-<input id="gcash" placeholder="GCash Number">
-<button id="withdrawBtn">Withdraw</button>
+<div id="timeDate"></div>
 
-<h3>Owner</h3>
-<input id="ownerPass" type="password" placeholder="Password">
-<button id="ownerBtn">Login</button>
+<div class="quote-slider">
+  <div id="quoteText"></div>
+</div>
 
-<div id="ownerPanel" style="display:none">
-  <button id="emailWithdrawals">📧 Send Withdrawals</button>
-  <ul id="withdrawList"></ul>
+<!-- Withdraw -->
+<div class="withdraw-container">
+  <h3>Withdraw (GCash)</h3>
+  <input id="gcashNumber" placeholder="GCash Number">
+  <button id="withdrawBtn">Withdraw</button>
+</div>
+
+<!-- Owner -->
+<div class="owner-dashboard">
+  <h3>Owner Panel</h3>
+  <input type="password" id="ownerPassword" placeholder="Password">
+  <button id="ownerLoginBtn">Login</button>
+
+  <div id="ownerPanel" style="display:none">
+    <button id="sendWithdrawalsBtn">📧 Send Withdrawals</button>
+    <ul id="withdrawRequests"></ul>
+    <ul id="userData"></ul>
+  </div>
 </div>
 
 </div>
-
 <script src="app.js"></script>
 </body>
 </html>
