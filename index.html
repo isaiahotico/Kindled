@@ -1,21 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Click Ads - Monetag</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Monetag SDK -->
-    <script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123'></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indie Ads Earning Game</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Monetag SDK -->
+  <script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Click Ads</h1>
-        <button id="btnRewardedInterstitial">Rewarded Interstitial</button>
-        <button id="btnRewardedPopup">Rewarded Popup</button>
-        <button id="btnInAppInterstitial">In-App Interstitial</button>
-        <button id="btnDoubleAds">Double Reward Ads</button>
+  <div class="container">
+    <h1 class="indie-text">💸 Indie Ads Earning Game</h1>
+    <p class="subtitle">Watch ads, earn coins, level up your story!</p>
+
+    <!-- Main Button -->
+    <button id="btnAllAds">Watch Ads & Earn</button>
+
+    <!-- Balance Display -->
+    <div class="balance-container">
+      <h2>Balance: <span id="balance">₱0.00</span></h2>
     </div>
-    <script src="app.js"></script>
+
+    <!-- Progress & Story Level -->
+    <div class="story-container">
+      <div id="storyLevel">Story Level: 1</div>
+      <div class="progress-bar">
+        <div id="progressFill"></div>
+      </div>
+      <div id="badgeContainer"></div>
+    </div>
+
+    <!-- Reward Popup -->
+    <div id="rewardPopup" class="reward-popup"></div>
+
+    <!-- Leaderboard -->
+    <div class="leaderboard">
+      <h3>Leaderboard</h3>
+      <ul id="leaderboardList"></ul>
+    </div>
+
+    <!-- Referral -->
+    <div class="referral">
+      <h3>Referral Link</h3>
+      <input type="text" id="referralLink" readonly>
+      <p>Share this link and earn 10% of referred users' earnings!</p>
+      <div id="referralNotifications"></div>
+    </div>
+
+    <!-- Withdraw -->
+    <div class="withdraw-container">
+      <h3>Withdraw via GCash</h3>
+      <input type="text" id="gcashNumber" placeholder="Enter GCash Number">
+      <button id="withdrawBtn">Withdraw</button>
+      <p id="withdrawMessage"></p>
+    </div>
+
+    <!-- Owner Dashboard -->
+    <div class="owner-dashboard">
+      <h3>Owner Dashboard</h3>
+      <input type="password" id="ownerPassword" placeholder="Enter Password">
+      <button id="ownerLoginBtn">Login</button>
+      <div id="ownerPanel" style="display:none;">
+        <h4>Withdraw Requests</h4>
+        <ul id="withdrawRequests"></ul>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
 </body>
 </html>
