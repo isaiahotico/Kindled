@@ -11,10 +11,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-    <!-- Monetag SDK -->
-    <!-- Place this below head tag as requested by Monetag -->
-    <script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123'></script>
-
     <!-- YouTube Player API -->
     <script>
         var tag = document.createElement('script');
@@ -28,7 +24,7 @@
         <header>
             <h1 class="app-title">CryptoTube</h1>
             <div class="currency-display">
-                Peso: <span id="pesoBalance">0.000</span>⚡
+                Peso: <span id="pesoBalance">0.00</span>⚡
             </div>
             <p id="telegramUserInfo" class="telegram-info"></p>
         </header>
@@ -39,7 +35,6 @@
             <button class="nav-button" data-page="leaderboard-videos">TOP VIDEOS</button>
             <button class="nav-button" data-page="youtube">YOUTUBE ROOM</button>
             <button class="nav-button" data-page="link">LINK ROOM</button>
-            <button class="nav-button" data-page="watchads">WATCH ADS ROOM</button>
             <button class="nav-button" data-page="withdrawal">WITHDRAWAL ROOM</button>
             <button class="nav-button admin-button" data-page="admin">ADMIN PANEL</button>
         </nav>
@@ -51,13 +46,13 @@
                 <p>Welcome, <span id="telegramUsername">Guest</span>!</p>
                 <p>Your Telegram ID: <span id="telegramUserId">N/A</span></p>
                 <p>Your IP Address: <span id="userIpAddress">N/A</span></p>
-                <p>Your Peso Balance: <span id="profilePesoBalance">0.000</span>⚡</p>                <h3>Your Submitted Links</h3>
+                <p>Your Peso Balance: <span id="profilePesoBalance">0.00</span>⚡</p>
+                <h3>Your Submitted Links</h3>
                 <table id="userLinksTable">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>YouTube Link</th>
-                            <th>Total Views (Simulated)</th>
+                            <th>YouTube Link</th>                            <th>Total Views (Simulated)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,11 +102,11 @@
             <section id="youtubePage" class="page hidden">
                 <h2>YOUTUBE ROOM</h2>
                 <div id="player"></div>
-                <p id="videoTitleDisplay"></p>                <div class="youtube-controls">
+                <p id="videoTitleDisplay"></p>
+                <div class="youtube-controls">
                     <button id="playRewardBtn" class="action-button">Play for Reward</button>
                     <button id="nextVideoBtn" class="action-button">Next Video</button>
-                </div>
-                <div id="rewardTimer" class="hidden">
+                </div>                <div id="rewardTimer" class="hidden">
                     Watching for reward: <span id="timerCountdown">60</span>s
                 </div>
                 <button class="home-button" data-page="home">Return Home</button>
@@ -126,15 +121,6 @@
                 <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube Video URL">
                 <button id="submitLinkBtn" class="action-button">Submit Link</button>
                 <p id="linkSubmissionMessage"></p>
-                <button class="home-button" data-page="home">Return Home</button>
-            </section>
-
-            <!-- Watch Ads Room -->
-            <section id="watchadsPage" class="page hidden">
-                <h2>WATCH ADS ROOM</h2>
-                <p>Watch 4 ads to earn Peso.</p>
-                <button id="watchAdsBtn" class="action-button">Watch Ads (Total 0.028⚡ Peso)</button>
-                <p id="adsStatus"></p>
                 <button class="home-button" data-page="home">Return Home</button>
             </section>
 
@@ -199,9 +185,6 @@
                 <button class="home-button" data-page="home">Return Home</button>
             </section>
         </main>
-        <footer>
-            <span id="currentDateTime"></span> | otico.isai3@gmail.com | &copy;2025
-        </footer>
     </div>
 
     <script src="app.js"></script>
