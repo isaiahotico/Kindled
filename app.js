@@ -1,109 +1,86 @@
-// Firebase config
-const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+import { 
+  collection, addDoc, getDocs, updateDoc, doc, onSnapshot, query, where 
+} from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
-let player;
-let rewardClaimed = false;
-let playlist = [];
-let currentIndex = 0;
+// Rainbow Text
+const rainbowText = document.getElementById('rainbow-text');
+rainbowText.innerHTML = rainbowText.textContent.split('').map(c => `<span class="rainbow-char">${c}</span>`).join('');
 
-// Parse YouTube Video ID
-function parseYouTubeID(url) {
-  const regExp = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/))([^\?&\/]+)/;
-  const match = url.match(regExp);
-  return match ? match[1] : null;
-}
+// Telegram simulation
+const username = 'User123';
+const userid = '987654321';
+document.getElementById('tg-username').textContent = username;
+document.getElementById('tg-id').textContent = userid;
 
-// Render Playlist
-function renderPlaylist() {
-  const container = document.getElementById('playlistContainer');
-  container.innerHTML = '<h3>Playlist:</h3>';
-  playlist.forEach((id, index) => {
-    const videoDiv = document.createElement('div');
-    videoDiv.innerText = `${index + 1}. https://youtu.be/${id}`;
-    videoDiv.className = index === currentIndex ? 'current' : '';
-    container.appendChild(videoDiv);
+// Firestore collections
+const usersCol = collection(window.db, 'users');
+const withdrawCol = collection(window.db, 'withdrawals');
+
+let balance = 0;
+const balanceDisplay = document.getElementById('balance');
+
+// Save Profile
+document.getElementById('save-profile').addEventListener('click', async () => {
+  const sex = document.getElementById('sex').value;
+  const age = document.getElementById('age').value;
+  const birthday = document.getElementById('birthday').value;
+
+  await addDoc(usersCol, { username, userid, sex, age, birthday, balance });
+  alert('Profile saved!');
+});
+
+// Watch Ad & Reward
+document.getElementById('watch-ad').addEventListener('click', () => {
+  show_10276123('pop').then(async () => {
+    balance += 1;
+    balanceDisplay.textContent = balance;
+    alert('You earned 1 peso!');
+    await addDoc(usersCol, { username, userid, balance });
+  }).catch(e => alert('Ad failed to load.'));
+});
+
+// Request Withdrawal
+document.getElementById('request-withdraw').addEventListener('click', async () => {
+  const gcash = document.getElementById('gcash').value;
+  if(balance < 1) return alert('Minimum 1 peso required');
+  const time = new Date().toLocaleString();
+  await addDoc(withdrawCol, { username, userid, gcash, amount: balance, status: 'Pending', time });
+  balance = 0;
+  balanceDisplay.textContent = balance;
+});
+
+// Real-time withdrawal table update
+const tbody = document.querySelector('#withdraw-table tbody');
+onSnapshot(withdrawCol, snapshot => {
+  tbody.innerHTML = '';
+  snapshot.forEach(docSnap => {
+    const w = docSnap.data();
+    tbody.innerHTML += `<tr>
+      <td>${w.username}</td>
+      <td>${w.gcash}</td>
+      <td>${w.amount}</td>
+      <td>${w.status}</td>
+      <td>${w.time}</td>
+    </tr>`;
   });
-}
+});
 
-// Load YouTube Video by index
-function loadVideo(index) {
-  if (index >= playlist.length) return;
-  currentIndex = index;
-  const videoId = playlist[index];
-  const container = document.getElementById('videoContainer');
-  container.innerHTML = '';
+// Admin Login
+document.getElementById('admin-login').addEventListener('click', () => {
+  const pass = document.getElementById('admin-pass').value;
+  if(pass === 'Propetas6'){
+    document.getElementById('admin-panel').style.display = 'block';
+    alert('Admin access granted');
+  } else {
+    alert('Wrong password');
+  }
+});
 
-  player = new YT.Player(container, {
-    videoId: videoId,
-    events: { 'onStateChange': onPlayerStateChange },
-    playerVars: { autoplay: 1, rel: 0, modestbranding: 1 }
+// Approve All Withdrawals in real-time
+document.getElementById('approve-all').addEventListener('click', async () => {
+  const snapshot = await getDocs(withdrawCol);
+  snapshot.forEach(async docSnap => {
+    const wRef = doc(window.db, 'withdrawals', docSnap.id);
+    await updateDoc(wRef, { status: 'Approved' });
   });
-
-  rewardClaimed = false;
-  document.getElementById('claimReward').classList.add('hidden');
-  renderPlaylist();
-  document.getElementById('status').innerText = 'Playing video ' + (index + 1);
-}
-
-// Handle Video End
-function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.ENDED && !rewardClaimed) {
-    document.getElementById('status').innerText = 'Video finished! Claim your reward.';
-    document.getElementById('claimReward').classList.remove('hidden');
-  }
-}
-
-// Add Video to Playlist
-function addVideo() {
-  const url = document.getElementById('videoUrl').value;
-  const videoId = parseYouTubeID(url);
-  if (!videoId) {
-    document.getElementById('status').innerText = 'Invalid YouTube URL!';
-    return;
-  }
-  playlist.push(videoId);
-
-  // Save playlist to Firebase per user
-  const userId = Telegram.WebApp.initDataUnsafe.user.id;
-  db.ref(`users/${userId}/playlist`).set(playlist);
-
-  renderPlaylist();
-  if (playlist.length === 1) loadVideo(0);
-  document.getElementById('videoUrl').value = '';
-}
-
-// Claim Reward
-function claimReward() {
-  rewardClaimed = true;
-  document.getElementById('status').innerText = 'Reward claimed! 🎉';
-  document.getElementById('claimReward').classList.add('hidden');
-
-  const userId = Telegram.WebApp.initDataUnsafe.user.id;
-  const rewardRef = db.ref(`users/${userId}/rewards`);
-  rewardRef.transaction(current => (current || 0) + 1);
-
-  if (currentIndex + 1 < playlist.length) loadVideo(currentIndex + 1);
-  else document.getElementById('status').innerText = 'Playlist finished!';
-}
-
-document.getElementById('addVideo').addEventListener('click', addVideo);
-document.getElementById('claimReward').addEventListener('click', claimReward);
-
-// Auto-detect URL pasted
-document.getElementById('videoUrl').addEventListener('paste', (e) => {
-  setTimeout(() => {
-    const url = e.target.value;
-    const videoId = parseYouTubeID(url);
-    if (videoId) addVideo();
-  }, 100);
 });
