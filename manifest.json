@@ -1,0 +1,8 @@
+{
+  "name": "Telegram YouTube Watch",
+  "short_name": "YT Watch",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#ff0000"
+}
