@@ -3,6 +3,6 @@
   "short_name": "YT Profile",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f0f0f",
-  "theme_color": "#ff0000"
+  "background_color": "orange",
+  "theme_color": "#ff8000"
 }
