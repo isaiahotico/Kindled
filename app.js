@@ -1,162 +1,135 @@
-// 🔥 FIREBASE CONFIG (REPLACE)
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-// TELEGRAM USER
+/* Telegram Init */
 const tg = window.Telegram.WebApp;
 tg.ready();
 
-const user = {
-  id: tg.initDataUnsafe?.user?.id || Date.now(),
-  name: tg.initDataUnsafe?.user?.first_name || "Guest"
-};
+const userId = tg.initDataUnsafe.user?.id || "guest";
+const userName = tg.initDataUnsafe.user?.first_name || "Guest";
 
-tgName.innerText = user.name;
-tgId.innerText = user.id;
-
-// CLOCK
-setInterval(() => {
-  time.innerText = new Date().toLocaleString();
-}, 1000);
-
-// BALANCE
-let balance = 0;
-db.ref("balances/" + user.id).on("value", s => {
-  balance = s.val() || 0;
-  document.getElementById("balance").innerText = balance.toFixed(3);
+/* Firebase Config (ADD YOUR KEYS) */
+firebase.initializeApp({
+  apiKey: "YOUR_API_KEY",
+  projectId: "YOUR_PROJECT_ID"
 });
+const db = firebase.firestore();
 
-// 🎬 PLAY VIDEO (NO ADS)
-function playVideo() {
-  db.ref("videos").once("value", snap => {
-    const vids = Object.keys(snap.val() || {});
-    if (!vids.length) return alert("No videos yet");
+/* UI */
+function showRoom(id) {
+  document.querySelectorAll('.room').forEach(r => r.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-    db.ref("playedGlobal/" + user.id).once("value", p => {
-      const played = p.val() || {};
-      const available = vids.filter(v => !played[v]);
-      if (!available.length) return alert("No new videos");
+/* Balance */
+let balance = 0;
+function updateBalance() {
+  document.getElementById("balance").innerText = `₱${balance.toFixed(3)}`;
+}
 
-      const vid = available[Math.floor(Math.random() * available.length)];
-      db.ref("playedGlobal/" + user.id + "/" + vid).set(true);
+/* SMART YOUTUBE URL ENGINE */
+function parseYouTube(url) {
+  let id = null;
+  if (url.includes("watch?v=")) id = url.split("watch?v=")[1].split("&")[0];
+  if (url.includes("youtu.be/")) id = url.split("youtu.be/")[1].split("?")[0];
+  if (url.includes("shorts/")) id = url.split("shorts/")[1].split("?")[0];
+  return id;
+}
 
-      // views + creator reward
-      db.ref("videoStats/" + vid + "/views")
-        .transaction(v => (v || 0) + 1);
+/* LINKS */
+let userLinks = [];
 
-      db.ref("videos/" + vid).once("value", v => {
-        const owner = v.val().owner;
-        db.ref("balances/" + owner)
-          .transaction(b => (b || 0) + 0.01);
-        db.ref("videoStats/" + vid + "/earnings")
-          .transaction(e => (e || 0) + 0.01);
-      });
+function addLink() {
+  const raw = document.getElementById("ytLink").value;
+  const videoId = parseYouTube(raw);
+  if (!videoId) return alert("Invalid YouTube link");
 
-      ytPlayer.src = `https://www.youtube.com/embed/${vid}?autoplay=1`;
-      setTimeout(() => ytPlayer.src = "", 60000);
-    });
+  if (userLinks.length >= 20) return alert("Max 20 links reached");
+
+  userLinks.push(videoId);
+  renderLinks();
+}
+
+function renderLinks() {
+  document.getElementById("linkTable").innerHTML =
+    userLinks.map((v, i) =>
+      `<tr><td>${i+1}</td><td>${v}</td></tr>`
+    ).join("");
+}
+
+/* YOUTUBE PLAYER */
+let player;
+let playedVideos = new Set();
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    height: '240',
+    width: '100%',
+    playerVars: { controls: 1 }
   });
 }
 
-// 📺 WATCH ADS → ₱0.03
+function playForReward() {
+  if (userLinks.length === 0) return alert("No videos available");
+
+  let vid;
+  do {
+    vid = userLinks[Math.floor(Math.random() * userLinks.length)];
+  } while (playedVideos.has(vid) && playedVideos.size < userLinks.length);
+
+  playedVideos.add(vid);
+  player.loadVideoById(vid);
+
+  setTimeout(() => {
+    balance += 0.01;
+    updateBalance();
+  }, 60000); // 1 minute rule
+}
+
+function nextVideo() {
+  playForReward();
+}
+
+/* ADS */
+let adsLeft = 4;
 function watchAds() {
-  let adsLeft = 4;
-  adsInfo.classList.remove("hidden");
+  adsLeft = 4;
+  document.getElementById("adsLeft").innerText = `Ads left: ${adsLeft}`;
 
-  function updateInfo() {
-    adsInfo.innerText = `Ads left: ${adsLeft}`;
-  }
-
-  function runAd() {
-    updateInfo();
-
-    // mix rewarded popup + interstitial
-    const fn = adsLeft % 2 === 0
-      ? show_10276123
-      : () => show_10276123("pop");
-
-    fn().then(() => {
-      adsLeft--;
-      if (adsLeft > 0) runAd();
-      else {
-        adsInfo.innerText = "Reward added!";
-        balance += 0.03;
-        db.ref("balances/" + user.id).set(balance);
-        setTimeout(() => adsInfo.classList.add("hidden"), 2000);
-      }
-    }).catch(() => {});
-  }
-  runAd();
-}
-
-// 📤 SUBMIT VIDEO (AUTO ACCEPT)
-function submitVideo() {
-  const url = ytLink.value.trim();
-  const id = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/)?.[1];
-  if (!id) return alert("Invalid YouTube URL");
-
-  db.ref("userVideos/" + user.id).once("value", s => {
-    const count = s.numChildren();
-    if (count >= 20) return alert("Max 20 reached");
-
-    if (count >= 5) {
-      if (balance < 5) return alert("Need ₱5");
-      balance -= 5;
-      db.ref("balances/" + user.id).set(balance);
+  function playAd() {
+    if (adsLeft === 0) {
+      balance += 0.025;
+      updateBalance();
+      return;
     }
-
-    db.ref("videos/" + id).set({ owner: user.id });
-    db.ref("userVideos/" + user.id).push({ vid: id });
-
-    ytLink.value = "";
-    alert("Video accepted!");
-    loadUserStats();
-  });
-}
-
-// 📊 USER STATS (5 MIN)
-function loadUserStats() {
-  db.ref("userVideos/" + user.id).once("value", snap => {
-    userLinks.innerHTML = "";
-    snap.forEach(s => {
-      const vid = s.val().vid;
-      db.ref("videoStats/" + vid).once("value", st => {
-        const d = st.val() || {};
-        userLinks.innerHTML += `
-          <tr>
-            <td>${vid}</td>
-            <td>${d.views || 0}</td>
-            <td>₱${(d.earnings || 0).toFixed(2)}</td>
-          </tr>`;
-      });
+    show_10276123('pop').then(() => {
+      adsLeft--;
+      document.getElementById("adsLeft").innerText = `Ads left: ${adsLeft}`;
+      playAd();
     });
-  });
+  }
+  playAd();
 }
-setInterval(loadUserStats, 300000);
 
-// NAV
-function hideAll() {
-  document.querySelectorAll("main").forEach(m => m.classList.add("hidden"));
-}
-function goHome() { hideAll(); homePage.classList.remove("hidden"); }
-function openSubmit() { hideAll(); submitPage.classList.remove("hidden"); }
-function openWithdraw() { hideAll(); withdrawPage.classList.remove("hidden"); }
-
-// WITHDRAW
+/* WITHDRAW */
 function requestWithdraw() {
-  db.ref("withdraws").push({
-    user: user.id,
-    amount: wdAmount.value,
-    method: wdMethod.value,
-    account: wdAccount.value,
-    status: "Pending",
-    time: Date.now()
-  });
-  alert("Requested");
+  alert("Withdrawal request sent for manual approval");
 }
+
+/* ADMIN */
+function openAdmin() {
+  if (sessionStorage.admin) return showRoom('admin');
+  const pass = prompt("Admin Password");
+  if (pass === "Propetas6") {
+    sessionStorage.admin = true;
+    loadAdminTable();
+    showRoom('admin');
+  }
+}
+
+function loadAdminTable() {
+  document.getElementById("adminTable").innerHTML =
+    `<tr><td>${userId}</td><td>₱${balance.toFixed(2)}</td><td>PENDING</td></tr>`;
+}
+
+/* Footer Time */
+setInterval(() => {
+  document.getElementById("time").innerText = new Date().toLocaleString();
+}, 1000);
