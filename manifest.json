@@ -1,7 +1,7 @@
 {
     "name": "CryptoTube Mini App",
     "short_name": "CryptoTube",
-    "description": "Earn Peso by watching YouTube videos and ads.",
+    "description": "Earn Peso by watching YouTube videos submitted by users.",
     "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#ffcccc",
