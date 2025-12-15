@@ -46,3 +46,22 @@ section {
   animation: rainbow 2s linear infinite;
   display: inline-block;
 }
+
+/* Toast notification */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+.toast {
+  background: #333;
+  color: white;
+  padding: 10px 15px;
+  margin-top: 10px;
+  border-radius: 8px;
+  opacity: 0.9;
+  animation: fadein 0.5s, fadeout 0.5s 3s;
+}
+@keyframes fadein { from { opacity: 0; } to { opacity: 0.9; } }
+@keyframes fadeout { from { opacity: 0.9; } to { opacity: 0; } }
