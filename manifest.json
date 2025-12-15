@@ -1,11 +1,11 @@
 {
-  "name": "TeleTube Mini App",
-  "short_name": "TeleTube",
+  "name": "Global Reward App",
   "version": "1.0.0",
-  "description": "Watch YouTube videos in Telegram with playlist, auto-next, and rewards.",
-  "author": "Your Name",
-  "start_url": "index.html",
-  "display": "standalone",
-  "theme_color": "#1da1f2",
-  "background_color": "#ffffff"
+  "description": "Telegram-style reward app with Monetag ads, profile, watch room, withdrawals, and admin",
+  "main": "index.html",
+  "scripts": {
+    "start": "index.html"
+  },
+  "author": "YourName",
+  "license": "MIT"
 }
