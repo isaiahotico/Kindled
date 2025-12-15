@@ -1,6 +1,35 @@
-body{margin:0;padding:12px;font-family:system-ui;text-align:center;background:#0f0f0f;color:white;}
-input{width:80%;padding:6px;margin:6px 0;}
-button{margin:3px;padding:6px 12px;border-radius:6px;cursor:pointer;}
-#player{margin-top:10px;border-radius:12px;overflow:hidden;}
-.video-card{margin-top:8px;background:#222;padding:8px;border-radius:8px;}
-#status{margin-top:8px;font-size:14px;opacity:0.8;}
+body {
+  margin: 0;
+  padding: 12px;
+  font-family: system-ui;
+  text-align: center;
+  background: #0f0f0f;
+  color: white;
+}
+input {
+  width: 80%;
+  padding: 6px;
+  margin: 6px 0;
+}
+button {
+  margin: 3px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#player {
+  margin-top: 10px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.video-card {
+  margin-top: 8px;
+  background: #222;
+  padding: 8px;
+  border-radius: 8px;
+}
+#status {
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: 0.8;
+}
