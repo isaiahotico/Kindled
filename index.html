@@ -11,7 +11,9 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <!-- Monetag SDK -->
-<script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123'></script>
+<script src='//libtl.com/sdk.js'
+        data-zone='10276123'
+        data-sdk='show_10276123'></script>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
@@ -30,22 +32,23 @@
 
 <nav>
   <button onclick="goHome()">🏠 Home</button>
-  <button onclick="openSubmit()">📤 Submit</button>
+  <button onclick="openSubmit()">📤 Submit Video</button>
   <button onclick="openWithdraw()">💸 Withdraw</button>
-  <button onclick="adminLogin()">🛠 Admin</button>
 </nav>
 
 <main id="homePage">
-  <h2>🎬 Global Random Player</h2>
+  <h2>🎬 Global YouTube Player</h2>
 
-  <iframe id="ytPlayer" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  <iframe id="ytPlayer"
+    allow="autoplay; encrypted-media"
+    allowfullscreen></iframe>
 
-  <button class="reward" onclick="playForReward()">▶ Play for Reward</button>
-  <button onclick="nextVideo()">⏭ Next</button>
+  <button onclick="playVideo()">▶ Play Video</button>
+  <button class="reward" onclick="watchAds()">📺 Watch Ads</button>
 
-  <h3>📊 Your Videos</h3>
-  <p>Views refresh every 5 minutes</p>
+  <div id="adsInfo" class="ads-info hidden"></div>
 
+  <h3>Your Videos</h3>
   <table>
     <thead>
       <tr><th>Video</th><th>Views</th><th>Earnings</th></tr>
@@ -57,6 +60,7 @@
 <main id="submitPage" class="hidden">
   <h2>📤 Submit YouTube Video</h2>
   <p>5 FREE • ₱5 per extra • Max 20</p>
+
   <input id="ytLink" placeholder="YouTube URL">
   <button onclick="submitVideo()">Submit</button>
 
@@ -77,21 +81,6 @@
   <input id="wdAccount" placeholder="GCash # or Gmail">
 
   <button onclick="requestWithdraw()">Request</button>
-
-  <table>
-    <thead><tr><th>Amount</th><th>Status</th><th>Time</th></tr></thead>
-    <tbody id="withdrawHistory"></tbody>
-  </table>
-</main>
-
-<main id="adminPage" class="hidden">
-  <h2>🛠 Admin Withdrawals</h2>
-  <table>
-    <thead>
-      <tr><th>User</th><th>Amount</th><th>Method</th><th>Status</th><th>Action</th></tr>
-    </thead>
-    <tbody id="adminWithdraws"></tbody>
-  </table>
 </main>
 
 <footer>
