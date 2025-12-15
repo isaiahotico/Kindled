@@ -1,59 +1,87 @@
 import express from "express";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
 import cors from "cors";
+import { Low, JSONFile } from "lowdb";
 
-dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-const YT_KEY = process.env.YT_API_KEY;
+const adapter = new JSONFile("db.json");
+const db = new Low(adapter);
 
-/* --- Video Stats --- */
-app.get("/video-stats/:videoId", async (req, res) => {
-  try {
-    const videoId = req.params.videoId;
-    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${YT_KEY}`;
-    const r = await fetch(url);
-    const data = await r.json();
+await db.read();
+db.data ||= { users: {}, videos: {}, withdrawals: [] };
 
-    if(!data.items || !data.items[0]) return res.json({error:"Video not found"});
-    const video = data.items[0];
-    res.json({
-      title: video.snippet.title,
-      channelTitle: video.snippet.channelTitle,
-      publishedAt: video.snippet.publishedAt,
-      description: video.snippet.description,
-      viewCount: video.statistics.viewCount,
-      likeCount: video.statistics.likeCount||0,
-      commentCount: video.statistics.commentCount||0,
-      thumbnail: video.snippet.thumbnails?.medium?.url||""
-    });
-  } catch(err) {
-    console.error(err);
-    res.status(500).json({error:"Server error"});
+// Add Video
+app.post("/add-video", async (req, res) => {
+  const { userId, videoId, title } = req.body;
+  if (!db.data.users[userId]) db.data.users[userId] = { videos: [], wallet: 0 };
+  if (db.data.users[userId].videos.length >= 5) return res.json({ success: false, message: "Max 5 videos" });
+
+  db.data.users[userId].videos.push({ videoId, title });
+  db.data.videos[videoId] = { userId, title };
+  await db.write();
+  res.json({ success: true, videos: db.data.users[userId].videos });
+});
+
+// Get user videos
+app.get("/user-videos/:userId", async (req, res) => {
+  await db.read();
+  res.json(db.data.users[req.params.userId]?.videos || {});
+});
+
+// Get all videos
+app.get("/all-videos", async (req, res) => {
+  await db.read();
+  res.json(Object.entries(db.data.videos).map(([videoId, info]) => ({ videoId, title: info.title, userId: info.userId })));
+});
+
+// Watch validation
+app.post("/watch/validate", async (req,res)=>{
+  const {userId, videoId, watchedSeconds}=req.body;
+  await db.read();
+  if (watchedSeconds>=60){
+    if (!db.data.users[userId]) db.data.users[userId]={videos:[],wallet:0};
+    db.data.users[userId].wallet = (db.data.users[userId].wallet||0)+1.5;
+    await db.write();
+    return res.json({validated:true,wallet:db.data.users[userId].wallet});
   }
+  res.json({validated:false,wallet:db.data.users[userId]?.wallet||0});
 });
 
-/* --- Watch-time validation --- */
-const watchSessions = {}; // memory store
-
-app.post("/watch/start", (req,res)=>{
-  const {userId,videoId} = req.body;
-  if(!watchSessions[userId]) watchSessions[userId]={};
-  watchSessions[userId][videoId]=0;
-  res.json({started:true});
+// Withdraw
+app.post("/withdraw", async (req,res)=>{
+  const {userId,gcashNumber,amount}=req.body;
+  await db.read();
+  if(!db.data.users[userId]||db.data.users[userId].wallet<amount) return res.json({success:false,message:"Insufficient wallet"});
+  const id = Date.now();
+  db.data.withdrawals.push({id,userId,gcashNumber,amount,status:"Pending",date:new Date().toISOString()});
+  db.data.users[userId].wallet-=amount;
+  await db.write();
+  res.json({success:true});
 });
 
-app.post("/watch/validate",(req,res)=>{
-  const {userId,videoId,watchedSeconds}=req.body;
-  if(!watchSessions[userId]) watchSessions[userId]={};
-  watchSessions[userId][videoId]=watchedSeconds;
-  const validated = watchedSeconds>=60;
-  res.json({validated});
+// User withdraw history
+app.get("/withdrawals/:userId", async(req,res)=>{
+  await db.read();
+  res.json(db.data.withdrawals.filter(w=>w.userId===req.params.userId));
 });
 
-/* --- Start Server --- */
-const PORT = process.env.PORT || 3000;
-app.listen(PORT,()=>console.log(`Server running on port ${PORT}`));
+// Owner withdrawals
+app.get("/owner/withdrawals", async(req,res)=>{
+  await db.read();
+  res.json(db.data.withdrawals);
+});
+
+// Owner process withdrawal
+app.post("/owner/process", async(req,res)=>{
+  const {id,status}=req.body;
+  await db.read();
+  const wd=db.data.withdrawals.find(w=>w.id===id);
+  if(!wd) return res.json({success:false});
+  wd.status=status;
+  await db.write();
+  res.json({success:true});
+});
+
+app.listen(3000,()=>console.log("Server running on port 3000"));
