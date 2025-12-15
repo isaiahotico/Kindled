@@ -3,23 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TeleTube Mini App</title>
+  <title>Global Reward App</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://www.youtube.com/iframe_api"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- Monetag SDK -->
+  <script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    window.db = getFirestore(app);
+  </script>
 </head>
 <body>
-  <div class="app-container">
-    <h1>TeleTube Mini App</h1>
-    <input id="videoUrl" type="text" placeholder="Paste YouTube URL here">
-    <button id="addVideo">Add to Playlist</button>
-    <div id="playlistContainer"></div>
-    <div id="videoContainer"></div>
-    <button id="claimReward" class="hidden">Claim Reward</button>
-    <div id="status"></div>
-  </div>
-  <script src="app.js"></script>
+  <h1 id="rainbow-text">Welcome to Reward App</h1>
+
+  <!-- PROFILE -->
+  <section id="profile">
+    <h2>PROFILE</h2>
+    <p>Telegram Username: <span id="tg-username">Loading...</span></p>
+    <p>Telegram ID: <span id="tg-id">Loading...</span></p>
+    <label>Sex: <input type="text" id="sex"></label><br>
+    <label>Age: <input type="number" id="age"></label><br>
+    <label>Birthday: <input type="date" id="birthday"></label><br>
+    <button id="save-profile">Save Profile</button>
+  </section>
+
+  <!-- WATCH ROOM -->
+  <section id="watch-room">
+    <h2>WATCH ROOM</h2>
+    <button id="watch-ad">Watch Ad & Earn 1 Peso</button>
+    <p>Balance: <span id="balance">0</span> pesos</p>
+  </section>
+
+  <!-- WITHDRAW -->
+  <section id="withdraw">
+    <h2>WITHDRAW CHANNEL</h2>
+    <label>GCash Number: <input type="text" id="gcash"></label>
+    <button id="request-withdraw">Request Withdrawal</button>
+    <h3>Withdrawal Queue</h3>
+    <table id="withdraw-table">
+      <thead>
+        <tr><th>User</th><th>GCash</th><th>Amount</th><th>Status</th><th>Time</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- ADMIN ROOM -->
+  <section id="admin-room">
+    <h2>ADMIN ROOM</h2>
+    <input type="password" id="admin-pass" placeholder="Enter password">
+    <button id="admin-login">Login</button>
+    <div id="admin-panel" style="display:none;">
+      <h3>Approve Withdrawals</h3>
+      <button id="approve-all">Approve All</button>
+    </div>
+  </section>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>
