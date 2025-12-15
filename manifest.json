@@ -1,7 +1,7 @@
 {
   "name": "Global Reward App",
   "version": "1.0.0",
-  "description": "Top global Telegram-style reward app with exciting admin withdrawals",
+  "description": "Top global Telegram-style reward app with real-time withdrawals and admin notifications",
   "main": "index.html",
   "scripts": { "start": "index.html" },
   "author": "YourName",
