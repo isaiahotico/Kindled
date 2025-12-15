@@ -1,8 +1,11 @@
 {
-  "name": "YT StreamX",
-  "short_name": "YTStreamX",
+  "name": "TeleTube Mini App",
+  "short_name": "TeleTube",
+  "version": "1.0.0",
+  "description": "Watch YouTube videos in Telegram with playlist, auto-next, and rewards.",
+  "author": "Your Name",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#ffd6d6",
-  "theme_color": "#ff6b6b"
+  "theme_color": "#1da1f2",
+  "background_color": "#ffffff"
 }
