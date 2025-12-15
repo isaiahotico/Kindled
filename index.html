@@ -14,7 +14,7 @@
 </head>
 <body>
 
-<div id="owner-dashboard" style="display:none; padding:20px; background:#ffe6e6; max-width:600px; margin:20px auto; border-radius:8px;">
+<div id="owner-dashboard" style="display:none;">
   <h2>Owner Dashboard</h2>
   <div id="owner-content"></div>
   <button id="owner-logout">Exit Dashboard</button>
@@ -36,7 +36,7 @@
 </div>
 
 <div class="video-list-container">
-  <h3>Your Videos (max 5)</h3>
+  <h3>Your Videos (max 50)</h3>
   <input id="youtube-link" type="text" placeholder="https://youtube.com/watch?v=...">
   <button id="add-video">Add Video</button>
   <p id="limit-msg"></p>
@@ -50,6 +50,8 @@
   <button id="withdraw-btn">Withdraw</button>
   <div id="withdraw-history"></div>
 </div>
+
+<div id="leaderboard" class="video-list-container"></div>
 
 <script src="app.js"></script>
 </body>
