@@ -6,15 +6,11 @@
     <title>CryptoTube Mini App</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    
-    <!-- Firebase SDKs (for non-withdrawal features like links, leaderboards) -->
+    <!-- Firebase SDKs - Add these to your <head> -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
     <!-- Monetag SDK -->
-    <!-- Place this below head tag as requested by Monetag -->
     <script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123'></script>
-
     <!-- YouTube Player API -->
     <script>
         var tag = document.createElement('script');
@@ -28,19 +24,15 @@
         <header>
             <h1 class="app-title">CryptoTube</h1>
             <div class="currency-display">
-                Peso: <span id="pesoBalance">0.00</span>⚡
+                Peso: <span id="pesoBalance">0.000</span>
             </div>
-            <p id="telegramUserInfo" class="telegram-info"></p>
         </header>
 
         <nav class="main-nav">
             <button class="nav-button" data-page="profile">PROFILE ROOM</button>
-            <button class="nav-button" data-page="leaderboard-earners">TOP EARNERS</button>
-            <button class="nav-button" data-page="leaderboard-videos">TOP VIDEOS</button>
             <button class="nav-button" data-page="youtube">YOUTUBE ROOM</button>
-            <button class="nav-button" data-page="link">LINK ROOM</button>
+            <button class="nav-button" data-page="link></button>
             <button class="nav-button" data-page="watchads">WATCH ADS ROOM</button>
-            <button class="nav-button" data-page="withdrawal">WITHDRAWAL ROOM</button>
             <button class="nav-button admin-button" data-page="admin">ADMIN PANEL</button>
         </nav>
 
@@ -50,7 +42,7 @@
                 <h2>PROFILE ROOM</h2>
                 <p>Welcome, <span id="telegramUsername">Guest</span>!</p>
                 <p>Your Telegram ID: <span id="telegramUserId">N/A</span></p>
-                <p>Your IP Address: <span id="userIpAddress">N/A</span></p>                <p>Your Peso Balance: <span id="profilePesoBalance">0.00</span>⚡</p>
+                <p>Your Peso Balance: <span id="profilePesoBalance">0.000</span></p>
                 <h3>Your Submitted Links</h3>
                 <table id="userLinksTable">
                     <thead>
@@ -59,45 +51,8 @@
                             <th>YouTube Link</th>
                             <th>Total Views (Simulated)</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                    </thead>                    <tbody>
                         <!-- User links will be loaded here -->
-                    </tbody>
-                </table>
-                <button class="home-button" data-page="home">Return Home</button>
-            </section>
-
-            <!-- Top Earners Leaderboard -->
-            <section id="leaderboard-earnersPage" class="page hidden">
-                <h2>TOP EARNERS</h2>
-                <table id="topEarnersTable">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>User</th>
-                            <th>Total Earned (Peso)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Leaderboard data will be loaded here -->
-                    </tbody>
-                </table>
-                <button class="home-button" data-page="home">Return Home</button>
-            </section>
-
-            <!-- Top Watched Videos Leaderboard -->
-            <section id="leaderboard-videosPage" class="page hidden">
-                <h2>TOP WATCHED VIDEOS</h2>
-                <table id="topVideosTable">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Title</th>
-                            <th>Views</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Leaderboard data will be loaded here -->
                     </tbody>
                 </table>
                 <button class="home-button" data-page="home">Return Home</button>
@@ -105,7 +60,8 @@
 
             <!-- YouTube Room -->
             <section id="youtubePage" class="page hidden">
-                <h2>YOUTUBE ROOM</h2>                <div id="player"></div>
+                <h2>YOUTUBE ROOM</h2>
+                <div id="player"></div>
                 <p id="videoTitleDisplay"></p>
                 <div class="youtube-controls">
                     <button id="playRewardBtn" class="action-button">Play for Reward</button>
@@ -121,8 +77,8 @@
             <section id="linkPage" class="page hidden">
                 <h2>LINK ROOM</h2>
                 <p>You have <span id="freeLinksCount">0</span> free link submissions remaining.</p>
-                <p>Total links submitted: <span id="totalLinksSubmitted">0</span> / <span id="maxTotalLinks">20</span></p>
-                <p>Next link costs: 5⚡ Pesos</p>
+                <p>Total links submitted: <span id="totalLinksSubmitted">0</span> / 20</p>
+                <p>Next link costs: 5 Pesos</p>
                 <input type="text" id="youtubeLinkInput" placeholder="Enter YouTube Video URL">
                 <button id="submitLinkBtn" class="action-button">Submit Link</button>
                 <p id="linkSubmissionMessage"></p>
@@ -133,25 +89,24 @@
             <section id="watchadsPage" class="page hidden">
                 <h2>WATCH ADS ROOM</h2>
                 <p>Watch 4 ads to earn Peso.</p>
-                <button id="watchAdsBtn" class="action-button">Watch Ads (Total 0.028⚡ Peso)</button>
+                <button id="watchAdsBtn" class="action-button">Watch Ads (Total 0.028 Peso)</button>
                 <p id="adsStatus"></p>
                 <button class="home-button" data-page="home">Return Home</button>
             </section>
 
             <!-- Withdrawal Room -->
             <section id="withdrawalPage" class="page hidden">
-                <h2>WITHDRAWAL ROOM</h2>
-                <h3>Withdraw to Gcash</h3>
+                <h2>WITHDRAWAL ROOM</h2>                <h3>Withdraw to Gcash</h3>
                 <input type="text" id="gcashNumber" placeholder="Enter Gcash Number">
                 <input type="number" id="gcashAmount" placeholder="Amount in Peso">
-                <button id="withdrawGcashBtn" class="action-button" disabled>Withdraw to Gcash</button>
+                <button id="withdrawGcashBtn" class="action-button">Withdraw to Gcash</button>
 
                 <h3>Withdraw to FaucetPay (USDT)</h3>
-                <p>Min withdrawal: 1⚡ Peso (approx 0.02⚡ USDT)</p>
-                <p>Max withdrawal: 100⚡ Peso (approx 2⚡ USDT)</p>
+                <p>Min withdrawal: 1 Peso (approx 0.02 USDT)</p>
+                <p>Max withdrawal: 100 Peso (approx 2 USDT)</p>
                 <input type="email" id="faucetpayEmail" placeholder="Enter FaucetPay Email">
                 <input type="number" id="faucetpayAmount" placeholder="Amount in Peso">
-                <button id="withdrawFaucetpayBtn" class="action-button" disabled>Withdraw to FaucetPay</button>
+                <button id="withdrawFaucetpayBtn" class="action-button">Withdraw to FaucetPay</button>
 
                 <h3>Withdrawal History</h3>
                 <table id="withdrawalHistoryTable">
@@ -162,7 +117,6 @@
                             <th>Type</th>
                             <th>Details</th>
                             <th>Status</th>
-                            <th>Reason</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -172,7 +126,7 @@
                 <button class="home-button" data-page="home">Return Home</button>
             </section>
 
-            <!-- Admin Panel Room -->
+            <!-- AdminPanel Room -->
             <section id="adminPage" class="page hidden">
                 <h2>ADMIN PANEL</h2>
                 <input type="password" id="adminPassword" placeholder="Admin Password">
@@ -199,6 +153,10 @@
                 <button class="home-button" data-page="home">Return Home</button>
             </section>
         </main>
+        
+        <footer>
+            <span id="currentDateTime"></span> | otico.isai3@gmail.com | &copy;2025
+        </footer>
     </div>
 
     <script src="app.js"></script>
