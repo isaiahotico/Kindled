@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>YouTube Watch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+  <h2>YouTube Watch</h2>
+
+  <input
+    id="ytInput"
+    type="text"
+    placeholder="Paste YouTube link here"
+  />
+  <button onclick="loadVideo()">LOAD VIDEO</button>
+
+  <h3 id="views"></h3>
+  <div id="player"></div>
+  <p id="status">Waiting for video…</p>
+
+  <script src="app.js"></script>
+</body>
+</html>
