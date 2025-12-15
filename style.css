@@ -1,35 +1,54 @@
 body {
   margin: 0;
-  padding: 12px;
   font-family: system-ui;
+  background: orange;
+  color: black;
+}
+
+.header { text-align: center; padding: 10px; }
+
+#wallet-display { margin-top: 5px; font-weight: bold; }
+
+.player-container {
+  max-width: 720px;
+  margin: 0 auto;
   text-align: center;
-  background: #0f0f0f;
-  color: white;
+  margin-top: 20px;
 }
-input {
-  width: 80%;
-  padding: 6px;
-  margin: 6px 0;
-}
-button {
-  margin: 3px;
-  padding: 6px 12px;
+
+.controls button {
+  padding: 8px 16px;
+  margin: 5px;
   border-radius: 6px;
   cursor: pointer;
 }
-#player {
-  margin-top: 10px;
-  border-radius: 12px;
-  overflow: hidden;
-}
-.video-card {
-  margin-top: 8px;
-  background: #222;
-  padding: 8px;
+
+.video-list-container {
+  max-width: 400px;
+  margin: 20px auto;
+  background: #fff2d1;
+  padding: 10px;
   border-radius: 8px;
 }
-#status {
-  margin-top: 8px;
-  font-size: 14px;
-  opacity: 0.8;
+
+input {
+  width: 100%;
+  padding: 6px;
+  margin: 6px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.video-card {
+  margin: 6px 0;
+  padding: 6px;
+  background: #ffd480;
+  border-radius: 6px;
+}
+
+.withdraw-card button {
+  margin-right: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
 }
