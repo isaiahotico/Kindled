@@ -1,4 +1,7 @@
-Telegram.WebApp.ready();
+// Telegram WebApp ready
+document.addEventListener("DOMContentLoaded", () => {
+  if (Telegram?.WebApp) Telegram.WebApp.ready();
+});
 
 const SERVER = "https://your-server.com"; // Replace with your backend URL
 let player, watched = 0, timer = null;
@@ -10,6 +13,7 @@ function handleCredentialResponse(response) {
   document.getElementById("user-name").innerText = user.name;
   document.getElementById("user-photo").src = user.picture;
 }
+
 function parseJwt(token) {
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
