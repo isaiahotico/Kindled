@@ -1,12 +1,54 @@
-{
-  "name": "TeleTube Mini App",
-  "short_name": "TeleTube",
-  "version": "1.0.0",
-  "description": "Watch YouTube videos in Telegram with playlist, auto-next, and rewards.",
-  "author": "Your Name",
-  "start_url": "index.html",
-  "display": "standalone",
-  "theme_color": "#1da1f2",
-  "background_color": "#ffffff"
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
 }
 
+.app-container {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 8px;
+  background: #1da1f2;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button.hidden {
+  display: none;
+}
+
+#videoContainer iframe {
+  width: 100%;
+  height: 280px;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+#playlistContainer {
+  margin-top: 10px;
+}
+
+#playlistContainer div.current {
+  font-weight: bold;
+  color: #1da1f2;
+}
