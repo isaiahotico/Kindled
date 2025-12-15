@@ -1,78 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Global Reward App</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Reward App</title>
+<link rel="stylesheet" href="style.css">
 
-  <!-- Monetag SDK -->
-  <script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
+<!-- Monetag SDK -->
+<script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "SENDER_ID",
-      appId: "APP_ID"
-    };
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
 
-    const app = initializeApp(firebaseConfig);
-    window.db = getFirestore(app);
-  </script>
+const app = initializeApp(firebaseConfig);
+window.db = getFirestore(app);
+</script>
 </head>
 <body>
-  <h1 id="rainbow-text">Welcome to Reward App</h1>
 
-  <!-- PROFILE -->
-  <section id="profile">
-    <h2>PROFILE</h2>
-    <p>Telegram Username: <span id="tg-username">Loading...</span></p>
-    <p>Telegram ID: <span id="tg-id">Loading...</span></p>
-    <label>Sex: <input type="text" id="sex"></label><br>
-    <label>Age: <input type="number" id="age"></label><br>
-    <label>Birthday: <input type="date" id="birthday"></label><br>
-    <button id="save-profile">Save Profile</button>
-  </section>
+<h1 id="rainbow-text">Welcome to Reward App</h1>
 
-  <!-- WATCH ROOM -->
-  <section id="watch-room">
-    <h2>WATCH ROOM</h2>
-    <button id="watch-ad">Watch Ad & Earn 1 Peso</button>
-    <p>Balance: <span id="balance">0</span> pesos</p>
-  </section>
+<!-- PROFILE -->
+<section id="profile">
+<h2>PROFILE</h2>
+<p>Telegram Username: <span id="tg-username">Loading...</span></p>
+<p>Telegram ID: <span id="tg-id">Loading...</span></p>
+<label>Sex: <input type="text" id="sex"></label><br>
+<label>Age: <input type="number" id="age"></label><br>
+<label>Birthday: <input type="date" id="birthday"></label><br>
+<button id="save-profile">Save Profile</button>
+</section>
 
-  <!-- WITHDRAW -->
-  <section id="withdraw">
-    <h2>WITHDRAW CHANNEL</h2>
-    <label>GCash Number: <input type="text" id="gcash"></label>
-    <button id="request-withdraw">Request Withdrawal</button>
-    <h3>Withdrawal Queue</h3>
-    <table id="withdraw-table">
-      <thead>
-        <tr><th>User</th><th>GCash</th><th>Amount</th><th>Status</th><th>Time</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
+<!-- WATCH ROOM -->
+<section id="watch-room">
+<h2>WATCH ROOM</h2>
+<button id="watch-ad">Watch Ad & Earn 1 Peso</button>
+<p>Balance: <span id="balance">0</span> pesos</p>
+</section>
 
-  <!-- ADMIN ROOM -->
-  <section id="admin-room">
-    <h2>ADMIN ROOM</h2>
-    <input type="password" id="admin-pass" placeholder="Enter password">
-    <button id="admin-login">Login</button>
-    <div id="admin-panel" style="display:none;">
-      <h3>Approve Withdrawals</h3>
-      <button id="approve-all">Approve All</button>
-    </div>
-  </section>
+<!-- WITHDRAW -->
+<section id="withdraw">
+<h2>WITHDRAW CHANNEL</h2>
+<label>GCash Number: <input type="text" id="gcash"></label>
+<button id="request-withdraw">Request Withdrawal</button>
+<h3>Withdrawal Queue</h3>
+<input type="text" id="search-user" placeholder="Search by username or ID">
+<div id="tabs">
+  <button class="tab-btn" data-status="Pending">Pending</button>
+  <button class="tab-btn" data-status="Approved">Approved</button>
+  <button class="tab-btn" data-status="Rejected">Rejected</button>
+</div>
+<table id="withdraw-table">
+<thead>
+<tr><th>User</th><th>GCash</th><th>Amount</th><th>Status</th><th>Time</th><th>Admin</th><th>Action</th></tr>
+</thead>
+<tbody></tbody>
+</table>
+</section>
 
-  <script type="module" src="app.js"></script>
+<!-- ADMIN ROOM -->
+<section id="admin-room">
+<h2>ADMIN ROOM</h2>
+<input type="password" id="admin-pass" placeholder="Enter password">
+<button id="admin-login">Login</button>
+<div id="admin-panel" style="display:none;">
+<h3>Approve / Reject Withdrawals</h3>
+<button id="approve-all">Approve All Pending</button>
+</div>
+</section>
+
+<script type="module" src="app.js"></script>
 </body>
 </html>
