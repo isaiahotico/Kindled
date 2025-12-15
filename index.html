@@ -24,15 +24,16 @@
         <header>
             <h1 class="app-title">CryptoTube</h1>
             <div class="currency-display">
-                Peso: <span id="pesoBalance">0.000</span>
+                Peso: <span id="pesoBalance">0.00</span>
             </div>
         </header>
 
         <nav class="main-nav">
             <button class="nav-button" data-page="profile">PROFILE ROOM</button>
             <button class="nav-button" data-page="youtube">YOUTUBE ROOM</button>
-            <button class="nav-button" data-page="link></button>
+            <button class="nav-button" data-page="link">LINK ROOM</button>
             <button class="nav-button" data-page="watchads">WATCH ADS ROOM</button>
+            <button class="nav-button" data-page="withdrawal">WITHDRAWAL ROOM</button>
             <button class="nav-button admin-button" data-page="admin">ADMIN PANEL</button>
         </nav>
 
@@ -42,7 +43,7 @@
                 <h2>PROFILE ROOM</h2>
                 <p>Welcome, <span id="telegramUsername">Guest</span>!</p>
                 <p>Your Telegram ID: <span id="telegramUserId">N/A</span></p>
-                <p>Your Peso Balance: <span id="profilePesoBalance">0.000</span></p>
+                <p>Your Peso Balance: <span id="profilePesoBalance">0.00</span></p>
                 <h3>Your Submitted Links</h3>
                 <table id="userLinksTable">
                     <thead>
@@ -88,15 +89,15 @@
             <!-- Watch Ads Room -->
             <section id="watchadsPage" class="page hidden">
                 <h2>WATCH ADS ROOM</h2>
-                <p>Watch 4 ads to earn Peso.</p>
-                <button id="watchAdsBtn" class="action-button">Watch Ads (Total 0.028 Peso)</button>
+                <p>Watch ads to earn Peso. You get 0.025 Peso per ad.</p>
+                <button id="watchAdsBtn" class="action-button">Watch Ads (4 ads for 0.10 Peso)</button>
                 <p id="adsStatus"></p>
                 <button class="home-button" data-page="home">Return Home</button>
             </section>
 
             <!-- Withdrawal Room -->
-            <section id="withdrawalPage" class="page hidden">
-                <h2>WITHDRAWAL ROOM</h2>                <h3>Withdraw to Gcash</h3>
+            <section id="withdrawalPage" class="page hidden">                <h2>WITHDRAWAL ROOM</h2>
+                <h3>Withdraw to Gcash</h3>
                 <input type="text" id="gcashNumber" placeholder="Enter Gcash Number">
                 <input type="number" id="gcashAmount" placeholder="Amount in Peso">
                 <button id="withdrawGcashBtn" class="action-button">Withdraw to Gcash</button>
@@ -124,9 +125,9 @@
                     </tbody>
                 </table>
                 <button class="home-button" data-page="home">Return Home</button>
-            </section>
+            </section
 
-            <!-- AdminPanel Room -->
+            <!-- Admin Panel Room -->
             <section id="adminPage" class="page hidden">
                 <h2>ADMIN PANEL</h2>
                 <input type="password" id="adminPassword" placeholder="Admin Password">
@@ -153,10 +154,6 @@
                 <button class="home-button" data-page="home">Return Home</button>
             </section>
         </main>
-        
-        <footer>
-            <span id="currentDateTime"></span> | otico.isai3@gmail.com | &copy;2025
-        </footer>
     </div>
 
     <script src="app.js"></script>
