@@ -1,31 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>YouTube Watch</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Watch Profile</title>
 
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://www.youtube.com/iframe_api"></script>
+<!-- Telegram WebApp -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
+<!-- Google Sign-In -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
 </head>
-
 <body>
-  <h2>YouTube Watch</h2>
 
-  <input
-    id="ytInput"
-    type="text"
-    placeholder="Paste YouTube link here"
-  />
-  <button onclick="loadVideo()">LOAD VIDEO</button>
+<h2>Welcome, <span id="user-name">Guest</span></h2>
+<img id="user-photo" src="" alt="Profile" width="80"/>
 
-  <h3 id="views"></h3>
-  <div id="player"></div>
-  <p id="status">Waiting for video…</p>
+<!-- Google Login -->
+<div id="g_id_onload"
+     data-client_id="YOUR_OAUTH_CLIENT_ID"
+     data-callback="handleCredentialResponse"
+     data-auto_prompt="false">
+</div>
+<div class="g_id_signin"></div>
 
-  <script src="app.js"></script>
+<h3>Paste YouTube Link</h3>
+<input id="youtube-link" type="text" placeholder="https://youtube.com/watch?v=...">
+<button id="load-video">Load Video</button>
+
+<h3 id="views">Video Stats</h3>
+<div id="player"></div>
+<p id="status">Tap play to start watching</p>
+
+<h3>Video List</h3>
+<div id="videos-list"></div>
+
+<script src="app.js"></script>
 </body>
 </html>
