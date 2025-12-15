@@ -1,117 +1,97 @@
 Telegram.WebApp.ready();
 
-const SERVER = "https://your-server.onrender.com"; // CHANGE
+const SERVER = "https://your-server.com"; // Replace with your backend URL
+let player, watched = 0, timer = null;
 const USER_ID = Telegram.WebApp.initDataUnsafe?.user?.id || "guest";
 
-let player;
-let watched = 0;
-let timer = null;
-let VIDEO_ID = null;
+/* --- Google Login --- */
+function handleCredentialResponse(response) {
+  const user = parseJwt(response.credential);
+  document.getElementById("user-name").innerText = user.name;
+  document.getElementById("user-photo").src = user.picture;
+}
+function parseJwt(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  return JSON.parse(atob(base64));
+}
 
-/* Extract YouTube video ID from link */
-function extractVideoId(url) {
-  const regex =
-    /(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+/* --- Extract Video ID --- */
+function extractVideoID(url) {
+  const regex = /(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
   const match = url.match(regex);
   return match ? match[1] : null;
 }
 
-window.loadVideo = () => {
-  const input = document.getElementById("ytInput").value.trim();
-  const id = extractVideoId(input);
+/* --- Load video --- */
+document.getElementById("load-video").addEventListener("click", () => {
+  const url = document.getElementById("youtube-link").value;
+  const videoId = extractVideoID(url);
+  if (!videoId) return alert("Invalid YouTube link");
+  loadVideo(videoId);
+});
 
-  if (!id) {
-    alert("Invalid YouTube link");
-    return;
-  }
+/* --- Example video list --- */
+const videos = [
+  { title: "Sample Video 1", videoId: "dQw4w9WgXcQ", channelId: "UCXXXX" },
+  { title: "Sample Video 2", videoId: "abcd1234", channelId: "UCYYYY" }
+];
+const container = document.getElementById("videos-list");
+videos.forEach(v => {
+  const div = document.createElement("div");
+  div.className = "video-card";
+  div.innerHTML = `
+    <p>${v.title}</p>
+    <button onclick="openYoutube('${v.videoId}')">Open Video</button>
+    <button onclick="subscribeYoutube('${v.channelId}')">Subscribe</button>
+    <button onclick="likeYoutube('${v.videoId}')">Like</button>
+  `;
+  container.appendChild(div);
+});
 
-  VIDEO_ID = id;
-  watched = 0;
-  document.getElementById("status").innerText = "Ready to play";
-  document.getElementById("views").innerText = "Loading views…";
+/* --- Video Button Functions --- */
+function openYoutube(videoId){window.open(`https://www.youtube.com/watch?v=${videoId}`,"_blank")}
+function subscribeYoutube(channelId){window.open(`https://www.youtube.com/channel/${channelId}?sub_confirmation=1`,"_blank")}
+function likeYoutube(videoId){window.open(`https://www.youtube.com/watch?v=${videoId}`,"_blank")}
 
-  /* Fetch viewCount from server */
-  fetch(`${SERVER}/views/${VIDEO_ID}`)
-    .then(r => r.json())
-    .then(d => {
-      document.getElementById("views").innerText =
-        `👁 ${Number(d.views).toLocaleString()} views`;
+/* --- Load Video with Stats --- */
+function loadVideo(videoId){
+  fetch(`${SERVER}/video-stats/${videoId}`)
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.error) return alert(d.error);
+      document.getElementById("views").innerHTML = `
+        <strong>${d.title}</strong><br>
+        Channel: ${d.channelTitle}<br>
+        Published: ${new Date(d.publishedAt).toLocaleDateString()}<br>
+        👁 Views: ${Number(d.viewCount).toLocaleString()}<br>
+        👍 Likes: ${Number(d.likeCount).toLocaleString()}<br>
+        💬 Comments: ${Number(d.commentCount).toLocaleString()}<br>
+        <img src="${d.thumbnail}" width="320">
+      `;
     });
 
-  if (player) {
-    player.loadVideoById(VIDEO_ID);
-  } else {
-    createPlayer();
-  }
-};
-
-/* Create YouTube Player */
-function createPlayer() {
-  player = new YT.Player("player", {
-    width: "100%",
-    height: "360",
-    videoId: VIDEO_ID,
-    playerVars: { playsinline: 1 },
-    events: { onStateChange }
-  });
+  if(player) player.destroy();
+  player = new YT.Player("player", { videoId, width:"100%", height:"360", playerVars:{playsinline:1}, events:{onStateChange} });
+  watched=0;
+  document.getElementById("status").innerText="Tap play to start watching";
 }
 
-function onStateChange(e) {
-  if (e.data === YT.PlayerState.PLAYING) {
-    startTimer();
-
-    fetch(`${SERVER}/watch/start`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: USER_ID, videoId: VIDEO_ID })
-    });
-  }
-
-  if (
-    e.data === YT.PlayerState.PAUSED ||
-    e.data === YT.PlayerState.ENDED
-  ) {
-    stopTimer();
-  }
+/* --- 60s Watch Validation --- */
+function onStateChange(e){
+  if(e.data===YT.PlayerState.PLAYING){startTimer();fetch(`${SERVER}/watch/start`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:USER_ID,videoId:player.getVideoData().video_id})});}
+  if(e.data===YT.PlayerState.PAUSED||e.data===YT.PlayerState.ENDED) stopTimer();
 }
-
-/* Watch-time timer */
-function startTimer() {
-  if (timer) return;
-
-  timer = setInterval(() => {
+function startTimer(){
+  if(timer) return;
+  timer=setInterval(()=>{
     watched++;
-    document.getElementById("status").innerText =
-      `⏱ Watched ${watched}s / 60s`;
-
-    if (watched >= 60) {
-      validateWatch();
-      stopTimer();
-    }
-  }, 1000);
+    document.getElementById("status").innerText=`⏱ Watched ${watched}s / 60s`;
+    if(watched>=60){validateWatch();stopTimer();}
+  },1000);
 }
-
-function stopTimer() {
-  clearInterval(timer);
-  timer = null;
-}
-
-function validateWatch() {
-  fetch(`${SERVER}/watch/validate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      userId: USER_ID,
-      videoId: VIDEO_ID,
-      watchedSeconds: watched
-    })
-  })
-    .then(r => r.json())
-    .then(d => {
-      if (d.validated) {
-        document.getElementById("status").innerText =
-          "✅ 60 seconds completed (validated)";
-        Telegram.WebApp.HapticFeedback.notificationOccurred("success");
-      }
-    });
+function stopTimer(){clearInterval(timer);timer=null;}
+function validateWatch(){
+  fetch(`${SERVER}/watch/validate`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId:USER_ID,videoId:player.getVideoData().video_id,watchedSeconds:watched})})
+  .then(r=>r.json()).then(d=>{if(d.validated){document.getElementById("status").innerText="✅ 60s completed (validated)";Telegram.WebApp.HapticFeedback.notificationOccurred("success");}});
 }
