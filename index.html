@@ -1,78 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YT StreamX</title>
-
-<link rel="stylesheet" href="style.css">
-
-<!-- Telegram Mini App -->
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<!-- Firebase (frontend only) -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
-
-<!-- YouTube IFrame API -->
-<script src="https://www.youtube.com/iframe_api"></script>
-
-<!-- Monetag SDK -->
-<script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123'></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeleTube Mini App</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-
 <body>
-
-<header>
-  <h1>🌍 YT StreamX</h1>
-  <div id="balance">₱0.000</div>
-</header>
-
-<nav>
-  <button onclick="showRoom('youtube')">🎬 YouTube</button>
-  <button onclick="showRoom('links')">🔗 Link Room</button>
-  <button onclick="showRoom('ads')">📺 Watch Ads</button>
-  <button onclick="showRoom('withdraw')">💸 Withdraw</button>
-  <button onclick="openAdmin()">🛠 Admin</button>
-</nav>
-
-<!-- YOUTUBE ROOM -->
-<section id="youtube" class="room active">
-  <div id="player"></div>
-  <button onclick="playForReward()">▶ Play for Reward</button>
-  <button onclick="nextVideo()">⏭ Next</button>
-</section>
-
-<!-- LINK ROOM -->
-<section id="links" class="room">
-  <input id="ytLink" placeholder="Paste YouTube URL">
-  <button onclick="addLink()">Auto Add URL</button>
-  <table id="linkTable"></table>
-</section>
-
-<!-- ADS ROOM -->
-<section id="ads" class="room">
-  <button onclick="watchAds()">Watch 4 Ads & Earn ₱0.025</button>
-  <p id="adsLeft"></p>
-</section>
-
-<!-- WITHDRAW ROOM -->
-<section id="withdraw" class="room">
-  <input placeholder="GCash Number">
-  <input placeholder="FaucetPay Gmail">
-  <button onclick="requestWithdraw()">Request Withdrawal</button>
-</section>
-
-<!-- ADMIN ROOM -->
-<section id="admin" class="room">
-  <h2>🛠 Withdrawal Approval</h2>
-  <table id="adminTable"></table>
-</section>
-
-<footer>
-  <span id="time"></span> | otico.isai3@gmail.com | ©2025
-</footer>
-
-<script src="app.js"></script>
+  <div class="app-container">
+    <h1>TeleTube Mini App</h1>
+    <input id="videoUrl" type="text" placeholder="Paste YouTube URL here">
+    <button id="addVideo">Add to Playlist</button>
+    <div id="playlistContainer"></div>
+    <div id="videoContainer"></div>
+    <button id="claimReward" class="hidden">Claim Reward</button>
+    <div id="status"></div>
+  </div>
+  <script src="app.js"></script>
 </body>
 </html>
