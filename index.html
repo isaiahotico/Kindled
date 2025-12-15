@@ -3,90 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Global YouTube Reward</title>
+<title>YT StreamX</title>
 
 <link rel="stylesheet" href="style.css">
 
-<!-- Telegram WebApp -->
+<!-- Telegram Mini App -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<!-- Monetag SDK -->
-<script src='//libtl.com/sdk.js'
-        data-zone='10276123'
-        data-sdk='show_10276123'></script>
+<!-- Firebase (frontend only) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<!-- Monetag SDK -->
+<script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123'></script>
 </head>
 
 <body>
 
 <header>
-  <div>
-    <b id="tgName">User</b><br>
-    <small>ID: <span id="tgId"></span></small>
-  </div>
-  <div class="balance">₱ <span id="balance">0.000</span></div>
+  <h1>🌍 YT StreamX</h1>
+  <div id="balance">₱0.000</div>
 </header>
 
 <nav>
-  <button onclick="goHome()">🏠 Home</button>
-  <button onclick="openSubmit()">📤 Submit Video</button>
-  <button onclick="openWithdraw()">💸 Withdraw</button>
+  <button onclick="showRoom('youtube')">🎬 YouTube</button>
+  <button onclick="showRoom('links')">🔗 Link Room</button>
+  <button onclick="showRoom('ads')">📺 Watch Ads</button>
+  <button onclick="showRoom('withdraw')">💸 Withdraw</button>
+  <button onclick="openAdmin()">🛠 Admin</button>
 </nav>
 
-<main id="homePage">
-  <h2>🎬 Global YouTube Player</h2>
+<!-- YOUTUBE ROOM -->
+<section id="youtube" class="room active">
+  <div id="player"></div>
+  <button onclick="playForReward()">▶ Play for Reward</button>
+  <button onclick="nextVideo()">⏭ Next</button>
+</section>
 
-  <iframe id="ytPlayer"
-    allow="autoplay; encrypted-media"
-    allowfullscreen></iframe>
+<!-- LINK ROOM -->
+<section id="links" class="room">
+  <input id="ytLink" placeholder="Paste YouTube URL">
+  <button onclick="addLink()">Auto Add URL</button>
+  <table id="linkTable"></table>
+</section>
 
-  <button onclick="playVideo()">▶ Play Video</button>
-  <button class="reward" onclick="watchAds()">📺 Watch Ads</button>
+<!-- ADS ROOM -->
+<section id="ads" class="room">
+  <button onclick="watchAds()">Watch 4 Ads & Earn ₱0.025</button>
+  <p id="adsLeft"></p>
+</section>
 
-  <div id="adsInfo" class="ads-info hidden"></div>
+<!-- WITHDRAW ROOM -->
+<section id="withdraw" class="room">
+  <input placeholder="GCash Number">
+  <input placeholder="FaucetPay Gmail">
+  <button onclick="requestWithdraw()">Request Withdrawal</button>
+</section>
 
-  <h3>Your Videos</h3>
-  <table>
-    <thead>
-      <tr><th>Video</th><th>Views</th><th>Earnings</th></tr>
-    </thead>
-    <tbody id="userLinks"></tbody>
-  </table>
-</main>
-
-<main id="submitPage" class="hidden">
-  <h2>📤 Submit YouTube Video</h2>
-  <p>5 FREE • ₱5 per extra • Max 20</p>
-
-  <input id="ytLink" placeholder="YouTube URL">
-  <button onclick="submitVideo()">Submit</button>
-
-  <table>
-    <thead><tr><th>Video ID</th></tr></thead>
-    <tbody id="mySubmits"></tbody>
-  </table>
-</main>
-
-<main id="withdrawPage" class="hidden">
-  <h2>💸 Withdraw</h2>
-
-  <input id="wdAmount" placeholder="Amount ₱">
-  <select id="wdMethod">
-    <option>GCash</option>
-    <option>FaucetPay USDT</option>
-  </select>
-  <input id="wdAccount" placeholder="GCash # or Gmail">
-
-  <button onclick="requestWithdraw()">Request</button>
-</main>
+<!-- ADMIN ROOM -->
+<section id="admin" class="room">
+  <h2>🛠 Withdrawal Approval</h2>
+  <table id="adminTable"></table>
+</section>
 
 <footer>
-  <span id="time"></span><br>
-  otico.isai3@gmail.com<br>
-  ©2025
+  <span id="time"></span> | otico.isai3@gmail.com | ©2025
 </footer>
 
 <script src="app.js"></script>
