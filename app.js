@@ -1,135 +1,109 @@
-/* Telegram Init */
-const tg = window.Telegram.WebApp;
-tg.ready();
+// Firebase config
+const firebaseConfig = {
+  apiKey: "YOUR_FIREBASE_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-const userId = tg.initDataUnsafe.user?.id || "guest";
-const userName = tg.initDataUnsafe.user?.first_name || "Guest";
-
-/* Firebase Config (ADD YOUR KEYS) */
-firebase.initializeApp({
-  apiKey: "YOUR_API_KEY",
-  projectId: "YOUR_PROJECT_ID"
-});
-const db = firebase.firestore();
-
-/* UI */
-function showRoom(id) {
-  document.querySelectorAll('.room').forEach(r => r.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-/* Balance */
-let balance = 0;
-function updateBalance() {
-  document.getElementById("balance").innerText = `₱${balance.toFixed(3)}`;
-}
-
-/* SMART YOUTUBE URL ENGINE */
-function parseYouTube(url) {
-  let id = null;
-  if (url.includes("watch?v=")) id = url.split("watch?v=")[1].split("&")[0];
-  if (url.includes("youtu.be/")) id = url.split("youtu.be/")[1].split("?")[0];
-  if (url.includes("shorts/")) id = url.split("shorts/")[1].split("?")[0];
-  return id;
-}
-
-/* LINKS */
-let userLinks = [];
-
-function addLink() {
-  const raw = document.getElementById("ytLink").value;
-  const videoId = parseYouTube(raw);
-  if (!videoId) return alert("Invalid YouTube link");
-
-  if (userLinks.length >= 20) return alert("Max 20 links reached");
-
-  userLinks.push(videoId);
-  renderLinks();
-}
-
-function renderLinks() {
-  document.getElementById("linkTable").innerHTML =
-    userLinks.map((v, i) =>
-      `<tr><td>${i+1}</td><td>${v}</td></tr>`
-    ).join("");
-}
-
-/* YOUTUBE PLAYER */
 let player;
-let playedVideos = new Set();
+let rewardClaimed = false;
+let playlist = [];
+let currentIndex = 0;
 
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
-    height: '240',
-    width: '100%',
-    playerVars: { controls: 1 }
+// Parse YouTube Video ID
+function parseYouTubeID(url) {
+  const regExp = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/))([^\?&\/]+)/;
+  const match = url.match(regExp);
+  return match ? match[1] : null;
+}
+
+// Render Playlist
+function renderPlaylist() {
+  const container = document.getElementById('playlistContainer');
+  container.innerHTML = '<h3>Playlist:</h3>';
+  playlist.forEach((id, index) => {
+    const videoDiv = document.createElement('div');
+    videoDiv.innerText = `${index + 1}. https://youtu.be/${id}`;
+    videoDiv.className = index === currentIndex ? 'current' : '';
+    container.appendChild(videoDiv);
   });
 }
 
-function playForReward() {
-  if (userLinks.length === 0) return alert("No videos available");
+// Load YouTube Video by index
+function loadVideo(index) {
+  if (index >= playlist.length) return;
+  currentIndex = index;
+  const videoId = playlist[index];
+  const container = document.getElementById('videoContainer');
+  container.innerHTML = '';
 
-  let vid;
-  do {
-    vid = userLinks[Math.floor(Math.random() * userLinks.length)];
-  } while (playedVideos.has(vid) && playedVideos.size < userLinks.length);
+  player = new YT.Player(container, {
+    videoId: videoId,
+    events: { 'onStateChange': onPlayerStateChange },
+    playerVars: { autoplay: 1, rel: 0, modestbranding: 1 }
+  });
 
-  playedVideos.add(vid);
-  player.loadVideoById(vid);
+  rewardClaimed = false;
+  document.getElementById('claimReward').classList.add('hidden');
+  renderPlaylist();
+  document.getElementById('status').innerText = 'Playing video ' + (index + 1);
+}
 
+// Handle Video End
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED && !rewardClaimed) {
+    document.getElementById('status').innerText = 'Video finished! Claim your reward.';
+    document.getElementById('claimReward').classList.remove('hidden');
+  }
+}
+
+// Add Video to Playlist
+function addVideo() {
+  const url = document.getElementById('videoUrl').value;
+  const videoId = parseYouTubeID(url);
+  if (!videoId) {
+    document.getElementById('status').innerText = 'Invalid YouTube URL!';
+    return;
+  }
+  playlist.push(videoId);
+
+  // Save playlist to Firebase per user
+  const userId = Telegram.WebApp.initDataUnsafe.user.id;
+  db.ref(`users/${userId}/playlist`).set(playlist);
+
+  renderPlaylist();
+  if (playlist.length === 1) loadVideo(0);
+  document.getElementById('videoUrl').value = '';
+}
+
+// Claim Reward
+function claimReward() {
+  rewardClaimed = true;
+  document.getElementById('status').innerText = 'Reward claimed! 🎉';
+  document.getElementById('claimReward').classList.add('hidden');
+
+  const userId = Telegram.WebApp.initDataUnsafe.user.id;
+  const rewardRef = db.ref(`users/${userId}/rewards`);
+  rewardRef.transaction(current => (current || 0) + 1);
+
+  if (currentIndex + 1 < playlist.length) loadVideo(currentIndex + 1);
+  else document.getElementById('status').innerText = 'Playlist finished!';
+}
+
+document.getElementById('addVideo').addEventListener('click', addVideo);
+document.getElementById('claimReward').addEventListener('click', claimReward);
+
+// Auto-detect URL pasted
+document.getElementById('videoUrl').addEventListener('paste', (e) => {
   setTimeout(() => {
-    balance += 0.01;
-    updateBalance();
-  }, 60000); // 1 minute rule
-}
-
-function nextVideo() {
-  playForReward();
-}
-
-/* ADS */
-let adsLeft = 4;
-function watchAds() {
-  adsLeft = 4;
-  document.getElementById("adsLeft").innerText = `Ads left: ${adsLeft}`;
-
-  function playAd() {
-    if (adsLeft === 0) {
-      balance += 0.025;
-      updateBalance();
-      return;
-    }
-    show_10276123('pop').then(() => {
-      adsLeft--;
-      document.getElementById("adsLeft").innerText = `Ads left: ${adsLeft}`;
-      playAd();
-    });
-  }
-  playAd();
-}
-
-/* WITHDRAW */
-function requestWithdraw() {
-  alert("Withdrawal request sent for manual approval");
-}
-
-/* ADMIN */
-function openAdmin() {
-  if (sessionStorage.admin) return showRoom('admin');
-  const pass = prompt("Admin Password");
-  if (pass === "Propetas6") {
-    sessionStorage.admin = true;
-    loadAdminTable();
-    showRoom('admin');
-  }
-}
-
-function loadAdminTable() {
-  document.getElementById("adminTable").innerHTML =
-    `<tr><td>${userId}</td><td>₱${balance.toFixed(2)}</td><td>PENDING</td></tr>`;
-}
-
-/* Footer Time */
-setInterval(() => {
-  document.getElementById("time").innerText = new Date().toLocaleString();
-}, 1000);
+    const url = e.target.value;
+    const videoId = parseYouTubeID(url);
+    if (videoId) addVideo();
+  }, 100);
+});
