@@ -3,43 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YouTube Watch Profile</title>
+<title>Telegram YouTube Profile</title>
 
-<!-- Telegram WebApp -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<!-- Google Sign-In -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-
-<!-- YouTube IFrame API -->
 <script src="https://www.youtube.com/iframe_api"></script>
+<script src="//libtl.com/sdk.js" data-zone="3136495" data-sdk="show_3136495"></script>
 
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
-<h2>Welcome, <span id="user-name">Guest</span></h2>
-<img id="user-photo" src="" alt="Profile" width="80"/>
-
-<!-- Google Login -->
-<div id="g_id_onload"
-     data-client_id="393960856604-nchd8l1p8uaqmdvt2ji2sh1gsiii27ed.apps.googleusercontent.com"
-     data-callback="handleCredentialResponse"
-     data-auto_prompt="false">
+<div id="owner-dashboard" style="display:none; padding:20px; background:#ffe6e6; max-width:600px; margin:20px auto; border-radius:8px;">
+  <h2>Owner Dashboard</h2>
+  <div id="owner-content"></div>
+  <button id="owner-logout">Exit Dashboard</button>
 </div>
-<div class="g_id_signin"></div>
 
-<h3>Paste YouTube Link</h3>
-<input id="youtube-link" type="text" placeholder="https://youtube.com/watch?v=...">
-<button id="load-video">Load Video</button>
+<div class="header">
+  <h2 id="user-name">Guest</h2>
+  <p>ID: <span id="user-id">guest</span></p>
+  <div id="wallet-display">Wallet: 0 PHP</div>
+</div>
 
-<h3 id="views">Video Stats</h3>
-<div id="player"></div>
-<p id="status">Tap play to start watching</p>
+<div class="player-container">
+  <div id="player"></div>
+  <div class="controls">
+    <button id="next-video">⏭ Next</button>
+    <button id="play-video">▶ Play</button>
+  </div>
+  <p id="status">Select a video and press Play</p>
+</div>
 
-<h3>Video List</h3>
-<div id="videos-list"></div>
+<div class="video-list-container">
+  <h3>Your Videos (max 5)</h3>
+  <input id="youtube-link" type="text" placeholder="https://youtube.com/watch?v=...">
+  <button id="add-video">Add Video</button>
+  <p id="limit-msg"></p>
+  <div id="videos-list"></div>
+</div>
+
+<div id="withdraw-container">
+  <h3>Withdraw</h3>
+  <input id="gcash-number" placeholder="Gcash Number">
+  <input id="withdraw-amount" type="number" placeholder="Amount PHP">
+  <button id="withdraw-btn">Withdraw</button>
+  <div id="withdraw-history"></div>
+</div>
 
 <script src="app.js"></script>
 </body>
