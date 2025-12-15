@@ -1,4 +1,4 @@
-// 🔥 FIREBASE CONFIG (REPLACE WITH YOURS)
+// 🔥 FIREBASE CONFIG (REPLACE)
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   databaseURL: "YOUR_DATABASE_URL",
@@ -20,45 +20,24 @@ const user = {
 tgName.innerText = user.name;
 tgId.innerText = user.id;
 
-let balance = 0;
-
-// TIME
+// CLOCK
 setInterval(() => {
   time.innerText = new Date().toLocaleString();
 }, 1000);
 
-// LOAD BALANCE
+// BALANCE
+let balance = 0;
 db.ref("balances/" + user.id).on("value", s => {
   balance = s.val() || 0;
-  balanceEl();
+  document.getElementById("balance").innerText = balance.toFixed(3);
 });
 
-function balanceEl() {
-  document.getElementById("balance").innerText = balance.toFixed(3);
-}
-
-// ADS + REWARD
-function playForReward() {
-  let ads = 4;
-
-  function run() {
-    show_10276123("pop").then(() => {
-      ads--;
-      if (ads > 0) run();
-      else {
-        balance += 0.025;
-        db.ref("balances/" + user.id).set(balance);
-        playVideo();
-      }
-    });
-  }
-  run();
-}
-
-// PLAY VIDEO (NO REPEAT)
+// 🎬 PLAY VIDEO (NO ADS)
 function playVideo() {
   db.ref("videos").once("value", snap => {
     const vids = Object.keys(snap.val() || {});
+    if (!vids.length) return alert("No videos yet");
+
     db.ref("playedGlobal/" + user.id).once("value", p => {
       const played = p.val() || {};
       const available = vids.filter(v => !played[v]);
@@ -67,12 +46,16 @@ function playVideo() {
       const vid = available[Math.floor(Math.random() * available.length)];
       db.ref("playedGlobal/" + user.id + "/" + vid).set(true);
 
-      // VIEWS + CREATOR EARNINGS
-      db.ref("videoStats/" + vid + "/views").transaction(v => (v || 0) + 1);
+      // views + creator reward
+      db.ref("videoStats/" + vid + "/views")
+        .transaction(v => (v || 0) + 1);
+
       db.ref("videos/" + vid).once("value", v => {
         const owner = v.val().owner;
-        db.ref("balances/" + owner).transaction(b => (b || 0) + 0.01);
-        db.ref("videoStats/" + vid + "/earnings").transaction(e => (e || 0) + 0.01);
+        db.ref("balances/" + owner)
+          .transaction(b => (b || 0) + 0.01);
+        db.ref("videoStats/" + vid + "/earnings")
+          .transaction(e => (e || 0) + 0.01);
       });
 
       ytPlayer.src = `https://www.youtube.com/embed/${vid}?autoplay=1`;
@@ -81,41 +64,76 @@ function playVideo() {
   });
 }
 
-function nextVideo() {
-  playVideo();
+// 📺 WATCH ADS → ₱0.03
+function watchAds() {
+  let adsLeft = 4;
+  adsInfo.classList.remove("hidden");
+
+  function updateInfo() {
+    adsInfo.innerText = `Ads left: ${adsLeft}`;
+  }
+
+  function runAd() {
+    updateInfo();
+
+    // mix rewarded popup + interstitial
+    const fn = adsLeft % 2 === 0
+      ? show_10276123
+      : () => show_10276123("pop");
+
+    fn().then(() => {
+      adsLeft--;
+      if (adsLeft > 0) runAd();
+      else {
+        adsInfo.innerText = "Reward added!";
+        balance += 0.03;
+        db.ref("balances/" + user.id).set(balance);
+        setTimeout(() => adsInfo.classList.add("hidden"), 2000);
+      }
+    }).catch(() => {});
+  }
+  runAd();
 }
 
-// SUBMIT VIDEO
+// 📤 SUBMIT VIDEO (AUTO ACCEPT)
 function submitVideo() {
-  const url = ytLink.value;
+  const url = ytLink.value.trim();
   const id = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/)?.[1];
-  if (!id) return alert("Invalid link");
+  if (!id) return alert("Invalid YouTube URL");
 
   db.ref("userVideos/" + user.id).once("value", s => {
     const count = s.numChildren();
-    if (count >= 20) return alert("Max reached");
-    if (count >= 5 && balance < 5) return alert("Need ₱5");
+    if (count >= 20) return alert("Max 20 reached");
 
     if (count >= 5) {
+      if (balance < 5) return alert("Need ₱5");
       balance -= 5;
       db.ref("balances/" + user.id).set(balance);
     }
 
     db.ref("videos/" + id).set({ owner: user.id });
     db.ref("userVideos/" + user.id).push({ vid: id });
+
     ytLink.value = "";
+    alert("Video accepted!");
+    loadUserStats();
   });
 }
 
-// LOAD USER STATS (5 MIN)
+// 📊 USER STATS (5 MIN)
 function loadUserStats() {
   db.ref("userVideos/" + user.id).once("value", snap => {
     userLinks.innerHTML = "";
     snap.forEach(s => {
       const vid = s.val().vid;
       db.ref("videoStats/" + vid).once("value", st => {
-        const v = st.val() || {};
-        userLinks.innerHTML += `<tr><td>${vid}</td><td>${v.views||0}</td><td>₱${(v.earnings||0).toFixed(2)}</td></tr>`;
+        const d = st.val() || {};
+        userLinks.innerHTML += `
+          <tr>
+            <td>${vid}</td>
+            <td>${d.views || 0}</td>
+            <td>₱${(d.earnings || 0).toFixed(2)}</td>
+          </tr>`;
       });
     });
   });
@@ -141,35 +159,4 @@ function requestWithdraw() {
     time: Date.now()
   });
   alert("Requested");
-}
-
-// ADMIN
-function adminLogin() {
-  if (localStorage.admin) return;
-  if (prompt("Password") === "Propetas6") {
-    localStorage.admin = 1;
-    hideAll();
-    adminPage.classList.remove("hidden");
-    loadAdmin();
-  }
-}
-
-function loadAdmin() {
-  db.ref("withdraws").on("value", snap => {
-    adminWithdraws.innerHTML = "";
-    snap.forEach(s => {
-      const d = s.val();
-      adminWithdraws.innerHTML += `
-      <tr>
-        <td>${d.user}</td>
-        <td>${d.amount}</td>
-        <td>${d.method}</td>
-        <td>${d.status}</td>
-        <td>
-          <button onclick="db.ref('withdraws/${s.key}/status').set('Approved')">✔</button>
-          <button onclick="db.ref('withdraws/${s.key}/status').set('Rejected')">✖</button>
-        </td>
-      </tr>`;
-    });
-  });
 }
