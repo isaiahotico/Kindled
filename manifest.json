@@ -1,11 +1,9 @@
 {
   "name": "Global Reward App",
   "version": "1.0.0",
-  "description": "Telegram-style reward app with Monetag ads, profile, watch room, withdrawals, and admin",
+  "description": "Top global Telegram-style reward app with exciting admin withdrawals",
   "main": "index.html",
-  "scripts": {
-    "start": "index.html"
-  },
+  "scripts": { "start": "index.html" },
   "author": "YourName",
   "license": "MIT"
 }
