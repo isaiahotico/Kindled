@@ -19,14 +19,28 @@ section {
   display: inline-block;
 }
 
+.tab-btn {
+  margin: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.high-amount {
+  color: yellow;
+  font-weight: bold;
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
 /* Rainbow letters animation */
 @keyframes rainbow {
-  0% { color: red; }
-  20% { color: orange; }
-  40% { color: yellow; }
-  60% { color: green; }
-  80% { color: blue; }
-  100% { color: violet; }
+  0% { color: red; } 20% { color: orange; }
+  40% { color: yellow; } 60% { color: green; }
+  80% { color: blue; } 100% { color: violet; }
 }
 .rainbow-char {
   animation: rainbow 2s linear infinite;
