@@ -1,54 +1,9 @@
-body {
-  margin: 0;
-  font-family: system-ui;
-  background: orange;
-  color: black;
-}
-
-.header { text-align: center; padding: 10px; }
-
-#wallet-display { margin-top: 5px; font-weight: bold; }
-
-.player-container {
-  max-width: 720px;
-  margin: 0 auto;
-  text-align: center;
-  margin-top: 20px;
-}
-
-.controls button {
-  padding: 8px 16px;
-  margin: 5px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.video-list-container {
-  max-width: 400px;
-  margin: 20px auto;
-  background: #fff2d1;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-input {
-  width: 100%;
-  padding: 6px;
-  margin: 6px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.video-card {
-  margin: 6px 0;
-  padding: 6px;
-  background: #ffd480;
-  border-radius: 6px;
-}
-
-.withdraw-card button {
-  margin-right: 6px;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+body { margin:0; font-family:system-ui; background:orange; color:black; }
+.header { text-align:center; padding:10px; }
+#wallet-display { margin-top:5px; font-weight:bold; }
+.player-container { max-width:720px; margin:0 auto; text-align:center; margin-top:20px; }
+.controls button { padding:8px 16px; margin:5px; border-radius:6px; cursor:pointer; }
+.video-list-container { max-width:400px; margin:20px auto; background:#fff2d1; padding:10px; border-radius:8px; }
+input { width:100%; padding:6px; margin:6px 0; border-radius:6px; border:1px solid #ccc; }
+.video-card { margin:6px 0; padding:6px; background:#ffd480; border-radius:6px; }
+.withdraw-card button { margin-right:6px; padding:4px 10px; border-radius:6px; cursor:pointer; }
