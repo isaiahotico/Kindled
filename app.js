@@ -1,126 +1,130 @@
-const SUPABASE_URL = 'https://your-project.supabase.co';
-const SUPABASE_KEY = 'public-anon-key';
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Firebase Initialization
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-const userId = 1; // logged-in user
-let userBalance = 50000;
-
-// Elements
+const userId = "user123";
 const displayNameEl = document.getElementById('displayName');
-const updateNameBtn = document.getElementById('updateNameBtn');
 const balanceEl = document.getElementById('userBalance');
+const updateNameBtn = document.getElementById('updateNameBtn');
 const withdrawBtn = document.getElementById('withdrawBtn');
 const gcashInput = document.getElementById('gcashNumber');
 const amountInput = document.getElementById('withdrawAmount');
 const userTbody = document.querySelector('#userWithdrawalTable tbody');
-const adminTbody = document.querySelector('#withdrawalTable tbody');
+const adminTbody = document.querySelector('#adminTable tbody');
 const adminSearch = document.getElementById('adminSearch');
 
-// ---------------- Telegram Name Update ----------------
+// ---------------- Update Telegram Name ----------------
 async function updateTelegramName() {
-    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if(!telegramUser) return alert('Unable to fetch Telegram user info');
-    const telegramName = telegramUser.first_name + (telegramUser.last_name ? ' ' + telegramUser.last_name : '');
-    const telegramId = telegramUser.id;
+  const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  if(!telegramUser) return alert('Cannot fetch Telegram user');
+  const telegramName = telegramUser.first_name + (telegramUser.last_name ? ' ' + telegramUser.last_name : '');
+  const telegramUsername = telegramUser.username || '';
+  const telegramId = telegramUser.id;
 
-    await supabase.from('users').upsert([{ id:userId, telegram_id:telegramId, name:telegramName }], { onConflict:['id'] });
-    displayNameEl.textContent = `User: ${telegramName}`;
-    alert(`Telegram name updated: ${telegramName}`);
-    renderUserTable();
+  displayNameEl.textContent = `User: ${telegramName}`;
+
+  await db.collection('users').doc(userId).set({
+    telegramId,
+    telegramUsername,
+    telegramName,
+    balance: firebase.firestore.FieldValue.increment(0)
+  }, { merge:true });
+
+  const snapshot = await db.collection('withdrawals').where('userId','==',userId).get();
+  snapshot.forEach(doc => doc.ref.update({ userName: telegramName, telegramUsername }));
+  alert(`Telegram name updated: ${telegramName}`);
 }
-
 updateNameBtn.addEventListener('click', updateTelegramName);
 
-// Load name initially
-async function loadUserName() {
-    const { data } = await supabase.from('users').select('name').eq('id', userId).single();
-    displayNameEl.textContent = data?.name ? `User: ${data.name}` : 'User: Unknown';
-}
+// ---------------- Load User Data ----------------
+db.collection('users').doc(userId).onSnapshot(doc => {
+  if(doc.exists){
+    const data = doc.data();
+    displayNameEl.textContent = `User: ${data.telegramName || 'Unknown'}`;
+    balanceEl.textContent = `₱${data.balance || 50000}`;
+  }
+});
 
-loadUserName();
-
-// ---------------- User Withdrawal ----------------
+// ---------------- Submit Withdrawal ----------------
 withdrawBtn.addEventListener('click', async () => {
-    const gcash = gcashInput.value.trim();
-    const amount = parseFloat(amountInput.value);
-    if(!gcash || amount<=0) return alert('Enter valid GCash number and amount');
-    if(amount>userBalance) return alert('Insufficient balance');
+  const amount = parseFloat(amountInput.value);
+  const gcash = gcashInput.value.trim();
+  if(!gcash || amount <= 0) return alert("Enter valid GCash and amount");
 
-    const { data: userData } = await supabase.from('users').select('name, balance').eq('id',userId).single();
-    const userName = userData?.name || 'Unknown User';
-    const beforeBalance = userData?.balance || userBalance;
-    const afterBalance = beforeBalance - amount;
+  const userDoc = await db.collection('users').doc(userId).get();
+  const balance = userDoc.data().balance || 50000;
+  if(amount > balance) return alert("Insufficient balance");
 
-    await supabase.from('withdrawals').insert([{
-        user_id:userId, user:userName, gcash, amount, status:'pending',
-        requested_at:new Date(), user_balance_before:beforeBalance, user_balance_after:afterBalance
-    }]);
-    userBalance = afterBalance;
-    balanceEl.textContent = `₱${userBalance}`;
-    gcashInput.value=''; amountInput.value='';
+  await db.collection('withdrawals').add({
+    userId,
+    userName: userDoc.data().telegramName,
+    telegramUsername: userDoc.data().telegramUsername || '',
+    gcash,
+    amount,
+    status: 'pending',
+    requestedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    approvedAt: null
+  });
+  await db.collection('users').doc(userId).update({ balance: balance - amount });
+  amountInput.value=''; gcashInput.value='';
 });
 
 // ---------------- Render User Table ----------------
-async function renderUserTable() {
-    const { data } = await supabase.from('withdrawals').select('*').eq('user_id', userId).order('requested_at',{ascending:false});
-    userTbody.innerHTML='';
-    data.forEach(w=>{
-        const tr=document.createElement('tr');
-        const statusClass = w.status==='pending'?'status-pending': w.status==='approved'?'status-approved':'status-denied';
-        tr.innerHTML=`<td>₱${w.amount}</td><td class="${statusClass}">${w.status}</td><td>${new Date(w.requested_at).toLocaleString()}</td>`;
-        userTbody.appendChild(tr);
-    });
-}
+db.collection('withdrawals').where('userId','==',userId)
+.onSnapshot(snapshot => {
+  userTbody.innerHTML='';
+  snapshot.forEach(doc => {
+    const w = doc.data();
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>₱${w.amount}</td><td class="status-${w.status}">${w.status}</td><td>${w.requestedAt?.toDate().toLocaleString() || ''}</td>`;
+    userTbody.appendChild(tr);
+  });
+});
 
 // ---------------- Render Admin Table ----------------
-async function renderAdminTable(search='') {
-    let query = supabase.from('withdrawals').select('*').order('requested_at',{ascending:false});
-    if(search) query = query.ilike('user', `%${search}%`).or(`gcash.ilike.%${search}%`);
-    const { data } = await query;
+db.collection('withdrawals').orderBy('requestedAt','desc')
+.onSnapshot(snapshot => {
+  const search = adminSearch.value.toLowerCase();
+  adminTbody.innerHTML='';
+  snapshot.forEach(doc => {
+    const w = doc.data();
+    if(search && !w.userName.toLowerCase().includes(search) && !w.gcash.includes(search)) return;
 
-    adminTbody.innerHTML='';
-    data.forEach(w=>{
-        const tr=document.createElement('tr');
-        const statusClass = w.status==='pending'?'status-pending': w.status==='approved'?'status-approved':'status-denied';
-        tr.innerHTML=`
-            <td><a href="https://t.me/${w.telegram_username || ''}" target="_blank">${w.user}</a></td>
-            <td>${w.gcash}</td>
-            <td>₱${w.amount}</td>
-            <td class="${statusClass}">${w.status}</td>
-            <td>${new Date(w.requested_at).toLocaleString()}</td>
-            <td>${w.status==='pending'? `<button class="approve-btn" onclick="approve(${w.id})">Approve</button> <button class="deny-btn" onclick="deny(${w.id})">Deny</button>`:''}</td>
-        `;
-        adminTbody.appendChild(tr);
-    });
-}
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${w.telegramUsername ? `<a href="https://t.me/${w.telegramUsername}" target="_blank">${w.userName}</a>` : w.userName}</td>
+      <td>${w.gcash}</td>
+      <td>₱${w.amount}</td>
+      <td class="status-${w.status}">${w.status}</td>
+      <td>${w.requestedAt?.toDate().toLocaleString() || ''}</td>
+      <td>${w.status === 'pending' ? `<button onclick="approve('${doc.id}')">Approve</button> <button onclick="deny('${doc.id}')">Deny</button>` : ''}</td>
+    `;
+    adminTbody.appendChild(tr);
+  });
+});
+adminSearch.addEventListener('input', ()=>{}); // reactive
 
 // ---------------- Admin Approve/Deny ----------------
-async function approve(id){
-    const { data, error } = await supabase.from('withdrawals').select('*').eq('id',id).single();
-    if(error) return console.error(error);
-    await supabase.from('withdrawals').update({status:'approved', approved_at:new Date()}).eq('id',id);
-    alert(`Withdrawal ₱${data.amount} approved for ${data.user}`);
-}
-
-async function deny(id){
-    const { data, error } = await supabase.from('withdrawals').select('*').eq('id',id).single();
-    if(error) return console.error(error);
-    userBalance += data.amount;
-    balanceEl.textContent=`₱${userBalance}`;
-    await supabase.from('withdrawals').update({status:'denied', approved_at:new Date()}).eq('id',id);
-    alert(`Withdrawal ₱${data.amount} denied for ${data.user}`);
-}
-
-// ---------------- Search ----------------
-adminSearch.addEventListener('input', ()=>{ renderAdminTable(adminSearch.value); });
-
-// ---------------- Realtime ----------------
-supabase.channel('public:withdrawals')
-    .on('postgres_changes',{event:'*', schema:'public', table:'withdrawals'}, payload=>{
-        renderUserTable();
-        renderAdminTable(adminSearch.value);
-    }).subscribe();
-
-// Initial render
-renderUserTable();
-renderAdminTable();
+window.approve = async (id) => {
+  const docRef = db.collection('withdrawals').doc(id);
+  const doc = await docRef.get();
+  const w = doc.data();
+  await docRef.update({ status:'approved', approvedAt:firebase.firestore.FieldValue.serverTimestamp() });
+};
+window.deny = async (id) => {
+  const docRef = db.collection('withdrawals').doc(id);
+  const doc = await docRef.get();
+  const w = doc.data();
+  const userRef = db.collection('users').doc(w.userId);
+  const userDoc = await userRef.get();
+  await userRef.update({ balance: (userDoc.data().balance||0) + w.amount });
+  await docRef.update({ status:'denied', approvedAt:firebase.firestore.FieldValue.serverTimestamp() });
+};
