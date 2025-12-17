@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Withdrawals</title>
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Withdrawal Requests</h1>
+
+    <div class="admin-buttons">
+      <button id="refreshBtn">🔄 Refresh Table</button>
+      <button id="searchUserBtn">🔍 Search User</button>
+      <button id="exportBtn">📥 Export Data</button>
+    </div>
+
+    <table id="withdrawalsTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Telegram Username</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Date Requested</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic rows here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script type="module" src="withdrawals.js"></script>
+</body>
+</html>
