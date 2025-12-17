@@ -1,7 +1,7 @@
 {
   "name": "GCash Withdrawal System",
   "short_name": "WithdrawalApp",
-  "description": "Real-time GCash withdrawal system linked to Telegram",
+  "description": "Realtime GCash withdrawal system with Telegram integration",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
