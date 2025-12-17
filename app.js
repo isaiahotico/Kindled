@@ -1,102 +1,126 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+const SUPABASE_URL = 'https://your-project.supabase.co';
+const SUPABASE_KEY = 'public-anon-key';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const SUPABASE_URL = 'https://dhuxockwrbvsluxoqizn.supabase.co';
-const SUPABASE_KEY = 'YOUR_ANON_KEY';
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const userId = 1; // logged-in user
+let userBalance = 50000;
 
-let telegram_id = 123456789;
-let telegram_username = "Isaiahotico15";
+// Elements
+const displayNameEl = document.getElementById('displayName');
+const updateNameBtn = document.getElementById('updateNameBtn');
+const balanceEl = document.getElementById('userBalance');
+const withdrawBtn = document.getElementById('withdrawBtn');
+const gcashInput = document.getElementById('gcashNumber');
+const amountInput = document.getElementById('withdrawAmount');
+const userTbody = document.querySelector('#userWithdrawalTable tbody');
+const adminTbody = document.querySelector('#withdrawalTable tbody');
+const adminSearch = document.getElementById('adminSearch');
 
-// Modal elements
-const adModal = document.getElementById('adModal');
-const closeModal = document.getElementById('closeModal');
-closeModal.onclick = () => adModal.style.display = "none";
-window.onclick = (e) => { if (e.target === adModal) adModal.style.display = "none"; };
+// ---------------- Telegram Name Update ----------------
+async function updateTelegramName() {
+    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if(!telegramUser) return alert('Unable to fetch Telegram user info');
+    const telegramName = telegramUser.first_name + (telegramUser.last_name ? ' ' + telegramUser.last_name : '');
+    const telegramId = telegramUser.id;
 
-const historyModal = document.getElementById('historyModal');
-const closeHistory = document.getElementById('closeHistory');
-closeHistory.onclick = () => historyModal.style.display = "none";
-window.onclick = (e) => { if (e.target === historyModal) historyModal.style.display = "none"; };
-
-// Register user
-async function registerTelegramUser() {
-  let { data: user } = await supabase.from('users').select('*').eq('telegram_id', telegram_id).single();
-  if (!user) {
-    const { data, error } = await supabase.from('users').insert([{
-      telegram_id,
-      telegram_username,
-      username: telegram_username,
-      balance: 0
-    }]).select().single();
-    if (error) console.error('Error registering user:', error);
-    user = data;
-  }
-  return user;
+    await supabase.from('users').upsert([{ id:userId, telegram_id:telegramId, name:telegramName }], { onConflict:['id'] });
+    displayNameEl.textContent = `User: ${telegramName}`;
+    alert(`Telegram name updated: ${telegramName}`);
+    renderUserTable();
 }
 
-// Update balance
-async function updateBalance() {
-  const { data: user } = await supabase.from('users').select('balance').eq('telegram_id', telegram_id).single();
-  document.getElementById('balance').innerText = user ? user.balance : 0;
+updateNameBtn.addEventListener('click', updateTelegramName);
+
+// Load name initially
+async function loadUserName() {
+    const { data } = await supabase.from('users').select('name').eq('id', userId).single();
+    displayNameEl.textContent = data?.name ? `User: ${data.name}` : 'User: Unknown';
 }
 
-// Reward user
-async function rewardUser(amount = 10) {
-  const { data: user } = await supabase.from('users').select('*').eq('telegram_id', telegram_id).single();
-  if (!user) return;
-  await supabase.from('earnings').insert([{ user_id: user.id, type: 'ad_click', amount }]);
-  const newBalance = Number(user.balance) + amount;
-  await supabase.from('users').update({ balance: newBalance }).eq('telegram_id', telegram_id);
-  updateBalance();
-  alert(`You earned ${amount} pesos!`);
+loadUserName();
+
+// ---------------- User Withdrawal ----------------
+withdrawBtn.addEventListener('click', async () => {
+    const gcash = gcashInput.value.trim();
+    const amount = parseFloat(amountInput.value);
+    if(!gcash || amount<=0) return alert('Enter valid GCash number and amount');
+    if(amount>userBalance) return alert('Insufficient balance');
+
+    const { data: userData } = await supabase.from('users').select('name, balance').eq('id',userId).single();
+    const userName = userData?.name || 'Unknown User';
+    const beforeBalance = userData?.balance || userBalance;
+    const afterBalance = beforeBalance - amount;
+
+    await supabase.from('withdrawals').insert([{
+        user_id:userId, user:userName, gcash, amount, status:'pending',
+        requested_at:new Date(), user_balance_before:beforeBalance, user_balance_after:afterBalance
+    }]);
+    userBalance = afterBalance;
+    balanceEl.textContent = `₱${userBalance}`;
+    gcashInput.value=''; amountInput.value='';
+});
+
+// ---------------- Render User Table ----------------
+async function renderUserTable() {
+    const { data } = await supabase.from('withdrawals').select('*').eq('user_id', userId).order('requested_at',{ascending:false});
+    userTbody.innerHTML='';
+    data.forEach(w=>{
+        const tr=document.createElement('tr');
+        const statusClass = w.status==='pending'?'status-pending': w.status==='approved'?'status-approved':'status-denied';
+        tr.innerHTML=`<td>₱${w.amount}</td><td class="${statusClass}">${w.status}</td><td>${new Date(w.requested_at).toLocaleString()}</td>`;
+        userTbody.appendChild(tr);
+    });
 }
 
-// Show all ads inline
-async function showAllAdsInline() {
-  adModal.style.display = "block";
-  try {
-    await show_10276123();
-    await show_10276123('pop');
-    await show_10276123({ type:'inApp', inAppSettings:{ frequency:2, capping:0.1, interval:30, timeout:5, everyPage:false }});
-    await show_10276123();
-    await rewardUser(10);
-  } catch(e) {
-    console.error('Ad error', e);
-    alert('Error showing ads. Try again.');
-  } finally {
-    adModal.style.display = "none";
-  }
+// ---------------- Render Admin Table ----------------
+async function renderAdminTable(search='') {
+    let query = supabase.from('withdrawals').select('*').order('requested_at',{ascending:false});
+    if(search) query = query.ilike('user', `%${search}%`).or(`gcash.ilike.%${search}%`);
+    const { data } = await query;
+
+    adminTbody.innerHTML='';
+    data.forEach(w=>{
+        const tr=document.createElement('tr');
+        const statusClass = w.status==='pending'?'status-pending': w.status==='approved'?'status-approved':'status-denied';
+        tr.innerHTML=`
+            <td><a href="https://t.me/${w.telegram_username || ''}" target="_blank">${w.user}</a></td>
+            <td>${w.gcash}</td>
+            <td>₱${w.amount}</td>
+            <td class="${statusClass}">${w.status}</td>
+            <td>${new Date(w.requested_at).toLocaleString()}</td>
+            <td>${w.status==='pending'? `<button class="approve-btn" onclick="approve(${w.id})">Approve</button> <button class="deny-btn" onclick="deny(${w.id})">Deny</button>`:''}</td>
+        `;
+        adminTbody.appendChild(tr);
+    });
 }
 
-// Withdraw
-async function withdraw() {
-  const { data: user } = await supabase.from('users').select('*').eq('telegram_id', telegram_id).single();
-  if (!user) return alert('User not found!');
-  if (user.balance < 1) return alert('Minimum withdraw is 1 peso!');
-  await supabase.from('withdrawals').insert([{ user_id: user.id, amount: user.balance, method:'gcash' }]);
-  await supabase.from('users').update({ balance:0 }).eq('telegram_id', telegram_id);
-  updateBalance();
-  alert('Withdrawal requested! Admin will approve soon.');
+// ---------------- Admin Approve/Deny ----------------
+async function approve(id){
+    const { data, error } = await supabase.from('withdrawals').select('*').eq('id',id).single();
+    if(error) return console.error(error);
+    await supabase.from('withdrawals').update({status:'approved', approved_at:new Date()}).eq('id',id);
+    alert(`Withdrawal ₱${data.amount} approved for ${data.user}`);
 }
 
-// View earning history
-async function viewHistory() {
-  const { data: earnings } = await supabase.from('earnings').select('*').eq('user_id', telegram_id).order('created_at', { ascending:false });
-  const list = document.getElementById('historyList');
-  list.innerHTML = '';
-  earnings.forEach(e => {
-    const li = document.createElement('li');
-    li.innerText = `${e.type} - ${e.amount} pesos - ${new Date(e.created_at).toLocaleString()}`;
-    list.appendChild(li);
-  });
-  historyModal.style.display = 'block';
+async function deny(id){
+    const { data, error } = await supabase.from('withdrawals').select('*').eq('id',id).single();
+    if(error) return console.error(error);
+    userBalance += data.amount;
+    balanceEl.textContent=`₱${userBalance}`;
+    await supabase.from('withdrawals').update({status:'denied', approved_at:new Date()}).eq('id',id);
+    alert(`Withdrawal ₱${data.amount} denied for ${data.user}`);
 }
 
-// Button event listeners
-document.getElementById('watchAdsBtn').addEventListener('click', showAllAdsInline);
-document.getElementById('withdrawBtn').addEventListener('click', withdraw);
-document.getElementById('checkBalanceBtn').addEventListener('click', updateBalance);
-document.getElementById('historyBtn').addEventListener('click', viewHistory);
-document.getElementById('faqBtn').addEventListener('click', () => alert('FAQ: Watch ads to earn pesos. Minimum withdraw is 1 peso.'));
+// ---------------- Search ----------------
+adminSearch.addEventListener('input', ()=>{ renderAdminTable(adminSearch.value); });
 
-registerTelegramUser().then(() => updateBalance());
+// ---------------- Realtime ----------------
+supabase.channel('public:withdrawals')
+    .on('postgres_changes',{event:'*', schema:'public', table:'withdrawals'}, payload=>{
+        renderUserTable();
+        renderAdminTable(adminSearch.value);
+    }).subscribe();
+
+// Initial render
+renderUserTable();
+renderAdminTable();
