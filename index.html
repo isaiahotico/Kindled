@@ -5,59 +5,64 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GCash Withdrawal System</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-<!-- Top Bar -->
-<div id="topBar">
-  <span id="displayName">User: Unknown</span>
-  <button id="updateNameBtn">Update Name</button>
-  <span id="userBalance">₱50000</span>
-</div>
+<!-- Top Navigation -->
+<header id="topNav">
+  <div class="logo">💰 GCash Withdrawal</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="withdrawals.html">Withdrawals</a>
+    <span id="userBalance">₱50000</span>
+    <span id="displayName">User: Unknown</span>
+    <button id="updateNameBtn">Update Name</button>
+  </nav>
+</header>
 
-<!-- User Section -->
-<section id="userSection">
-  <h2>Withdraw via GCash</h2>
-  <div class="withdraw-form">
-    <input type="text" id="gcashNumber" placeholder="Enter GCash Number">
-    <input type="number" id="withdrawAmount" placeholder="Amount to withdraw">
-    <button id="withdrawBtn">Submit Withdrawal</button>
-  </div>
+<main>
+  <!-- User Section -->
+  <section id="userSection" class="card">
+    <h2>Withdraw via GCash</h2>
+    <div class="withdraw-form">
+      <input type="text" id="gcashNumber" placeholder="Enter GCash Number">
+      <input type="number" id="withdrawAmount" placeholder="Amount to withdraw">
+      <button id="withdrawBtn">Submit Withdrawal</button>
+    </div>
+    <h3>Your Withdrawal History</h3>
+    <table id="userWithdrawalTable">
+      <thead>
+        <tr>
+          <th>Amount (₱)</th>
+          <th>Status</th>
+          <th>Requested At</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
 
-  <h3>Your Withdrawal History</h3>
-  <table id="userWithdrawalTable">
-    <thead>
-      <tr>
-        <th>Amount (₱)</th>
-        <th>Status</th>
-        <th>Requested At</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</section>
-
-<hr>
-
-<!-- Admin Section -->
-<section id="adminSection">
-  <h2>Admin Withdrawal Dashboard</h2>
-  <input type="text" id="adminSearch" placeholder="Search by user or GCash">
-  <table id="withdrawalTable">
-    <thead>
-      <tr>
-        <th>User Name</th>
-        <th>GCash Number</th>
-        <th>Amount (₱)</th>
-        <th>Status</th>
-        <th>Requested At</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</section>
+  <!-- Admin Section -->
+  <section id="adminSection" class="card">
+    <h2>Admin Dashboard</h2>
+    <input type="text" id="adminSearch" placeholder="Search by user or GCash" class="searchInput">
+    <table id="adminTable">
+      <thead>
+        <tr>
+          <th>User Name</th>
+          <th>GCash Number</th>
+          <th>Amount (₱)</th>
+          <th>Status</th>
+          <th>Requested At</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
 
 <script src="app.js"></script>
 </body>
