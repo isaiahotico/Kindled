@@ -1,11 +1,16 @@
 {
-  "name": "Pesos Earning App",
-  "short_name": "EarningApp",
-  "version": "1.0.0",
-  "description": "Watch ads and earn pesos! Withdraw to GCash.",
-  "author": "Isaiah Otico",
-  "start_url": "index.html",
+  "name": "GCash Withdrawal System",
+  "short_name": "WithdrawalApp",
+  "description": "Real-time GCash withdrawal system linked to Telegram",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#4CAF50"
+  "theme_color": "#4CAF50",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
 }
