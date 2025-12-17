@@ -1,188 +1,110 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #ffcccc; /* Light red */
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 20px;
-    box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  color: #333;
+  text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
-.app-container {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    width: 100%;
-    overflow: hidden;
-    padding: 20px;
-    display: flex; /* Use flexbox for layout */
-    flex-direction: column; /* Arrange children vertically */
+.container {
+  padding: 20px;
 }
 
-header {
-    text-align: center;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
-    position: relative;
+button {
+  padding: 15px 20px;
+  margin: 8px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.app-title {
-    color: #e53935; /* Darker red */
-    margin: 0;
+button:hover {
+  background-color: #45a049;
 }
 
-.currency-display {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #4CAF50; /* Green for currency */
+.buttons, .admin-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.main-nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 30px;
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 999; 
+  padding-top: 100px; 
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.6); 
 }
 
-.nav-button, .action-button, .home-button {
-    background-color: #e53935;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-    flex-grow: 1; /* Allow buttons to grow */
-    max-width: 150px; /* Limit max width */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 25px;
+  border: 1px solid #888;
+  width: 80%;
+  border-radius: 15px;
+  text-align: center;
 }
 
-.nav-button:hover, .action-button:hover, .home-button:hover {
-    background-color: #c62828;
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-.nav-button:disabled, .action-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-
-.admin-button {
-    background-color: #3f51b5; /* Blue for admin */
-}
-.admin-button:hover {
-    background-color: #303f9f;
-}
-
-.page {
-    padding: 20px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    background-color: #fdfdfd;
-    margin-bottom: 20px;
-}
-
-.hidden {
-    display: none;
-}
-
-h2, h3 {
-    color: #e53935;
-    margin-top: 0;
-    margin-bottom: 15px;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="email"],
-input[type="password"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1em;
+.close:hover {
+  color: black;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 16px;
 }
 
 table, th, td {
-    border: 1px solid #ddd;
+  border: 1px solid #ddd;
 }
 
 th, td {
-    padding: 8px;
-    text-align: left;
+  padding: 12px;
+  text-align: center;
 }
+
+tr:nth-child(even) { background-color: #f9f9f9; }
+tr:hover { background-color: #f1f1f1; }
 
 th {
-    background-color: #f2f2f2;
-    font-weight: bold;
+  background-color: #4CAF50;
+  color: white;
+  text-transform: uppercase;
 }
 
-#player {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* For responsive YouTube player */
-    background-color: #000;
-    margin-bottom: 15px;
+td button {
+  padding: 6px 10px;
+  margin: 2px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
 }
 
-.youtube-controls {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
+td button:hover { opacity: 0.8; }
 
-.home-button {
-    margin-top: 20px;
-    background-color: #607d8b; /* Greyish blue */
-}
-.home-button:hover {
-    background-color: #455a64;
-}
-
-footer {
-    text-align: center;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-    font-size: 0.8em;
-    color: #777;
-    margin-top: auto; /* Push footer to the bottom */
-}
-
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-    .main-nav {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .nav-button {
-        max-width: 100%;
-    }
-    .app-container {
-        padding: 10px;
-    }
-    header {
-        position: static;
-        padding-bottom: 10px;
-    }
-    .currency-display {
-        position: static;
-        margin-top: 10px;
-    }
-}
+td .approved { color: green; font-weight: bold; }
+td .pending { color: orange; font-weight: bold; }
+td .rejected { color: red; font-weight: bold; }
