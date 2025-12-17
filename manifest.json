@@ -1,21 +1,11 @@
 {
-    "name": "CryptoTube Mini App",
-    "short_name": "CryptoTube",
-    "description": "Earn Peso by watching YouTube videos and ads.",
-    "start_url": "./index.html",
-    "display": "standalone",
-    "background_color": "#ffcccc",
-    "theme_color": "#e53935",
-    "icons": [
-      {
-        "src": "icon-192x192.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "icon-512x512.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ]
-  }
+  "name": "Pesos Earning App",
+  "short_name": "EarningApp",
+  "version": "1.0.0",
+  "description": "Watch ads and earn pesos! Withdraw to GCash.",
+  "author": "Isaiah Otico",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50"
+}
