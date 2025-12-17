@@ -1,46 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pesos Earning App</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCash Withdrawal System</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Earn Pesos by Watching Ads</h1>
 
-    <div class="buttons">
-      <button id="watchAdsBtn">🎬 Watch 4 Ads & Earn 10 Pesos</button>
-      <button id="withdrawBtn">💸 Withdraw to GCash</button>
-      <button id="checkBalanceBtn">💰 Check Balance</button>
-      <button id="historyBtn">📜 View Earning History</button>
-      <button id="faqBtn">❓ FAQ / Help</button>
-    </div>
+<!-- Top Bar -->
+<div id="topBar">
+  <span id="displayName">User: Unknown</span>
+  <button id="updateNameBtn">Update Name</button>
+  <span id="userBalance">₱50000</span>
+</div>
 
-    <p>Your Balance: <span id="balance">0</span> pesos</p>
-
-    <!-- Modal for ads -->
-    <div id="adModal" class="modal">
-      <div class="modal-content">
-        <span id="closeModal" class="close">&times;</span>
-        <h2>Watching Ads...</h2>
-        <p>Please wait until all 4 ads finish to receive your reward.</p>
-      </div>
-    </div>
-
-    <!-- Modal for history -->
-    <div id="historyModal" class="modal">
-      <div class="modal-content">
-        <span id="closeHistory" class="close">&times;</span>
-        <h2>Earning History</h2>
-        <ul id="historyList"></ul>
-      </div>
-    </div>
+<!-- User Section -->
+<section id="userSection">
+  <h2>Withdraw via GCash</h2>
+  <div class="withdraw-form">
+    <input type="text" id="gcashNumber" placeholder="Enter GCash Number">
+    <input type="number" id="withdrawAmount" placeholder="Amount to withdraw">
+    <button id="withdrawBtn">Submit Withdrawal</button>
   </div>
 
-  <script type="module" src="app.js"></script>
+  <h3>Your Withdrawal History</h3>
+  <table id="userWithdrawalTable">
+    <thead>
+      <tr>
+        <th>Amount (₱)</th>
+        <th>Status</th>
+        <th>Requested At</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<hr>
+
+<!-- Admin Section -->
+<section id="adminSection">
+  <h2>Admin Withdrawal Dashboard</h2>
+  <input type="text" id="adminSearch" placeholder="Search by user or GCash">
+  <table id="withdrawalTable">
+    <thead>
+      <tr>
+        <th>User Name</th>
+        <th>GCash Number</th>
+        <th>Amount (₱)</th>
+        <th>Status</th>
+        <th>Requested At</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<script src="app.js"></script>
 </body>
 </html>
