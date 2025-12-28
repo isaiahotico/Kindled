@@ -1,21 +1,9 @@
 {
-    "name": "Apex AdVault: Global Earnings",
-    "short_name": "AdVault",
-    "description": "Unlock global earning potential with Apex AdVault. Engage with premium ads and secure your daily Peso rewards.",
-    "start_url": "index.html",
-    "display": "standalone",
-    "background_color": "#FFD700",
-    "theme_color": "#FFA500",
-    "icons": [
-        {
-            "src": "icon-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "icon-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
+  "name": "PAPER HOUSE INC",
+  "short_name": "PaperHouse",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0b12",
+  "theme_color": "#ff4ecd",
+  "icons": []
 }
