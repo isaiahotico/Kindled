@@ -1,68 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Apex AdVault: Global Earnings</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Monetag SDK for Room 1 -->
-    <script src='//libtl.com/sdk.js' data-zone='10337795' data-sdk='show_10337795' async></script>
-    
-    <!-- Monetag SDK for Room 2 -->
-    <script src='//libtl.com/sdk.js' data-zone='10337853' data-sdk='show_10337853' async></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PAPER HOUSE INC</title>
 
-    <!-- Monetag SDK for Room 3 (Updated Zone ID) -->
-    <script src='//libtl.com/sdk.js' data-zone='10276123' data-sdk='show_10276123' async></script>
+<!-- Telegram Mini App SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<!-- Monetag Ad SDKs -->
+<script src="//libtl.com/sdk.js" data-zone="10276123" data-sdk="show_10276123" async></script>
+<script src="//libtl.com/sdk.js" data-zone="10337795" data-sdk="show_10337795" async></script>
+<script src="//libtl.com/sdk.js" data-zone="10337853" data-sdk="show_10337853" async></script>
+
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <header>
-            <div id="coinDisplay">
-                <span class="coin-icon">💰</span>
-                <span id="pesoBalance">0.000</span>
-                <span class="currency">PHP</span>
-            </div>
-        </header>
 
-        <main id="homePage" class="page active">
-            <h1>Apex AdVault</h1>
-            <p class="tagline">Unlock Premium Rewards. Anytime, Anywhere.</p>
+<header>
+  <div class="stripe"></div>
+  <div id="user">Loading…</div>
+  <div class="wallet">₱<span id="balance">0.00</span></div>
+</header>
 
-            <div class="ad-rooms">
-                <button id="watchAdsRoom1" class="gold-button">
-                    <span class="button-icon">📺</span> ACCESS AD STREAM ALPHA
-                </button>
-                <button id="watchAdsRoom2" class="gold-button">
-                    <span class="button-icon">📺</span> ENGAGE AD STREAM BETA
-                </button>
-                <button id="watchAdsRoom3" class="gold-button">
-                    <span class="button-icon">📺</span> DEPLOY AD STREAM GAMMA
-                </button>
-            </div>
-        </main>
+<main>
+<section id="home" class="page active">
+  <h1>🍍 PAPER HOUSE INC 🍍</h1>
+  <button onclick="openPage('signin')">Daily Sign‑In Room</button>
+  <button onclick="openPage('gift')">Gift Room</button>
+  <button onclick="openPage('unlimited')">UNLIMITED ADS</button>
+</section>
 
-        <section id="adWatchingPage" class="page">
-            <h2>Your Global Ad Experience</h2>
-            <div id="adsStatus">
-                <p>Initiating Ad Stream: Please standby for premium content.</p>
-                <div id="adsLeftCounter" class="popup">
-                    <span id="currentAdsLeft"></span> streams left
-                    <span id="countdownTimer"></span>
-                </div>
-            </div>
-            <button id="returnHomeBtn" class="gold-button home-button">
-                <span class="button-icon">🏠</span> Return to AdVault
-            </button>
-        </section>
-        
-        <footer id="appFooter">
-            <p><span id="currentDateTime"></span></p>
-            <p>otico.isai3@gmail.com | &copy;2025</p>
-        </footer>
-    </div>
+<section id="signin" class="page">
+  <h2>Daily Sign‑In Room</h2>
+  <div class="card">
+    <button onclick="rewardAd('v1',0.01)">🍍 V1</button><div class="cooldown" id="cd-v1"></div>
+  </div>
+  <div class="card">
+    <button onclick="rewardAd('v2',0.01)">🍍 V2</button><div class="cooldown" id="cd-v2"></div>
+  </div>
+  <div class="card">
+    <button onclick="rewardAd('v3',0.01)">🍍 V3</button><div class="cooldown" id="cd-v3"></div>
+  </div>
+  <button class="back" onclick="openPage('home')">⬅ Back</button>
+</section>
 
-    <script src="app.js"></script>
+<section id="gift" class="page">
+  <h2>Gift Room</h2>
+  <div class="card">
+    <button onclick="rewardPop('g1',0.012)">🍋 Gift 1</button><div class="cooldown" id="cd-g1"></div>
+  </div>
+  <div class="card">
+    <button onclick="rewardPop('g2',0.012)">🍋 Gift 2</button><div class="cooldown" id="cd-g2"></div>
+  </div>
+  <div class="card">
+    <button onclick="rewardPop('g3',0.012)">🍋 Gift 3</button><div class="cooldown" id="cd-g3"></div>
+  </div>
+  <button class="back" onclick="openPage('home')">⬅ Back</button>
+</section>
+
+<section id="unlimited" class="page">
+  <h2>Unlimited Ads</h2>
+  <div class="card">
+    <button onclick="countAd('u1')">🍍 Ads V1</button><div class="cooldown" id="cd-u1"></div>
+  </div>
+  <div class="card">
+    <button onclick="countAd('u2')">🍍 Ads V2</button><div class="cooldown" id="cd-u2"></div>
+  </div>
+  <div class="card">
+    <button onclick="countAd('u3')">🍍 Ads V3</button><div class="cooldown" id="cd-u3"></div>
+  </div>
+  <button class="back" onclick="openPage('home')">⬅ Back</button>
+</section>
+
+<h3>Ad CPM & Earnings</h3>
+<table class="cpm-table">
+  <tr><th>Ad Zone</th><th>Last Earn (₱)</th></tr>
+  <tr><td>V1</td><td id="cpm-v1">‑</td></tr>
+  <tr><td>V2</td><td id="cpm-v2">‑</td></tr>
+  <tr><td>V3</td><td id="cpm-v3">‑</td></tr>
+</table>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
 </body>
 </html>
