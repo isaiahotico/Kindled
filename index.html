@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAPERHOUSE INC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- AD SCRIPT: In-page Push -->
+    <script>(function(s){s.dataset.zone='10601128',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+    <!-- AD SCRIPT: Onclick Popunder -->
+    <script>(function(s){s.dataset.zone='10671599',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); }
+        .admin-glow { box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6 shadow-lg">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-2xl font-black tracking-tighter italic">PAPERHOUSE INC</h1>
+            <button id="adminLoginBtn" class="text-xs opacity-50 hover:opacity-100 transition-opacity">Admin Access</button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Auto-Open Status -->
+        <div id="statusIndicator" class="mb-6 bg-white p-4 rounded-lg shadow-sm border-l-4 border-blue-500 flex justify-between items-center">
+            <div>
+                <p class="text-sm text-gray-500 font-semibold">AUTO-LINK SYSTEM</p>
+                <p id="timerText" class="text-lg font-bold text-gray-800">Initializing system...</p>
+            </div>
+            <div class="animate-pulse bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">ACTIVE</div>
+        </div>
+
+        <!-- User Display Area -->
+        <div id="displayArea" class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+                <div id="proofImageContainer" class="bg-gray-200 h-64 flex items-center justify-center overflow-hidden">
+                    <img id="displayImage" src="" alt="Proof Image" class="w-full h-full object-cover hidden">
+                    <p id="noImageText" class="text-gray-400 italic">No proof picture uploaded</p>
+                </div>
+                
+                <div class="p-8">
+                    <h2 id="displayLink" class="text-2xl font-bold text-blue-600 break-words mb-4">No Link Set</h2>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mb-6">
+                        <h3 class="text-xs uppercase font-bold text-gray-400 mb-2">Definition</h3>
+                        <p id="displayDefinition" class="text-gray-700 leading-relaxed">System is currently awaiting administrative data.</p>
+                    </div>
+
+                    <a id="displayWallet" href="#" target="_blank" class="inline-block w-full text-center bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 transition-colors shadow-lg shadow-green-200">
+                        <i class="fa-solid fa-wallet mr-2"></i> OPEN WALLET
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Admin Panel -->
+        <div id="adminPanel" class="hidden mt-12 bg-slate-800 p-8 rounded-2xl text-white admin-glow">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-user-shield text-blue-400"></i> Admin Management
+            </h2>
+            <div class="grid grid-cols-1 gap-4">
+                <input type="text" id="inputLink" placeholder="Enter Target Link" class="bg-slate-700 border border-slate-600 p-3 rounded-lg focus:outline-none focus:border-blue-400">
+                <textarea id="inputDefinition" placeholder="Enter Definition" class="bg-slate-700 border border-slate-600 p-3 rounded-lg h-32 focus:outline-none focus:border-blue-400"></textarea>
+                <input type="text" id="inputProof" placeholder="Proof Image URL" class="bg-slate-700 border border-slate-600 p-3 rounded-lg focus:outline-none focus:border-blue-400">
+                <input type="text" id="inputWallet" placeholder="Wallet Link" class="bg-slate-700 border border-slate-600 p-3 rounded-lg focus:outline-none focus:border-blue-400">
+                <button id="saveBtn" class="bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-bold transition-all">UPDATE DISPLAY DATA</button>
+                <button id="logoutBtn" class="text-slate-400 text-sm mt-2 hover:text-white">Logout</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- AD SCRIPT: Vignette Banner at Bottom -->
+    <script>(function(s){s.dataset.zone='10800165',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+    <script src="app.js"></script>
+</body>
+</html>
